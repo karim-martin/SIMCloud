@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Every IAM policy, EKS access entry, security group rule, and SCP consideration required to complete the AWS EKS deployment guide end to end.">
+  <title>Permissions &amp; Security Groups | CloudDevOps</title>
+  <link rel="stylesheet" href="../../../assets/css/base.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../../" class="logo"><img src="../../../assets/images/logo.svg" alt=""><span>CloudDevOps</span></a>
+      <nav class="main-nav">
+        <a href="../../../devops/" class="nav-link">DevOps</a>
+        <a href="../../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../../app-deploy/" class="nav-link active">App Deploy</a>
+        <a href="../../../programming/" class="nav-link">Programming</a>
+      </nav>
+      <div class="header-actions"><button class="mobile-menu-toggle" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button></div>
+    </div>
+  </header>
+  <div class="sidebar-overlay"></div>
+  <div class="page-wrapper">
+    <aside class="sidebar"><nav class="sidebar-nav">
+      <div class="sidebar-section"><h3 class="sidebar-section-title">App Deploy (AWS)</h3><ul class="sidebar-links">
+        <li><a href="../">Overview</a></li>
+        <li><a href="../prerequisites.html">Prerequisites</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
+        <li><a href="../foundation/">Overview</a></li>
+        <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
+        <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html" class="active">Permissions &amp; Security Groups</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
+        <li><a href="../infrastructure/">Overview</a></li>
+        <li><a href="../infrastructure/eks-cluster.html">EKS Cluster</a></li>
+        <li><a href="../infrastructure/rds.html">RDS Database</a></li>
+        <li><a href="../infrastructure/storage.html">S3 Storage</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Deployment</h3><ul class="sidebar-links">
+        <li><a href="../deployment/">Overview</a></li>
+        <li><a href="../deployment/containerize.html">Containerize Apps</a></li>
+        <li><a href="../deployment/react-frontend.html">React Frontend</a></li>
+        <li><a href="../deployment/dotnet-backend.html">.NET 8 Backend</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Networking</h3><ul class="sidebar-links">
+        <li><a href="../networking/">Overview</a></li>
+        <li><a href="../networking/alb-ingress.html">ALB Ingress</a></li>
+        <li><a href="../networking/ssl-https.html">SSL/HTTPS</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Security</h3><ul class="sidebar-links">
+        <li><a href="../security/">Overview</a></li>
+        <li><a href="../security/irsa.html">IRSA</a></li>
+        <li><a href="../security/waf.html">WAF Protection</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Operations</h3><ul class="sidebar-links">
+        <li><a href="../operations/">Overview</a></li>
+        <li><a href="../operations/ci-cd.html">CI/CD Pipeline</a></li>
+        <li><a href="../operations/scaling.html">Autoscaling</a></li>
+        <li><a href="../operations/monitoring.html">Monitoring</a></li>
+      </ul></div>
+    </nav></aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs"><ol>
+          <li><a href="../../../">Home</a></li><li><a href="../../">App Deploy</a></li>
+          <li><a href="../">AWS</a></li><li><a href="./">Foundation</a></li>
+          <li aria-current="page">Permissions &amp; Security Groups</li>
+        </ol></nav>
+        <header class="article-header">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
+            <h1 style="margin:0;">Permissions &amp; Security Groups</h1>
+            <span class="provider-badge provider-badge-aws">AWS</span>
+          </div>
+          <p class="text-secondary text-lg">Every IAM policy, EKS access entry, and security group rule this guide depends on - in one place.</p>
+        </header>
+        <div class="article-body">
+
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Read this before you run a single command</div>
+            <p>On AWS, access is enforced in four independent layers: IAM decides what your identity may call, service control policies can override IAM at the organization level, security groups decide what traffic may flow, and EKS access entries decide who <code>kubectl</code> will listen to. A deployment fails if any one of them says no, and the error rarely tells you which one.</p>
+          </div>
+
+          <h2>Six Identities, Six Permission Sets</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Identity</th><th>What it is</th><th>Used for</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Deployer</strong></td><td>Your IAM user or SSO role</td><td>Creating the VPC, cluster, RDS instance, and IAM roles</td></tr>
+                <tr><td><strong>CI/CD role</strong></td><td>IAM role assumed by GitHub Actions via OIDC</td><td>Pushing to ECR and rolling out Deployments</td></tr>
+                <tr><td><strong>Cluster role</strong></td><td><code>eksClusterRole</code>, assumed by the EKS service</td><td>Managing ENIs and load balancers on your behalf</td></tr>
+                <tr><td><strong>Node role</strong></td><td><code>eksNodeRole</code>, attached to the node instance profile</td><td>Joining the cluster, pulling images, CNI address management</td></tr>
+                <tr><td><strong>Add-on roles</strong></td><td>IRSA roles for the load balancer controller, EBS CSI, autoscaler</td><td>Letting controllers call AWS APIs from inside the cluster</td></tr>
+                <tr><td><strong>Application role</strong></td><td>IRSA role bound to your app's service account</td><td>Runtime access to S3, Secrets Manager, and RDS IAM auth</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>1. Deployer Permissions</h2>
+          <p>The <a href="./account-setup.html">Account Setup</a> page attaches <code>AdministratorAccess</code> to get you moving. That is fine for a sandbox account and unacceptable in a shared one. Here is what the deployer actually needs.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Service</th><th>Actions needed</th><th>Used by</th></tr></thead>
+              <tbody>
+                <tr><td>EKS</td><td><code>eks:*</code></td><td>Cluster, node group, add-on, and access entry management</td></tr>
+                <tr><td>EC2</td><td><code>ec2:*</code> on VPC, subnet, security group, NAT, ENI, launch template</td><td>VPC build and node group networking</td></tr>
+                <tr><td>IAM</td><td><code>iam:CreateRole</code>, <code>AttachRolePolicy</code>, <code>PutRolePolicy</code>, <code>CreateOpenIDConnectProvider</code>, <code>PassRole</code>, <code>CreateServiceLinkedRole</code></td><td>Cluster, node, and IRSA roles</td></tr>
+                <tr><td>RDS</td><td><code>rds:*</code></td><td>Database instance, subnet group, parameter group</td></tr>
+                <tr><td>ECR</td><td><code>ecr:*</code></td><td>Repository creation and image push</td></tr>
+                <tr><td>ELB</td><td><code>elasticloadbalancing:*</code></td><td>ALB provisioned by the ingress controller</td></tr>
+                <tr><td>ACM</td><td><code>acm:RequestCertificate</code>, <code>DescribeCertificate</code>, <code>ListCertificates</code></td><td>TLS certificates for HTTPS</td></tr>
+                <tr><td>Route 53</td><td><code>route53:ChangeResourceRecordSets</code>, <code>ListHostedZones</code></td><td>DNS validation and app records</td></tr>
+                <tr><td>Secrets Manager</td><td><code>secretsmanager:*</code></td><td>Database credentials</td></tr>
+                <tr><td>KMS</td><td><code>kms:CreateKey</code>, <code>CreateGrant</code>, <code>Decrypt</code>, <code>DescribeKey</code></td><td>EKS secrets envelope encryption, EBS and RDS encryption</td></tr>
+                <tr><td>CloudWatch</td><td><code>logs:*</code>, <code>cloudwatch:PutMetricAlarm</code></td><td>Control plane logs, Container Insights, alarms</td></tr>
+                <tr><td>WAF</td><td><code>wafv2:*</code></td><td>Web ACL on the ALB</td></tr>
+                <tr><td>Auto Scaling</td><td><code>autoscaling:*</code></td><td>Managed node group scaling</td></tr>
+                <tr><td>S3</td><td><code>s3:*</code> on your buckets</td><td>Terraform state and application object storage</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">iam:PassRole is the one people forget</div>
+            <p>Creating a cluster or node group means handing an existing IAM role to another AWS service. Without <code>iam:PassRole</code> for that specific role ARN, <code>eksctl</code> and Terraform fail with an authorization error that names the caller rather than the missing action. Scope it to the role ARNs you created, never to <code>*</code>.</p>
+          </div>
+          <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PassClusterAndNodeRoles",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": [
+        "arn:aws:iam::123456789012:role/eksClusterRole",
+        "arn:aws:iam::123456789012:role/eksNodeRole"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "eks.amazonaws.com",
+            "ec2.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyIamOutsideThisProject",
+      "Effect": "Deny",
+      "Action": ["iam:CreateUser", "iam:CreateAccessKey", "iam:DeleteRole"],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+
+          <h3>Prefer OIDC Over Long-Lived Keys</h3>
+          <p>Access keys in GitHub secrets are the most common credential leak in this whole pipeline. Federate instead - GitHub presents an OIDC token, AWS returns short-lived credentials, and there is nothing to rotate or leak.</p>
+          <pre><code># Trust policy for the GitHub Actions deploy role
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {
+      "Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+    },
+    "Action": "sts:AssumeRoleWithWebIdentity",
+    "Condition": {
+      "StringEquals": {
+        "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+      },
+      "StringLike": {
+        "token.actions.githubusercontent.com:sub": "repo:my-org/my-repo:ref:refs/heads/main"
+      }
+    }
+  }]
+}</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Pin the sub condition</div>
+            <p>A trust policy with <code>sub</code> set to <code>repo:my-org/*</code> lets any branch in any repository in your organization assume the role - including a branch opened by a fork-based pull request. Pin it to the exact repository and ref, or to <code>environment:production</code> and require an approval on that environment.</p>
+          </div>
+
+          <h2>2. Cluster and Node Roles</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Role</th><th>Managed policy</th><th>Why</th></tr></thead>
+              <tbody>
+                <tr><td rowspan="2"><code>eksClusterRole</code></td><td><code>AmazonEKSClusterPolicy</code></td><td>Control plane manages ENIs, ELBs, and security groups</td></tr>
+                <tr><td><code>AmazonEKSVPCResourceController</code></td><td>Security groups for pods, Windows node support</td></tr>
+                <tr><td rowspan="4"><code>eksNodeRole</code></td><td><code>AmazonEKSWorkerNodePolicy</code></td><td>Node registration with the control plane</td></tr>
+                <tr><td><code>AmazonEKS_CNI_Policy</code></td><td>VPC CNI assigns pod IP addresses</td></tr>
+                <tr><td><code>AmazonEC2ContainerRegistryReadOnly</code></td><td>Pull images from ECR</td></tr>
+                <tr><td><code>AmazonSSMManagedInstanceCore</code></td><td>Session Manager access without opening port 22</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Move the CNI policy to IRSA</div>
+            <p><code>AmazonEKS_CNI_Policy</code> on the node role means every pod on the node can reach those EC2 APIs through the instance metadata endpoint. Attach it to an IRSA role for the <code>aws-node</code> service account instead, and set the metadata hop limit to 1 so pods cannot reach IMDS at all.</p>
+          </div>
+
+          <h2>3. Add-On Permissions (IRSA)</h2>
+          <p>Each controller you install needs its own IAM role bound to its service account. Skipping any of these produces a controller that starts cleanly and then silently does nothing.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Controller</th><th>Service account</th><th>Policy</th><th>Symptom if missing</th></tr></thead>
+              <tbody>
+                <tr><td>AWS Load Balancer Controller</td><td><code>kube-system/aws-load-balancer-controller</code></td><td>Custom <code>iam_policy.json</code> from the project</td><td>Ingress never gets an ADDRESS</td></tr>
+                <tr><td>EBS CSI Driver</td><td><code>kube-system/ebs-csi-controller-sa</code></td><td><code>AmazonEBSCSIDriverPolicy</code></td><td>PVCs stay <code>Pending</code></td></tr>
+                <tr><td>Cluster Autoscaler</td><td><code>kube-system/cluster-autoscaler</code></td><td><code>autoscaling:DescribeAutoScalingGroups</code>, <code>SetDesiredCapacity</code>, <code>TerminateInstanceInAutoScalingGroup</code></td><td>Pods stay <code>Unschedulable</code>, no scale-out</td></tr>
+                <tr><td>ExternalDNS</td><td><code>kube-system/external-dns</code></td><td><code>route53:ChangeResourceRecordSets</code>, <code>ListHostedZones</code>, <code>ListResourceRecordSets</code></td><td>DNS records never appear</td></tr>
+                <tr><td>Secrets Store CSI</td><td><code>app/app-sa</code></td><td><code>secretsmanager:GetSecretValue</code>, <code>kms:Decrypt</code></td><td>Pod stuck in <code>ContainerCreating</code> on mount</td></tr>
+                <tr><td>CloudWatch agent / Fluent Bit</td><td><code>amazon-cloudwatch/cloudwatch-agent</code></td><td><code>CloudWatchAgentServerPolicy</code></td><td>No container logs or Container Insights metrics</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># The OIDC provider must exist before any IRSA role will work
+eksctl utils associate-iam-oidc-provider \
+  --cluster myapp-cluster --region us-east-1 --approve
+
+# Verify it registered
+aws eks describe-cluster --name myapp-cluster \
+  --query "cluster.identity.oidc.issuer" --output text
+
+# Create an IRSA role for the load balancer controller
+eksctl create iamserviceaccount \
+  --cluster myapp-cluster \
+  --namespace kube-system \
+  --name aws-load-balancer-controller \
+  --attach-policy-arn arn:aws:iam::123456789012:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve</code></pre>
+
+          <h2>4. Who Can Run kubectl - EKS Access Entries</h2>
+          <div class="callout callout-danger">
+            <div class="callout-title">IAM alone does not get you into the cluster</div>
+            <p>The identity that created the cluster is the only one with in-cluster admin by default. A colleague holding <code>AdministratorAccess</code> still gets <code>error: You must be logged in to the server (Unauthorized)</code>. You have to map their IAM principal into Kubernetes explicitly. This trips up nearly every team on their first EKS cluster.</p>
+          </div>
+
+          <h3>Access Entries (Current Approach)</h3>
+          <p>EKS clusters running the <code>API</code> or <code>API_AND_CONFIG_MAP</code> authentication mode use the access entry API. This is the approach to use for anything new - it is auditable through CloudTrail and cannot be corrupted by a bad ConfigMap edit.</p>
+          <pre><code># Confirm which authentication mode the cluster uses
+aws eks describe-cluster --name myapp-cluster \
+  --query "cluster.accessConfig.authenticationMode" --output text
+
+# Give a platform engineer cluster admin
+aws eks create-access-entry \
+  --cluster-name myapp-cluster \
+  --principal-arn arn:aws:iam::123456789012:role/PlatformEngineer \
+  --type STANDARD
+
+aws eks associate-access-policy \
+  --cluster-name myapp-cluster \
+  --principal-arn arn:aws:iam::123456789012:role/PlatformEngineer \
+  --access-scope type=cluster \
+  --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy
+
+# Give the CI/CD role edit rights on one namespace only
+aws eks create-access-entry \
+  --cluster-name myapp-cluster \
+  --principal-arn arn:aws:iam::123456789012:role/GitHubActionsDeploy \
+  --type STANDARD
+
+aws eks associate-access-policy \
+  --cluster-name myapp-cluster \
+  --principal-arn arn:aws:iam::123456789012:role/GitHubActionsDeploy \
+  --access-scope type=namespace,namespaces=app \
+  --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy
+
+# Audit who has access
+aws eks list-access-entries --cluster-name myapp-cluster</code></pre>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Access policy</th><th>Grants</th><th>Give it to</th></tr></thead>
+              <tbody>
+                <tr><td><code>AmazonEKSClusterAdminPolicy</code></td><td>Full <code>cluster-admin</code></td><td>Platform engineers, break-glass only</td></tr>
+                <tr><td><code>AmazonEKSAdminPolicy</code></td><td>Admin within a namespace</td><td>Team leads owning a namespace</td></tr>
+                <tr><td><code>AmazonEKSEditPolicy</code></td><td>Create and update workloads</td><td>CI/CD deploy roles, developers</td></tr>
+                <tr><td><code>AmazonEKSViewPolicy</code></td><td>Read-only</td><td>Support, on-call, auditors</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>aws-auth ConfigMap (Legacy Clusters)</h3>
+          <p>Clusters still in <code>CONFIG_MAP</code> mode map principals through a ConfigMap in <code>kube-system</code>. Edit it carefully - a malformed entry locks everyone out, and there is no undo.</p>
+          <pre><code>kubectl edit configmap aws-auth -n kube-system</code></pre>
+          <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  # Do not remove this entry - nodes will stop joining the cluster
+  mapRoles: |
+    - rolearn: arn:aws:iam::123456789012:role/eksNodeRole
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes
+    - rolearn: arn:aws:iam::123456789012:role/GitHubActionsDeploy
+      username: github-actions
+      groups:
+        - app-deployers
+  mapUsers: |
+    - userarn: arn:aws:iam::123456789012:user/alice
+      username: alice
+      groups:
+        - system:masters</code></pre>
+          <pre><code># Back it up before every edit
+kubectl get configmap aws-auth -n kube-system -o yaml &gt; aws-auth-backup.yaml
+
+# Bind the custom group to real Kubernetes permissions
+kubectl create rolebinding app-deployers-edit \
+  --clusterrole=edit --group=app-deployers --namespace=app
+
+# Verify from the caller's perspective
+aws sts get-caller-identity
+kubectl auth can-i --list --namespace=app</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Migrating off aws-auth</div>
+            <p>Switch to <code>API_AND_CONFIG_MAP</code> first, recreate every mapping as an access entry, confirm each principal still works, and only then move to <code>API</code>. The switch is one-way - you cannot go back to <code>CONFIG_MAP</code>.</p>
+          </div>
+
+          <h2>5. Security Group Rules Required</h2>
+          <p>Security groups are stateful, so a rule allowing inbound traffic automatically permits the response. Reference other security groups by ID rather than by CIDR - the rule then follows the resources as they scale and stays correct when subnet ranges change.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Security group</th><th>Direction</th><th>Source or destination</th><th>Port</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td rowspan="3"><code>alb-sg</code></td><td>Inbound</td><td><code>0.0.0.0/0</code></td><td>443</td><td>Public HTTPS</td></tr>
+                <tr><td>Inbound</td><td><code>0.0.0.0/0</code></td><td>80</td><td>HTTP, redirected to HTTPS at the listener</td></tr>
+                <tr><td>Outbound</td><td><code>node-sg</code></td><td>1025-65535</td><td>Forward to node ports and pod targets</td></tr>
+                <tr><td rowspan="5"><code>node-sg</code> (cluster security group)</td><td>Inbound</td><td><code>alb-sg</code></td><td>1025-65535</td><td>Traffic from the load balancer</td></tr>
+                <tr><td>Inbound</td><td><code>node-sg</code> (itself)</td><td>all</td><td>Pod-to-pod, CoreDNS on 53 TCP and UDP</td></tr>
+                <tr><td>Inbound</td><td><code>control-plane-sg</code></td><td>10250</td><td>API server to kubelet - logs and exec</td></tr>
+                <tr><td>Inbound</td><td><code>control-plane-sg</code></td><td>443, 8443, 9443</td><td>Admission and conversion webhooks</td></tr>
+                <tr><td>Outbound</td><td><code>0.0.0.0/0</code></td><td>443</td><td>ECR, STS, and AWS APIs - or restrict to VPC endpoints</td></tr>
+                <tr><td rowspan="2"><code>control-plane-sg</code></td><td>Inbound</td><td><code>node-sg</code></td><td>443</td><td>kubelet to API server</td></tr>
+                <tr><td>Outbound</td><td><code>node-sg</code></td><td>10250, 443, 8443, 9443</td><td>API server to kubelet and webhooks</td></tr>
+                <tr><td><code>rds-sg</code></td><td>Inbound</td><td><code>node-sg</code> only</td><td>1433 (SQL Server) or 5432 (PostgreSQL)</td><td>Application to database</td></tr>
+                <tr><td><code>redis-sg</code></td><td>Inbound</td><td><code>node-sg</code> only</td><td>6379</td><td>ElastiCache</td></tr>
+                <tr><td><code>vpce-sg</code></td><td>Inbound</td><td><code>node-sg</code></td><td>443</td><td>Interface VPC endpoints</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">Never put 0.0.0.0/0 on the database security group</div>
+            <p>An RDS instance in a public subnet with an open security group is discoverable by internet-wide scanners within minutes. The database security group should reference <code>node-sg</code> and nothing else - no CIDR blocks, no office IP ranges, no bastion exceptions. Use Session Manager port forwarding when a human needs a shell.</p>
+          </div>
+
+          <h3>Terraform</h3>
+          <pre><code># The EKS cluster security group, created by the module
+data "aws_eks_cluster" "this" {
+  name = module.eks.cluster_name
+}
+
+locals {
+  node_sg_id = module.eks.node_security_group_id
+}
+
+# ALB security group
+resource "aws_security_group" "alb" {
+  name        = "myapp-alb-sg"
+  description = "Public ingress to the application load balancer"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "HTTPS from the internet"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP, redirected to HTTPS"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description     = "Forward to node targets"
+    from_port       = 1025
+    to_port         = 65535
+    protocol        = "tcp"
+    security_groups = [local.node_sg_id]
+  }
+}
+
+# Let the ALB reach the nodes
+resource "aws_security_group_rule" "nodes_from_alb" {
+  description              = "ALB to node targets"
+  type                     = "ingress"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  security_group_id        = local.node_sg_id
+  source_security_group_id = aws_security_group.alb.id
+}
+
+# Database reachable only from the nodes
+resource "aws_security_group" "rds" {
+  name        = "myapp-rds-sg"
+  description = "Database access restricted to EKS nodes"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description     = "SQL Server from EKS nodes only"
+    from_port       = 1433
+    to_port         = 1433
+    protocol        = "tcp"
+    security_groups = [local.node_sg_id]
+  }
+}
+
+# Admission webhooks from the control plane
+resource "aws_security_group_rule" "nodes_webhooks_from_control_plane" {
+  description              = "Control plane to admission webhooks"
+  type                     = "ingress"
+  from_port                = 8443
+  to_port                  = 9443
+  protocol                 = "tcp"
+  security_group_id        = local.node_sg_id
+  source_security_group_id = module.eks.cluster_security_group_id
+}</code></pre>
+
+          <h3>Network ACLs</h3>
+          <p>NACLs are stateless and evaluated per subnet before security groups. The default NACL allows everything, which is usually correct. If your organization replaces it with a restrictive one, remember that <strong>return traffic needs its own rule</strong> - allow inbound on ephemeral ports <code>1024-65535</code>, or every outbound connection will hang instead of failing fast.</p>
+
+          <h2>6. VPC Endpoints for Private Clusters</h2>
+          <p>If nodes have no NAT gateway or your egress is locked down, these endpoints are mandatory. Without them nodes cannot pull images or fetch credentials, and they fail during bootstrap with timeouts rather than access errors.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Endpoint</th><th>Type</th><th>Needed for</th></tr></thead>
+              <tbody>
+                <tr><td><code>com.amazonaws.REGION.ecr.api</code></td><td>Interface</td><td>ECR authorization</td></tr>
+                <tr><td><code>com.amazonaws.REGION.ecr.dkr</code></td><td>Interface</td><td>Image layer pulls</td></tr>
+                <tr><td><code>com.amazonaws.REGION.s3</code></td><td>Gateway</td><td>ECR layers live in S3 - free, always add it</td></tr>
+                <tr><td><code>com.amazonaws.REGION.sts</code></td><td>Interface</td><td>IRSA token exchange</td></tr>
+                <tr><td><code>com.amazonaws.REGION.ec2</code></td><td>Interface</td><td>VPC CNI address management</td></tr>
+                <tr><td><code>com.amazonaws.REGION.logs</code></td><td>Interface</td><td>CloudWatch Logs</td></tr>
+                <tr><td><code>com.amazonaws.REGION.elasticloadbalancing</code></td><td>Interface</td><td>Load balancer controller</td></tr>
+                <tr><td><code>com.amazonaws.REGION.autoscaling</code></td><td>Interface</td><td>Cluster Autoscaler</td></tr>
+                <tr><td><code>com.amazonaws.REGION.secretsmanager</code></td><td>Interface</td><td>Secrets Store CSI driver</td></tr>
+                <tr><td><code>com.amazonaws.REGION.ssm</code>, <code>ssmmessages</code>, <code>ec2messages</code></td><td>Interface</td><td>Session Manager shell access</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Interface endpoints are not free</div>
+            <p>Each interface endpoint costs roughly $7 per AZ per month plus data processing. Ten endpoints across three AZs is around $220 a month - often more than the NAT gateway it replaces. Choose based on your security requirement, not on cost alone, and always take the free S3 gateway endpoint.</p>
+          </div>
+
+          <h2>7. Pod-Level Network Policy</h2>
+          <p>Security groups control traffic at the ENI. Inside the cluster, pod-to-pod traffic is unrestricted until you install a policy engine. The VPC CNI supports NetworkPolicy natively from version 1.14.</p>
+          <pre><code># Enable NetworkPolicy in the VPC CNI add-on
+aws eks update-addon --cluster-name myapp-cluster \
+  --addon-name vpc-cni \
+  --configuration-values '{"enableNetworkPolicy":"true"}'</code></pre>
+          <pre><code># k8s/security/default-deny.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: app
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-api
+  namespace: app
+spec:
+  podSelector:
+    matchLabels: { app: dotnet-api }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { app: react-frontend }
+      ports:
+        - protocol: TCP
+          port: 8080</code></pre>
+
+          <h2>8. Organization Guardrails</h2>
+          <p>Service control policies apply to every principal in the account including the root user, and they are evaluated before IAM. If an SCP denies an action, no IAM policy can restore it.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Common SCP</th><th>Effect on this guide</th><th>How to proceed</th></tr></thead>
+              <tbody>
+                <tr><td>Region restriction</td><td>Cluster creation denied outside approved regions</td><td>Set your region to an approved one before starting</td></tr>
+                <tr><td>Deny public S3 buckets</td><td>Bucket ACL and public policy calls fail</td><td>Already compatible - serve assets through CloudFront with OAC</td></tr>
+                <tr><td>Require EBS encryption</td><td>Unencrypted volume creation denied</td><td>Set <code>encrypted = true</code> on the node group launch template</td></tr>
+                <tr><td>Deny IAM user creation</td><td><code>aws iam create-user</code> fails</td><td>Use IAM Identity Center and OIDC federation instead</td></tr>
+                <tr><td>Deny internet gateway changes</td><td>VPC module cannot create the IGW</td><td>Ask the network team to provision the VPC and pass in the IDs</td></tr>
+                <tr><td>Require resource tags</td><td>Untagged resource creation denied</td><td>Set <code>default_tags</code> in the AWS Terraform provider block</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>9. Pre-Flight Verification</h2>
+          <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+CLUSTER="${CLUSTER:-myapp-cluster}"
+REGION="${AWS_REGION:-us-east-1}"
+
+echo "== Caller identity =="
+aws sts get-caller-identity
+
+echo "== Can the deployer perform the key actions? =="
+PRINCIPAL=$(aws sts get-caller-identity --query Arn --output text)
+aws iam simulate-principal-policy \
+  --policy-source-arn "$PRINCIPAL" \
+  --action-names eks:CreateCluster ec2:CreateVpc iam:CreateRole \
+                 iam:PassRole rds:CreateDBInstance ecr:CreateRepository \
+  --query "EvaluationResults[].{Action:EvalActionName,Decision:EvalDecision}" \
+  --output table
+
+echo "== OIDC provider for IRSA =="
+aws eks describe-cluster --name "$CLUSTER" --region "$REGION" \
+  --query "cluster.identity.oidc.issuer" --output text
+
+echo "== Who can reach the cluster =="
+aws eks list-access-entries --cluster-name "$CLUSTER" --region "$REGION"
+
+echo "== Security groups on the cluster =="
+aws ec2 describe-security-groups --region "$REGION" \
+  --filters "Name=tag:kubernetes.io/cluster/${CLUSTER},Values=owned" \
+  --query "SecurityGroups[].{Name:GroupName,Id:GroupId}" --output table
+
+echo "== Anything open to the world on a database port? =="
+aws ec2 describe-security-groups --region "$REGION" \
+  --query "SecurityGroups[?IpPermissions[?contains(to_string(IpRanges[].CidrIp), '0.0.0.0/0') \
+           && (FromPort==\`1433\` || FromPort==\`5432\` || FromPort==\`3306\`)]].GroupId" \
+  --output text</code></pre>
+
+          <h2>10. Error Message to Root Cause</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>error: You must be logged in to the server (Unauthorized)</code></td><td>IAM principal not mapped into the cluster</td><td>Create an access entry, or add an <code>aws-auth</code> mapping</td></tr>
+                <tr><td><code>is not authorized to perform: iam:PassRole</code></td><td>Deployer cannot hand the role to EKS or EC2</td><td>Add <code>iam:PassRole</code> scoped to the cluster and node role ARNs</td></tr>
+                <tr><td>Nodes stay <code>NotReady</code> or never appear</td><td>Node role missing a managed policy, or <code>aws-auth</code> node entry deleted</td><td>Verify all four node policies and the <code>mapRoles</code> node entry</td></tr>
+                <tr><td>Ingress has no <code>ADDRESS</code> after several minutes</td><td>Load balancer controller lacks IRSA, or subnets are untagged</td><td>Check controller logs; confirm <code>kubernetes.io/role/elb</code> tags</td></tr>
+                <tr><td>ALB targets show <code>unhealthy</code></td><td>Node security group does not allow the ALB security group</td><td>Add the ingress rule referencing <code>alb-sg</code></td></tr>
+                <tr><td>App times out connecting to RDS</td><td>Database security group does not reference <code>node-sg</code></td><td>Add the inbound rule for port 1433 or 5432 from <code>node-sg</code></td></tr>
+                <tr><td>PVC stuck <code>Pending</code></td><td>EBS CSI driver missing its IRSA role</td><td>Attach <code>AmazonEBSCSIDriverPolicy</code> to the driver service account</td></tr>
+                <tr><td><code>ImagePullBackOff</code> with <code>no basic auth credentials</code></td><td>Node role lacks ECR read, or the ECR endpoint is unreachable</td><td>Attach <code>AmazonEC2ContainerRegistryReadOnly</code>; add ECR and S3 endpoints</td></tr>
+                <tr><td><code>WebIdentityErr: failed to retrieve credentials</code></td><td>OIDC provider not associated, or the trust policy <code>sub</code> does not match</td><td>Re-run <code>associate-iam-oidc-provider</code>; check the annotation on the service account</td></tr>
+                <tr><td><code>failed calling webhook ... connection refused</code></td><td>Control plane cannot reach webhook ports on nodes</td><td>Allow 8443 and 9443 from the control plane security group</td></tr>
+                <tr><td><code>AccessDenied</code> that no IAM change fixes</td><td>A service control policy is denying it</td><td>Check the organization SCPs on this account</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-title">Same problem, other clouds</div>
+            <p>The equivalent pages are <a href="../../foundation/permissions.html">GCP - Permissions &amp; Firewall Rules</a> and <a href="../../azure/foundation/permissions.html">Azure - Permissions &amp; NSG Rules</a>.</p>
+          </div>
+        </div>
+        <nav class="page-navigation">
+          <a href="./networking.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">VPC &amp; Networking</span></a>
+          <a href="../infrastructure/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Infrastructure</span></a>
+        </nav>
+      </article>
+    </main>
+  </div>
+  <footer class="site-footer"><div class="footer-container"><p class="copyright">CloudDevOps</p></div></footer>
+  <script src="../../../assets/js/navigation.js" defer></script>
+  <script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

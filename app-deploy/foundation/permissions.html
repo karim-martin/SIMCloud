@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Every IAM role, org policy, firewall rule, and cluster access setting required to complete the GCP GKE deployment guide end to end.">
+  <title>Permissions &amp; Firewall Rules | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo"><img src="../../assets/images/logo.svg" alt=""><span>CloudDevOps</span></a>
+      <nav class="main-nav">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link active">App Deploy</a>
+        <a href="../../programming/" class="nav-link">Programming</a>
+      </nav>
+      <div class="header-actions"><button class="mobile-menu-toggle" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button></div>
+    </div>
+  </header>
+  <div class="sidebar-overlay"></div>
+  <div class="page-wrapper">
+    <aside class="sidebar"><nav class="sidebar-nav">
+      <div class="sidebar-section"><h3 class="sidebar-section-title">App Deploy</h3><ul class="sidebar-links">
+        <li><a href="../">Overview</a></li>
+        <li><a href="../prerequisites.html">Prerequisites</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
+        <li><a href="./">Overview</a></li>
+        <li><a href="./project-setup.html">Project Setup</a></li>
+        <li><a href="./networking.html">Networking</a></li>
+        <li><a href="./permissions.html" class="active">Permissions &amp; Firewall</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
+        <li><a href="../infrastructure/">Overview</a></li>
+        <li><a href="../infrastructure/gke-cluster.html">GKE Cluster</a></li>
+        <li><a href="../infrastructure/cloud-sql.html">Cloud SQL</a></li>
+        <li><a href="../infrastructure/storage.html">Storage</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Deployment</h3><ul class="sidebar-links">
+        <li><a href="../deployment/">Overview</a></li>
+        <li><a href="../deployment/containerize.html">Containerize</a></li>
+        <li><a href="../deployment/react-frontend.html">React Frontend</a></li>
+        <li><a href="../deployment/dotnet-backend.html">.NET Backend</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Networking</h3><ul class="sidebar-links">
+        <li><a href="../networking/">Overview</a></li>
+        <li><a href="../networking/ingress.html">Ingress</a></li>
+        <li><a href="../networking/ssl-https.html">SSL/HTTPS</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Security</h3><ul class="sidebar-links">
+        <li><a href="../security/">Overview</a></li>
+        <li><a href="../security/workload-identity.html">Workload Identity</a></li>
+        <li><a href="../security/cloud-armor-iap.html">Cloud Armor &amp; IAP</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Operations</h3><ul class="sidebar-links">
+        <li><a href="../operations/">Overview</a></li>
+        <li><a href="../operations/ci-cd.html">CI/CD</a></li>
+        <li><a href="../operations/scaling.html">Scaling</a></li>
+        <li><a href="../operations/monitoring.html">Monitoring</a></li>
+      </ul></div>
+    </nav></aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs"><ol>
+          <li><a href="../../">Home</a></li><li><a href="../">App Deploy</a></li>
+          <li><a href="./">Foundation</a></li>
+          <li aria-current="page">Permissions &amp; Firewall</li>
+        </ol></nav>
+        <header class="article-header">
+          <h1>Permissions &amp; Firewall Rules</h1>
+          <p class="text-secondary text-lg">Every IAM role, organization policy, firewall rule, and cluster access setting this guide depends on - in one place.</p>
+        </header>
+        <div class="article-body">
+
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Read this before you run a single command</div>
+            <p>Most failed cloud deployments are not code problems. They are access problems: a missing IAM role, an organization policy that blocks the resource, or a firewall rule nobody opened. This page lists what has to be granted, by whom, and how to prove it worked before you get halfway through the build.</p>
+          </div>
+
+          <h2>Four Identities, Four Permission Sets</h2>
+          <p>The guide involves four distinct identities. Confusing them is the single most common source of "permission denied". Grant each one only what it needs.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Identity</th><th>Who or what it is</th><th>Used for</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Operator</strong></td><td>You, signed in with <code>gcloud auth login</code></td><td>Creating the project, VPC, cluster, database, and IAM bindings</td></tr>
+                <tr><td><strong>CI/CD service account</strong></td><td><code>github-actions-sa</code> (or a Workload Identity Federation principal)</td><td>Building images, pushing to Artifact Registry, rolling out Deployments</td></tr>
+                <tr><td><strong>Workload service account</strong></td><td><code>app-workload-sa</code>, bound to a Kubernetes SA</td><td>Runtime access to Cloud SQL, Cloud Storage, Secret Manager</td></tr>
+                <tr><td><strong>Node service account</strong></td><td>GKE node pool identity</td><td>Pulling images, writing logs and metrics from the node</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>1. Operator Roles Required</h2>
+          <p>These are the roles <em>you</em> need to complete the guide. In a personal sandbox project, <code>roles/owner</code> covers all of them. In a corporate environment you will usually be granted a subset, so check this list against what you actually have before you start - it is much cheaper to request access up front than to fail on step 40.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Role</th><th>Granted at</th><th>Needed for</th></tr></thead>
+              <tbody>
+                <tr><td><code>roles/resourcemanager.projectCreator</code></td><td>Organization / folder</td><td><code>gcloud projects create</code></td></tr>
+                <tr><td><code>roles/billing.user</code></td><td>Billing account</td><td>Linking billing to the project</td></tr>
+                <tr><td><code>roles/serviceusage.serviceUsageAdmin</code></td><td>Project</td><td><code>gcloud services enable</code></td></tr>
+                <tr><td><code>roles/compute.networkAdmin</code></td><td>Project</td><td>VPC, subnets, Cloud Router, Cloud NAT, IP ranges</td></tr>
+                <tr><td><code>roles/compute.securityAdmin</code></td><td>Project</td><td>Firewall rules, SSL policies, Cloud Armor policies</td></tr>
+                <tr><td><code>roles/servicenetworking.networksAdmin</code></td><td>Project</td><td>VPC peering for Cloud SQL private IP</td></tr>
+                <tr><td><code>roles/container.admin</code></td><td>Project</td><td>Creating and upgrading the GKE cluster</td></tr>
+                <tr><td><code>roles/cloudsql.admin</code></td><td>Project</td><td>Creating the Cloud SQL instance and databases</td></tr>
+                <tr><td><code>roles/storage.admin</code></td><td>Project</td><td>Creating buckets, setting bucket IAM</td></tr>
+                <tr><td><code>roles/artifactregistry.admin</code></td><td>Project</td><td>Creating the Docker repository</td></tr>
+                <tr><td><code>roles/iam.serviceAccountAdmin</code></td><td>Project</td><td>Creating the workload and CI/CD service accounts</td></tr>
+                <tr><td><code>roles/resourcemanager.projectIamAdmin</code></td><td>Project</td><td>Running <code>add-iam-policy-binding</code></td></tr>
+                <tr><td><code>roles/iam.workloadIdentityPoolAdmin</code></td><td>Project</td><td>Keyless GitHub Actions authentication</td></tr>
+                <tr><td><code>roles/dns.admin</code></td><td>Project</td><td>Cloud DNS records for your domain (optional)</td></tr>
+                <tr><td><code>roles/secretmanager.admin</code></td><td>Project</td><td>Creating secrets for connection strings</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Grant Them</h3>
+          <pre><code># Grant an operator the roles needed for this guide
+export PROJECT_ID="my-app-project"
+export OPERATOR="user:you@example.com"
+
+for ROLE in \
+  roles/serviceusage.serviceUsageAdmin \
+  roles/compute.networkAdmin \
+  roles/compute.securityAdmin \
+  roles/servicenetworking.networksAdmin \
+  roles/container.admin \
+  roles/cloudsql.admin \
+  roles/storage.admin \
+  roles/artifactregistry.admin \
+  roles/iam.serviceAccountAdmin \
+  roles/resourcemanager.projectIamAdmin \
+  roles/iam.workloadIdentityPoolAdmin \
+  roles/secretmanager.admin
+do
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="$OPERATOR" --role="$ROLE" --condition=None
+done</code></pre>
+
+          <h3>Check What You Actually Have</h3>
+          <pre><code># List every role bound to your account on this project
+gcloud projects get-iam-policy "$PROJECT_ID" \
+  --flatten="bindings[].members" \
+  --filter="bindings.members:you@example.com" \
+  --format="value(bindings.role)"
+
+# Test a specific permission without needing to run the real command
+gcloud projects test-iam-permissions "$PROJECT_ID" \
+  --permissions=container.clusters.create,compute.firewalls.create,iam.serviceAccounts.create</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Ask for the right thing</div>
+            <p>When you request access from a platform team, send them the table above rather than asking for "admin". A named list of roles scoped to one project is approved far more often than a blanket request, and it survives an audit.</p>
+          </div>
+
+          <h2>2. Organization Policies That Can Block You</h2>
+          <p>Organization policy constraints are inherited from the org or folder and override project-level IAM. You can hold every role in the table above and still be denied. Check these first in any corporate project.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Constraint</th><th>Effect if enforced</th><th>How this guide adapts</th></tr></thead>
+              <tbody>
+                <tr><td><code>constraints/compute.vmExternalIpAccess</code></td><td>Nodes cannot get public IPs</td><td>Already compatible - the guide uses private nodes plus Cloud NAT</td></tr>
+                <tr><td><code>constraints/sql.restrictPublicIp</code></td><td>Cloud SQL public IP is denied</td><td>Already compatible - the guide uses private IP over VPC peering</td></tr>
+                <tr><td><code>constraints/iam.disableServiceAccountKeyCreation</code></td><td>No JSON key files</td><td>Already compatible - use Workload Identity and Workload Identity Federation</td></tr>
+                <tr><td><code>constraints/compute.requireShieldedVm</code></td><td>Node pools must enable Shielded VM</td><td>Add <code>--shielded-secure-boot --shielded-integrity-monitoring</code> to the node pool</td></tr>
+                <tr><td><code>constraints/iam.allowedPolicyMemberDomains</code></td><td>Cannot grant to members outside your domain</td><td>Blocks <code>allUsers</code> on buckets - serve public assets through the load balancer instead</td></tr>
+                <tr><td><code>constraints/gcp.resourceLocations</code></td><td>Resources restricted to approved regions</td><td>Set <code>REGION</code> to an approved region before starting</td></tr>
+                <tr><td><code>constraints/compute.restrictVpcPeering</code></td><td>VPC peering denied</td><td>Blocks Cloud SQL private IP - use Private Service Connect or request an exception</td></tr>
+                <tr><td><code>constraints/container.restrictNoncompliantDiagnosticDataAccess</code></td><td>Restricts cluster diagnostic uploads</td><td>No change needed for this guide</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># List the effective organization policies on your project
+gcloud resource-manager org-policies list --project="$PROJECT_ID"
+
+# Inspect one constraint in detail
+gcloud resource-manager org-policies describe \
+  constraints/compute.vmExternalIpAccess --project="$PROJECT_ID" --effective</code></pre>
+
+          <h2>3. Runtime Service Account Roles</h2>
+          <p>The <a href="./project-setup.html">Project Setup</a> page creates these service accounts. This is the complete role matrix, including the node service account that page does not cover.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Service account</th><th>Role</th><th>Why</th></tr></thead>
+              <tbody>
+                <tr><td rowspan="5"><code>app-workload-sa</code></td><td><code>roles/cloudsql.client</code></td><td>Connect through the Cloud SQL Auth Proxy</td></tr>
+                <tr><td><code>roles/storage.objectAdmin</code></td><td>Read and write uploaded files</td></tr>
+                <tr><td><code>roles/secretmanager.secretAccessor</code></td><td>Read connection strings and API keys</td></tr>
+                <tr><td><code>roles/logging.logWriter</code></td><td>Write structured application logs</td></tr>
+                <tr><td><code>roles/monitoring.metricWriter</code></td><td>Write custom application metrics</td></tr>
+                <tr><td rowspan="4"><code>github-actions-sa</code></td><td><code>roles/artifactregistry.writer</code></td><td>Push images built in CI</td></tr>
+                <tr><td><code>roles/container.developer</code></td><td>Apply manifests and roll out Deployments</td></tr>
+                <tr><td><code>roles/iam.serviceAccountUser</code></td><td>Act as the workload service account during deploy</td></tr>
+                <tr><td><code>roles/iam.workloadIdentityUser</code></td><td>Let the GitHub OIDC token impersonate this account</td></tr>
+                <tr><td rowspan="4">Node service account</td><td><code>roles/artifactregistry.reader</code></td><td>Pull images onto nodes</td></tr>
+                <tr><td><code>roles/logging.logWriter</code></td><td>Ship node and container logs</td></tr>
+                <tr><td><code>roles/monitoring.metricWriter</code></td><td>Ship node metrics</td></tr>
+                <tr><td><code>roles/stackdriver.resourceMetadata.writer</code></td><td>Required by the GKE metadata agent</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Do not run nodes as the default Compute Engine service account</div>
+            <p>The default service account carries <code>roles/editor</code> across the whole project. Any pod that reaches the node metadata endpoint inherits it. Create a dedicated node service account with only the four roles above and pass it with <code>--service-account</code> when you create the node pool.</p>
+          </div>
+          <pre><code># Dedicated node service account with minimal roles
+gcloud iam service-accounts create gke-node-sa \
+  --display-name="GKE Node Service Account"
+
+export NODE_SA="gke-node-sa@${PROJECT_ID}.iam.gserviceaccount.com"
+
+for ROLE in \
+  roles/artifactregistry.reader \
+  roles/logging.logWriter \
+  roles/monitoring.metricWriter \
+  roles/stackdriver.resourceMetadata.writer
+do
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:$NODE_SA" --role="$ROLE" --condition=None
+done
+
+# Use it when creating the node pool
+gcloud container node-pools create default-pool \
+  --cluster=app-cluster --region="$REGION" \
+  --service-account="$NODE_SA" \
+  --workload-metadata=GKE_METADATA</code></pre>
+
+          <h2>4. Firewall Rules Required</h2>
+          <p>The <a href="./networking.html">Networking</a> page creates the baseline rules. This is the full set, including the two that GKE does <em>not</em> create for you and that break admission webhooks on private clusters.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Rule</th><th>Direction</th><th>Source</th><th>Target</th><th>Ports</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td><code>app-allow-internal</code></td><td>Ingress</td><td><code>10.0.0.0/8</code></td><td>All in VPC</td><td>tcp, udp, icmp</td><td>Node-to-node and pod-to-pod traffic</td></tr>
+                <tr><td><code>app-allow-health-checks</code></td><td>Ingress</td><td><code>130.211.0.0/22</code>, <code>35.191.0.0/16</code></td><td><code>gke-node</code></td><td>tcp:80, 443, 8080, 10256</td><td>Google load balancer health probes</td></tr>
+                <tr><td><code>app-allow-master-webhooks</code></td><td>Ingress</td><td>Control plane CIDR (for example <code>172.16.0.0/28</code>)</td><td><code>gke-node</code></td><td>tcp:8443, 9443, 15017</td><td>Admission and conversion webhooks on private clusters</td></tr>
+                <tr><td><code>app-allow-master-metrics</code></td><td>Ingress</td><td>Control plane CIDR</td><td><code>gke-node</code></td><td>tcp:10250, 443</td><td>Created automatically by GKE - verify it exists</td></tr>
+                <tr><td><code>app-allow-ssh-iap</code></td><td>Ingress</td><td><code>35.235.240.0/20</code></td><td><code>gke-node</code></td><td>tcp:22</td><td>Break-glass SSH through Identity-Aware Proxy</td></tr>
+                <tr><td><code>app-deny-all-ingress</code></td><td>Ingress</td><td><code>0.0.0.0/0</code></td><td>All in VPC</td><td>all</td><td>Priority 65534 catch-all deny with logging</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The Rule Everyone Forgets</h3>
+          <div class="callout callout-danger">
+            <div class="callout-title">Private cluster webhooks fail without this</div>
+            <p>On a private GKE cluster, GKE opens the control plane to nodes on ports <code>443</code> and <code>10250</code> only. Ingress controllers, cert-manager, Istio, and the Gateway API all register admission webhooks on other ports. Without the rule below, <code>kubectl apply</code> hangs and eventually fails with <code>context deadline exceeded</code> - and the error says nothing about firewalls.</p>
+          </div>
+          <pre><code># Find the control plane CIDR for your cluster
+export MASTER_CIDR=$(gcloud container clusters describe app-cluster \
+  --region="$REGION" \
+  --format="value(privateClusterConfig.masterIpv4CidrBlock)")
+
+# Allow the control plane to reach webhook ports on the nodes
+gcloud compute firewall-rules create app-allow-master-webhooks \
+  --network=app-vpc \
+  --direction=INGRESS \
+  --action=ALLOW \
+  --rules=tcp:8443,tcp:9443,tcp:15017 \
+  --source-ranges="$MASTER_CIDR" \
+  --target-tags=gke-node \
+  --priority=1000 \
+  --description="Control plane to admission webhooks"</code></pre>
+
+          <h3>If You Enforce Deny-All Egress</h3>
+          <p>GCP allows all egress by default. If your security baseline replaces that with a deny-all rule, private nodes lose the ability to pull images, reach the control plane, and resolve DNS. These allow rules must sit at a higher priority than the deny.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Destination</th><th>Ports</th><th>Why</th></tr></thead>
+              <tbody>
+                <tr><td>Control plane CIDR</td><td>tcp:443</td><td>kubelet to API server</td></tr>
+                <tr><td><code>199.36.153.4/30</code></td><td>tcp:443</td><td><code>restricted.googleapis.com</code> - Artifact Registry, Logging, Monitoring via Private Google Access</td></tr>
+                <tr><td><code>169.254.169.254/32</code></td><td>tcp:80, udp:53</td><td>Metadata server and internal DNS</td></tr>
+                <tr><td>Pod and service CIDRs</td><td>all</td><td>Pod-to-pod and pod-to-service traffic</td></tr>
+                <tr><td>Cloud SQL peering range</td><td>tcp:3307, tcp:5432, tcp:1433</td><td>Database connections through the Auth Proxy</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># Route Google APIs over Private Google Access instead of the internet
+gcloud compute firewall-rules create app-allow-egress-google-apis \
+  --network=app-vpc --direction=EGRESS --action=ALLOW \
+  --rules=tcp:443 --destination-ranges=199.36.153.4/30 \
+  --target-tags=gke-node --priority=1000
+
+# Catch-all deny, logged, at the lowest priority
+gcloud compute firewall-rules create app-deny-egress-all \
+  --network=app-vpc --direction=EGRESS --action=DENY \
+  --rules=all --destination-ranges=0.0.0.0/0 \
+  --target-tags=gke-node --priority=65534 --enable-logging</code></pre>
+
+          <h2>5. Pod-Level Network Policy</h2>
+          <p>Firewall rules stop at the node boundary. Inside the cluster, every pod can reach every other pod unless you say otherwise. Enable dataplane V2 and default-deny each namespace.</p>
+          <pre><code># Enable NetworkPolicy enforcement (Dataplane V2)
+gcloud container clusters update app-cluster \
+  --region="$REGION" --enable-dataplane-v2</code></pre>
+          <pre><code># k8s/security/default-deny.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: app
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+---
+# Frontend may reach the API; nothing else may
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-api
+  namespace: app
+spec:
+  podSelector:
+    matchLabels: { app: dotnet-api }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { app: react-frontend }
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+# Every pod needs DNS even under a default deny
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress
+  namespace: app
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: kube-system }
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53</code></pre>
+
+          <h2>6. Who Can Reach the Cluster API</h2>
+          <p>Two independent gates control <code>kubectl</code>: a network gate (control plane authorized networks) and an identity gate (IAM plus Kubernetes RBAC). Both must pass.</p>
+
+          <h3>Network Gate - Authorized Networks</h3>
+          <pre><code># Restrict the control plane endpoint to known source ranges
+gcloud container clusters update app-cluster \
+  --region="$REGION" \
+  --enable-master-authorized-networks \
+  --master-authorized-networks=203.0.113.10/32,198.51.100.0/24
+
+# Inspect the current allowlist
+gcloud container clusters describe app-cluster --region="$REGION" \
+  --format="value(masterAuthorizedNetworksConfig.cidrBlocks)"</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">GitHub Actions runners have no fixed IP</div>
+            <p>Hosted runners draw from a large, changing address pool, so you cannot allowlist them. Pick one of: a self-hosted runner inside the VPC, a Cloud Build private pool, or the <code>gke-gcloud-auth-plugin</code> against a cluster with a private endpoint reached through a bastion. Widening the allowlist to <code>0.0.0.0/0</code> defeats the control entirely.</p>
+          </div>
+
+          <h3>Identity Gate - IAM and Kubernetes RBAC</h3>
+          <p>An IAM role gets you <em>to</em> the API server. Kubernetes RBAC decides what you can do once you are there. <code>roles/container.developer</code> grants broad in-cluster edit rights; for anything narrower, grant <code>roles/container.viewer</code> and layer RBAC on top.</p>
+          <pre><code># Fetch credentials (requires roles/container.clusterViewer at minimum)
+gcloud container clusters get-credentials app-cluster --region="$REGION"
+
+# Namespace-scoped access for a developer, layered on roles/container.viewer
+kubectl create rolebinding dev-edit \
+  --clusterrole=edit \
+  --user=dev@example.com \
+  --namespace=app
+
+# Confirm what an identity can actually do
+kubectl auth can-i --list --namespace=app
+kubectl auth can-i create deployments --namespace=app \
+  --as=github-actions-sa@${PROJECT_ID}.iam.gserviceaccount.com</code></pre>
+
+          <h2>7. Pre-Flight Verification</h2>
+          <p>Run this before you start building. Every line should succeed.</p>
+          <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+PROJECT_ID="${PROJECT_ID:?set PROJECT_ID}"
+REGION="${REGION:-us-central1}"
+
+echo "== Required APIs =="
+for API in container sqladmin storage artifactregistry compute iam \
+           iamcredentials secretmanager servicenetworking logging monitoring
+do
+  gcloud services list --enabled --project="$PROJECT_ID" \
+    --filter="config.name:${API}.googleapis.com" --format="value(config.name)" \
+    | grep -q . && echo "  OK   ${API}" || echo "  MISS ${API}"
+done
+
+echo "== Operator permissions =="
+gcloud projects test-iam-permissions "$PROJECT_ID" --format="value(permissions)" \
+  --permissions=container.clusters.create,compute.firewalls.create,\
+compute.networks.create,cloudsql.instances.create,iam.serviceAccounts.create,\
+resourcemanager.projects.setIamPolicy,artifactregistry.repositories.create
+
+echo "== Organization policies in force =="
+gcloud resource-manager org-policies list --project="$PROJECT_ID"
+
+echo "== Firewall rules =="
+gcloud compute firewall-rules list --project="$PROJECT_ID" \
+  --filter="network:app-vpc" \
+  --format="table(name,direction,priority,sourceRanges.list(),allowed[].map().firewall_rule().list())"</code></pre>
+
+          <h2>8. Error Message to Root Cause</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>PERMISSION_DENIED: ... permission 'container.clusters.create'</code></td><td>Operator missing <code>roles/container.admin</code></td><td>Grant the role, then wait up to 60 seconds for propagation</td></tr>
+                <tr><td><code>Constraint constraints/... violated</code></td><td>Organization policy, not IAM</td><td>Adjust the resource config or request a policy exception</td></tr>
+                <tr><td><code>failed calling webhook ... context deadline exceeded</code></td><td>Control plane cannot reach webhook ports on nodes</td><td>Add <code>app-allow-master-webhooks</code></td></tr>
+                <tr><td>Ingress stuck, backends <code>UNHEALTHY</code></td><td>Health check ranges blocked</td><td>Allow <code>130.211.0.0/22</code> and <code>35.191.0.0/16</code></td></tr>
+                <tr><td><code>ImagePullBackOff</code> with <code>403 Forbidden</code></td><td>Node service account lacks <code>roles/artifactregistry.reader</code></td><td>Grant the role to the node service account, not the workload one</td></tr>
+                <tr><td>Pod cannot reach Cloud SQL private IP</td><td>VPC peering missing or workload SA lacks <code>roles/cloudsql.client</code></td><td>Verify <code>gcloud compute networks peerings list</code> and the SA binding</td></tr>
+                <tr><td><code>Unable to connect to the server: dial tcp ... i/o timeout</code></td><td>Your IP is outside the authorized networks list</td><td>Add your CIDR, or connect from inside the VPC</td></tr>
+                <tr><td><code>Error from server (Forbidden)</code> on <code>kubectl</code></td><td>IAM passed, Kubernetes RBAC did not</td><td>Bind an appropriate Role or ClusterRole to the identity</td></tr>
+                <tr><td>Workload Identity token request returns 403</td><td>Missing <code>roles/iam.workloadIdentityUser</code> on the GSA</td><td>Bind the KSA member to the GSA and annotate the KSA</td></tr>
+                <tr><td><code>Service account key creation is disabled</code></td><td><code>iam.disableServiceAccountKeyCreation</code> enforced</td><td>Use Workload Identity Federation instead of a key file</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-title">Same problem, other clouds</div>
+            <p>The equivalent pages are <a href="../aws/foundation/permissions.html">AWS - Permissions &amp; Security Groups</a> and <a href="../azure/foundation/permissions.html">Azure - Permissions &amp; NSG Rules</a>.</p>
+          </div>
+        </div>
+        <nav class="page-navigation">
+          <a href="./networking.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Networking</span></a>
+          <a href="../infrastructure/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Infrastructure</span></a>
+        </nav>
+      </article>
+    </main>
+  </div>
+  <footer class="site-footer"><div class="footer-container"><p class="copyright">CloudDevOps</p></div></footer>
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

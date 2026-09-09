@@ -54,7 +54,7 @@
           </div>
 
           <h2>KQL Query Examples</h2>
-          <pre><code"># Find all errors in the last hour
+          <pre><code># Find all errors in the last hour
 ContainerLog
 | where LogEntry contains "ERROR"
 | where TimeGenerated > ago(1h)
@@ -78,7 +78,7 @@ KubePodInventory
 | project TimeGenerated, PodName, AvgCPU</code></pre>
 
           <h2>Create Log Analytics Workspace</h2>
-          <pre><code"># Create workspace
+          <pre><code># Create workspace
 az monitor log-analytics workspace create \
   --resource-group myapp-rg \
   --workspace-name myapp-workspace \

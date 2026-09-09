@@ -54,7 +54,7 @@
           </div>
 
           <h2>Create Azure Cache for Redis</h2>
-          <pre><code">az redis create \
+          <pre><code>az redis create \
   --name myapp-cache \
   --resource-group myapp-rg \
   --location eastus \
@@ -73,7 +73,7 @@
           </table></div>
 
           <h2>Session Storage in ASP.NET Core</h2>
-          <pre><code">// Program.cs
+          <pre><code>// Program.cs
 builder.Services.AddStackExchangeRedisCache(options => {
     options.Configuration = builder.Configuration["Redis:ConnectionString"];
     options.InstanceName = "myapp-";

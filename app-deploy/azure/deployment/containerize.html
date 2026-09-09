@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -83,7 +84,7 @@
           </div>
 
           <h2>React Frontend Dockerfile</h2>
-          <pre><code"># Dockerfile.frontend
+          <pre><code># Dockerfile.frontend
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
@@ -120,7 +121,7 @@ http {
 }</code></pre>
 
           <h2>.NET 8 Backend Dockerfile</h2>
-          <pre><code"># Dockerfile.backend
+          <pre><code># Dockerfile.backend
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /app
 COPY *.csproj ./
@@ -136,7 +137,7 @@ EXPOSE 8080
 ENTRYPOINT ["dotnet", "MyApp.Api.dll"]</code></pre>
 
           <h2>Build and Push to ACR</h2>
-          <pre><code">LOGIN_SERVER="myappacr.azurecr.io"
+          <pre><code>LOGIN_SERVER="myappacr.azurecr.io"
 az acr login --name myappacr
 
 # Build and push frontend

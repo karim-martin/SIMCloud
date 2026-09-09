@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -83,7 +84,7 @@
           </div>
 
           <h2>Horizontal Pod Autoscaler</h2>
-          <pre><code"># hpa.yaml
+          <pre><code># hpa.yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -110,13 +111,13 @@ spec:
         type: Utilization
         averageUtilization: 80</code></pre>
 
-          <pre><code">kubectl apply -f hpa.yaml
+          <pre><code>kubectl apply -f hpa.yaml
 kubectl get hpa -n myapp -w</code></pre>
 
           <h2>Cluster Autoscaler</h2>
           <p>Cluster Autoscaler is automatically configured when you use <code>enable_auto_scaling = true</code> in the Terraform AKS node pool. Set <code>min_count</code> and <code>max_count</code> to define boundaries.</p>
 
-          <pre><code"># Verify autoscaler is running
+          <pre><code># Verify autoscaler is running
 kubectl get pods -n kube-system | grep cluster-autoscaler
 
 # View autoscaler logs

@@ -61,7 +61,7 @@
 └── Private Subnet    10.4.0.0/16  ← Azure SQL, Azure Cache (private endpoints)</code></pre>
 
           <h2>Create VNet with Terraform</h2>
-          <pre><code">resource "azurerm_virtual_network" "main" {
+          <pre><code>resource "azurerm_virtual_network" "main" {
   name                = "myapp-vnet"
   location            = "eastus"
   resource_group_name = azurerm_resource_group.main.name
@@ -92,7 +92,7 @@ resource "azurerm_network_security_rule" "allow_aks_to_db" {
 
           <h2>Private Endpoints</h2>
           <p>Private endpoints give Azure PaaS services (Azure SQL, Storage, Key Vault) a private IP inside your VNet. Traffic never leaves your VNet - no public internet exposure.</p>
-          <pre><code">resource "azurerm_private_endpoint" "sql" {
+          <pre><code>resource "azurerm_private_endpoint" "sql" {
   name                = "sql-private-endpoint"
   location            = "eastus"
   resource_group_name = azurerm_resource_group.main.name

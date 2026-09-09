@@ -109,7 +109,7 @@
 
           <h2>Container Image Scanning - Trivy</h2>
           <p>Trivy scans Docker images for known CVEs (Common Vulnerabilities and Exposures) in OS packages and language dependencies.</p>
-          <pre><code"># Install Trivy
+          <pre><code># Install Trivy
 brew install trivy  # macOS
 # or: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
 
@@ -128,7 +128,7 @@ trivy image --exit-code 1 --severity CRITICAL myapp-backend:latest
     severity: CRITICAL,HIGH</code></pre>
 
           <h2>Dependency Auditing</h2>
-          <pre><code"># .NET - check for known vulnerable NuGet packages
+          <pre><code># .NET - check for known vulnerable NuGet packages
 dotnet list package --vulnerable
 
 # Node.js / React
@@ -141,7 +141,7 @@ npm audit --audit-level=high   # fail on high/critical only
 
           <h2>Secret Detection - GitLeaks</h2>
           <p>GitLeaks scans your git history for accidentally committed secrets (API keys, passwords, tokens).</p>
-          <pre><code"># Install
+          <pre><code># Install
 brew install gitleaks
 
 # Scan current repo
@@ -158,7 +158,7 @@ repos:
   - id: gitleaks</code></pre>
 
           <h2>SAST - Static Analysis</h2>
-          <pre><code"># .NET - use Roslyn analyzers (built-in)
+          <pre><code># .NET - use Roslyn analyzers (built-in)
 # Add to your .csproj:
 &lt;ItemGroup&gt;
   &lt;PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.*" /&gt;
@@ -171,7 +171,7 @@ npm install --save-dev eslint-plugin-security
 { "plugins": ["security"], "extends": ["plugin:security/recommended"] }</code></pre>
 
           <h2>Kubernetes Policy Enforcement</h2>
-          <pre><code"># Install OPA Gatekeeper
+          <pre><code># Install OPA Gatekeeper
 kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.15/deploy/gatekeeper.yaml
 
 # Example: Block containers running as root

@@ -168,6 +168,48 @@
         </div>
       </section>
 
+      <!-- Access, Policy and Network Requirements -->
+      <section style="max-width:900px;margin:0 auto 3rem;">
+        <h2 style="text-align:center;margin-bottom:0.5rem;">Access, Policy &amp; Network Requirements</h2>
+        <p style="text-align:center;color:#64748b;margin-bottom:2rem;">Most failed deployments are access problems, not code problems. Each guide has a dedicated page listing every permission, policy, and network rule it depends on - read it before you start.</p>
+
+        <div class="card-grid">
+          <a href="./foundation/permissions.html" class="card card-link">
+            <h3 class="card-title">GCP - Permissions &amp; Firewall</h3>
+            <p class="card-description">Operator IAM roles, organization policy constraints, service account matrix, the full firewall rule set including private-cluster webhook ports, and GKE access control.</p>
+          </a>
+          <a href="./aws/foundation/permissions.html" class="card card-link">
+            <h3 class="card-title">AWS - Permissions &amp; Security Groups</h3>
+            <p class="card-description">Deployer IAM policy, cluster and node roles, IRSA add-on policies, EKS access entries, the security group matrix, VPC endpoints, and SCP guardrails.</p>
+          </a>
+          <a href="./azure/foundation/permissions.html" class="card card-link">
+            <h3 class="card-title">Azure - Permissions &amp; NSG Rules</h3>
+            <p class="card-description">Resource provider registration, Azure RBAC roles, AKS and workload identity grants, NSG rule matrix, egress allowlist, and Azure Policy guardrails.</p>
+          </a>
+        </div>
+
+        <h3 style="margin-top:2.5rem;">The Same Five Controls on Every Cloud</h3>
+        <div class="table-wrapper">
+          <table class="cheatsheet-table">
+            <thead><tr><th>Control</th><th>GCP</th><th>AWS</th><th>Azure</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Who can build it</strong></td><td>Project IAM roles</td><td>IAM policies on the deployer</td><td>Azure RBAC role assignments</td></tr>
+              <tr><td><strong>What the org forbids</strong></td><td>Organization policy constraints</td><td>Service control policies</td><td>Azure Policy</td></tr>
+              <tr><td><strong>Service enablement</strong></td><td><code>gcloud services enable</code></td><td>Enabled by default</td><td><code>az provider register</code></td></tr>
+              <tr><td><strong>Network rules</strong></td><td>VPC firewall rules</td><td>Security groups and NACLs</td><td>Network security groups</td></tr>
+              <tr><td><strong>Who can run kubectl</strong></td><td>IAM plus Kubernetes RBAC</td><td>EKS access entries or <code>aws-auth</code></td><td>Entra ID plus Azure RBAC</td></tr>
+              <tr><td><strong>Pod runtime identity</strong></td><td>Workload Identity</td><td>IRSA</td><td>Workload Identity</td></tr>
+              <tr><td><strong>Pod-to-pod traffic</strong></td><td colspan="3" style="text-align:center;color:#64748b;">Kubernetes NetworkPolicy - same on all three</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-warning" style="margin-top:1.5rem;">
+          <div class="callout-title">Ask for access before you start, not halfway through</div>
+          <p>Each permissions page ends with a pre-flight script that reports, in a single run, whether your identity can complete the guide. Run it first. In a governed environment, the named role list on those pages is what you send to your platform or security team - a scoped request is approved faster than asking for admin, and it survives an audit.</p>
+        </div>
+      </section>
+
       <!-- Provider Selection -->
       <section style="max-width:900px;margin:0 auto 3rem;">
         <h2 style="text-align:center;margin-bottom:0.5rem;">Choose Your Cloud Provider</h2>

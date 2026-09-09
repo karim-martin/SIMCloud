@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -79,7 +80,7 @@
         <div class="article-body">
 
           <h2>Horizontal Pod Autoscaler (HPA)</h2>
-          <pre><code"># Scale backend pods based on CPU
+          <pre><code># Scale backend pods based on CPU
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -107,7 +108,7 @@ spec:
         averageUtilization: 80</code></pre>
 
           <h2>Cluster Autoscaler</h2>
-          <pre><code"># Install Cluster Autoscaler (scales EC2 nodes when pods can't be scheduled)
+          <pre><code># Install Cluster Autoscaler (scales EC2 nodes when pods can't be scheduled)
 helm repo add autoscaler https://kubernetes.github.io/autoscaler
 helm install cluster-autoscaler autoscaler/cluster-autoscaler \
   --namespace kube-system \

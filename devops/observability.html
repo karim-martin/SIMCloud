@@ -116,7 +116,7 @@
           </div>
 
           <h2>Install Prometheus + Grafana (kube-prometheus-stack)</h2>
-          <pre><code">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          <pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 
 helm install monitoring prometheus-community/kube-prometheus-stack \
@@ -129,7 +129,7 @@ helm install monitoring prometheus-community/kube-prometheus-stack \
 kubectl get pods -n monitoring</code></pre>
 
           <h2>Access Grafana</h2>
-          <pre><code"># Port-forward Grafana
+          <pre><code># Port-forward Grafana
 kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
 
 # Open http://localhost:3000
@@ -137,16 +137,16 @@ kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
 # Password: admin123</code></pre>
 
           <h2>Expose App Metrics from .NET 8</h2>
-          <pre><code"># Install prometheus-net NuGet package
+          <pre><code># Install prometheus-net NuGet package
 dotnet add package prometheus-net.AspNetCore</code></pre>
-          <pre><code">// Program.cs - expose /metrics endpoint
+          <pre><code>// Program.cs - expose /metrics endpoint
 using Prometheus;
 
 app.UseHttpMetrics();      // track HTTP request metrics
 app.MapMetrics();          // expose at /metrics</code></pre>
 
           <h2>Annotate Pods for Prometheus Scraping</h2>
-          <pre><code"># In your Deployment spec:
+          <pre><code># In your Deployment spec:
 template:
   metadata:
     annotations:
@@ -155,7 +155,7 @@ template:
       prometheus.io/path: "/metrics"</code></pre>
 
           <h2>Essential PromQL Queries</h2>
-          <pre><code"># Request rate (requests/second, last 5 min)
+          <pre><code># Request rate (requests/second, last 5 min)
 rate(http_requests_total[5m])
 
 # Error rate (% of 5xx responses)
@@ -168,7 +168,7 @@ container_memory_working_set_bytes{namespace="myapp"} / 1024 / 1024
 rate(container_cpu_usage_seconds_total{namespace="myapp"}[5m])</code></pre>
 
           <h2>Install Loki for Logs</h2>
-          <pre><code">helm repo add grafana https://grafana.github.io/helm-charts
+          <pre><code>helm repo add grafana https://grafana.github.io/helm-charts
 helm install loki grafana/loki-stack \
   --namespace monitoring \
   --set grafana.enabled=false \

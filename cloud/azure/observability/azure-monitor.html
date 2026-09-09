@@ -54,7 +54,7 @@
           </div>
 
           <h2>Enable Container Insights for AKS</h2>
-          <pre><code"># Enable when creating the cluster
+          <pre><code># Enable when creating the cluster
 az aks create \
   --name myapp-cluster \
   --resource-group myapp-rg \
@@ -68,7 +68,7 @@ az aks enable-addons \
   --resource-group myapp-rg</code></pre>
 
           <h2>Create an Alert (Terraform)</h2>
-          <pre><code">resource "azurerm_monitor_metric_alert" "cpu_alert" {
+          <pre><code>resource "azurerm_monitor_metric_alert" "cpu_alert" {
   name                = "aks-high-cpu"
   resource_group_name = azurerm_resource_group.main.name
   scopes              = [azurerm_kubernetes_cluster.main.id]
@@ -92,7 +92,7 @@ az aks enable-addons \
 }</code></pre>
 
           <h2>Application Insights for APM</h2>
-          <pre><code">// Program.cs - add Application Insights
+          <pre><code>// Program.cs - add Application Insights
 builder.Services.AddApplicationInsightsTelemetry(
     builder.Configuration["ApplicationInsights:InstrumentationKey"]);</code></pre>
           <p>Application Insights automatically tracks: HTTP request rates and durations, dependency calls (SQL, HTTP, Redis), exceptions, custom events, and user sessions.</p>

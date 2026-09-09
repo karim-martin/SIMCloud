@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/" class="active">Overview</a></li>
@@ -81,7 +82,7 @@
           <p>With VPC and IAM ready, provision the core infrastructure: EKS cluster, RDS PostgreSQL, and S3 bucket.</p>
 
           <h2>EKS Cluster</h2>
-          <pre><code">module "eks" {
+          <pre><code>module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.0"
 
@@ -111,7 +112,7 @@
 }</code></pre>
 
           <h2>RDS PostgreSQL</h2>
-          <pre><code">resource "aws_db_instance" "main" {
+          <pre><code>resource "aws_db_instance" "main" {
   identifier        = "myapp-db"
   engine            = "postgres"
   engine_version    = "15.4"
@@ -147,7 +148,7 @@ resource "aws_secretsmanager_secret_version" "db" {
 }</code></pre>
 
           <h2>S3 Bucket</h2>
-          <pre><code">resource "aws_s3_bucket" "uploads" {
+          <pre><code>resource "aws_s3_bucket" "uploads" {
   bucket = "myapp-uploads-${random_id.suffix.hex}"
 }
 
@@ -169,7 +170,7 @@ resource "aws_s3_bucket_public_access_block" "uploads" {
 }</code></pre>
         </div>
         <nav class="page-navigation">
-          <a href="../foundation/" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Foundation</span></a>
+          <a href="../foundation/permissions.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Permissions &amp; Security Groups</span></a>
           <a href="../deployment/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Deployment</span></a>
         </nav>
       </article>

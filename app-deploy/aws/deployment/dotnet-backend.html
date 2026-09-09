@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -79,7 +80,7 @@
         <div class="article-body">
 
           <h2>Service Account with IRSA</h2>
-          <pre><code"># Create IAM role for the backend pod
+          <pre><code># Create IAM role for the backend pod
 eksctl create iamserviceaccount \
   --cluster myapp-cluster \
   --namespace production \
@@ -88,7 +89,7 @@ eksctl create iamserviceaccount \
   --approve</code></pre>
 
           <h2>Backend Deployment</h2>
-          <pre><code"># k8s/backend/deployment.yaml
+          <pre><code># k8s/backend/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -137,7 +138,7 @@ spec:
     targetPort: 8080</code></pre>
 
           <h2>Read Secrets in .NET 8</h2>
-          <pre><code">// Program.cs
+          <pre><code>// Program.cs
 // Uses AWS SDK - IRSA provides credentials automatically
 builder.Services.AddAWSService&lt;IAmazonSecretsManager&gt;();
 builder.Services.AddSingleton&lt;IDbConfig&gt;(sp => {

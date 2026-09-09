@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -86,7 +87,7 @@
           <p>When you added <code>oms_agent { log_analytics_workspace_id = ... }</code> to your AKS Terraform, Container Insights was automatically enabled. In the Azure portal, navigate to your AKS cluster → <strong>Monitoring → Insights</strong>.</p>
 
           <h2>Key Log Analytics Queries (KQL)</h2>
-          <pre><code"># Pod restart count last 24h
+          <pre><code># Pod restart count last 24h
 KubePodInventory
 | where TimeGenerated > ago(24h)
 | where Namespace == "myapp"
@@ -106,7 +107,7 @@ Perf
 | summarize avg(CounterValue) by Computer, bin(TimeGenerated, 5m)</code></pre>
 
           <h2>Azure Monitor Alert</h2>
-          <pre><code"># Terraform - alert when CPU exceeds 80%
+          <pre><code># Terraform - alert when CPU exceeds 80%
 resource "azurerm_monitor_metric_alert" "cpu_alert" {
   name                = "aks-high-cpu"
   resource_group_name = azurerm_resource_group.main.name

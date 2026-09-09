@@ -60,7 +60,7 @@
           </div>
 
           <h2>Grant Key Vault Access to AKS Pod</h2>
-          <pre><code"># Create user-assigned managed identity
+          <pre><code># Create user-assigned managed identity
 az identity create --name myapp-identity --resource-group myapp-rg
 
 # Grant access to Key Vault
@@ -79,7 +79,7 @@ az identity federated-credential create \
 
           <h2>RBAC in Azure</h2>
           <p>Azure uses RBAC (Role-Based Access Control) for authorization. Assign built-in roles or create custom ones:</p>
-          <pre><code"># Assign 'Storage Blob Data Contributor' to managed identity
+          <pre><code># Assign 'Storage Blob Data Contributor' to managed identity
 az role assignment create \
   --assignee $(az identity show --name myapp-identity -g myapp-rg --query principalId -o tsv) \
   --role "Storage Blob Data Contributor" \

@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -78,7 +79,7 @@
         </header>
         <div class="article-body">
 
-          <pre><code"># Create WAF Web ACL (REGIONAL for ALB)
+          <pre><code># Create WAF Web ACL (REGIONAL for ALB)
 resource "aws_wafv2_web_acl" "main" {
   name  = "myapp-waf"
   scope = "REGIONAL"

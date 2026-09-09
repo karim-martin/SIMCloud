@@ -131,7 +131,7 @@ argocd login localhost:8080 --username admin --password &lt;password&gt; --insec
 argocd account update-password</code></pre>
 
           <h2>Create an ArgoCD Application</h2>
-          <pre><code"># myapp-argocd.yaml
+          <pre><code># myapp-argocd.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -153,12 +153,12 @@ spec:
     syncOptions:
     - CreateNamespace=true</code></pre>
 
-          <pre><code">kubectl apply -f myapp-argocd.yaml
+          <pre><code>kubectl apply -f myapp-argocd.yaml
 argocd app get myapp
 argocd app sync myapp</code></pre>
 
           <h2>GitOps Repository Structure</h2>
-          <pre><code">myapp-k8s/
+          <pre><code>myapp-k8s/
 ├── base/                  # Base Kubernetes manifests
 │   ├── deployment.yaml
 │   ├── service.yaml

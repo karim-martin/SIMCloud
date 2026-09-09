@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/" class="active">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -79,6 +80,11 @@
           <div class="callout-beginner">
             <div class="callout-beginner-title">What is a Resource Group?</div>
             <p>A resource group is a folder for Azure resources. Everything you create (AKS, SQL, Key Vault) goes into one resource group. When you delete the resource group, everything inside is deleted - making cleanup simple.</p>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Check your access before you build</div>
+            <p>Contributor on the subscription is not enough to finish this guide - creating role assignments needs Owner, User Access Administrator, or RBAC Administrator, and nothing works until the resource providers are registered. Read <a href="./permissions.html">Permissions &amp; NSG Rules</a> first for the full role list, the provider registration commands, and the NSG rules that Application Gateway and AKS require.</p>
           </div>
 
           <h2>Create Resource Group</h2>
@@ -161,7 +167,7 @@ terraform apply</code></pre>
         </div>
         <nav class="page-navigation">
           <a href="../prerequisites.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Prerequisites</span></a>
-          <a href="../infrastructure/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Infrastructure</span></a>
+          <a href="./permissions.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Permissions &amp; NSG Rules</span></a>
         </nav>
       </article>
     </main>

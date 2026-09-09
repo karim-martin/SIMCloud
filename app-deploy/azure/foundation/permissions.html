@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Every Azure RBAC role, resource provider, NSG rule, egress allowlist entry, and Azure Policy consideration required to complete the AKS deployment guide end to end.">
+  <title>Permissions &amp; NSG Rules | CloudDevOps</title>
+  <link rel="stylesheet" href="../../../assets/css/base.css">
+  <link rel="stylesheet" href="../../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../../assets/css/components.css">
+  <link rel="stylesheet" href="../../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../../" class="logo"><img src="../../../assets/images/logo.svg" alt=""><span>CloudDevOps</span></a>
+      <nav class="main-nav">
+        <a href="../../../devops/" class="nav-link">DevOps</a>
+        <a href="../../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../../app-deploy/" class="nav-link active">App Deploy</a>
+        <a href="../../../programming/" class="nav-link">Programming</a>
+      </nav>
+      <div class="header-actions"><button class="mobile-menu-toggle" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button></div>
+    </div>
+  </header>
+  <div class="sidebar-overlay"></div>
+  <div class="page-wrapper">
+    <aside class="sidebar"><nav class="sidebar-nav">
+      <div class="sidebar-section"><h3 class="sidebar-section-title">App Deploy (Azure)</h3><ul class="sidebar-links">
+        <li><a href="../">Overview</a></li>
+        <li><a href="../prerequisites.html">Prerequisites</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
+        <li><a href="../foundation/">Resource Group &amp; VNet</a></li>
+        <li><a href="../foundation/permissions.html" class="active">Permissions &amp; NSG Rules</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
+        <li><a href="../infrastructure/">Overview</a></li>
+        <li><a href="../infrastructure/aks-cluster.html">AKS Cluster</a></li>
+        <li><a href="../infrastructure/azure-sql.html">Azure SQL</a></li>
+        <li><a href="../infrastructure/storage.html">Storage &amp; ACR</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Deployment</h3><ul class="sidebar-links">
+        <li><a href="../deployment/">Overview</a></li>
+        <li><a href="../deployment/containerize.html">Containerize Apps</a></li>
+        <li><a href="../deployment/react-frontend.html">React Frontend</a></li>
+        <li><a href="../deployment/dotnet-backend.html">.NET Backend</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Networking</h3><ul class="sidebar-links">
+        <li><a href="../networking/">Overview</a></li>
+        <li><a href="../networking/ingress.html">AGIC Ingress</a></li>
+        <li><a href="../networking/ssl-https.html">SSL / HTTPS</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Security</h3><ul class="sidebar-links">
+        <li><a href="../security/">Overview</a></li>
+        <li><a href="../security/workload-identity.html">Workload Identity</a></li>
+        <li><a href="../security/key-vault.html">Key Vault</a></li>
+      </ul></div>
+      <div class="sidebar-section"><h3 class="sidebar-section-title">Operations</h3><ul class="sidebar-links">
+        <li><a href="../operations/">Overview</a></li>
+        <li><a href="../operations/ci-cd.html">CI/CD Pipeline</a></li>
+        <li><a href="../operations/scaling.html">Scaling</a></li>
+        <li><a href="../operations/monitoring.html">Monitoring</a></li>
+      </ul></div>
+    </nav></aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs"><ol>
+          <li><a href="../../../">Home</a></li><li><a href="../../">App Deploy</a></li>
+          <li><a href="../">Azure</a></li><li><a href="./">Foundation</a></li>
+          <li aria-current="page">Permissions &amp; NSG Rules</li>
+        </ol></nav>
+        <header class="article-header">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
+            <h1 style="margin:0;">Permissions &amp; NSG Rules</h1>
+            <span class="provider-badge provider-badge-azure">Azure</span>
+          </div>
+          <p class="text-secondary text-lg">Every Azure RBAC role, resource provider, NSG rule, and policy guardrail this guide depends on - in one place.</p>
+        </header>
+        <div class="article-body">
+
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Read this before you run a single command</div>
+            <p>Azure gates a deployment in five places: your Entra ID directory roles, your Azure RBAC role assignments, whether the resource providers are registered on the subscription, what Azure Policy allows, and what the network security groups permit. Contributor on the subscription is <em>not</em> enough to finish this guide - and that surprises almost everyone the first time.</p>
+          </div>
+
+          <h2>Five Identities, Five Permission Sets</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Identity</th><th>What it is</th><th>Used for</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Operator</strong></td><td>You, signed in with <code>az login</code></td><td>Creating the resource group, VNet, AKS cluster, and role assignments</td></tr>
+                <tr><td><strong>CI/CD identity</strong></td><td>Service connection using workload identity federation</td><td>Pushing to ACR and rolling out Deployments</td></tr>
+                <tr><td><strong>Cluster identity</strong></td><td>AKS control plane managed identity</td><td>Managing load balancers, public IPs, and subnets</td></tr>
+                <tr><td><strong>Kubelet identity</strong></td><td>Node pool managed identity</td><td>Pulling images from ACR</td></tr>
+                <tr><td><strong>Workload identity</strong></td><td>User-assigned managed identity federated to a Kubernetes service account</td><td>Runtime access to Key Vault, Storage, and Azure SQL</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>1. Register Resource Providers First</h2>
+          <p>Azure does not expose a service in a subscription until its resource provider is registered. This is the equivalent of enabling APIs on GCP, and it is the first thing to fail on a fresh subscription. Registration is idempotent and takes a few minutes.</p>
+          <pre><code>for RP in \
+  Microsoft.ContainerService \
+  Microsoft.ContainerRegistry \
+  Microsoft.Network \
+  Microsoft.Compute \
+  Microsoft.Storage \
+  Microsoft.Sql \
+  Microsoft.KeyVault \
+  Microsoft.ManagedIdentity \
+  Microsoft.OperationalInsights \
+  Microsoft.OperationsManagement \
+  Microsoft.Insights \
+  Microsoft.Monitor \
+  Microsoft.PolicyInsights
+do
+  az provider register --namespace "$RP"
+done
+
+# Watch until every one reports Registered
+az provider list \
+  --query "[?namespace=='Microsoft.ContainerService' || namespace=='Microsoft.KeyVault' \
+            || namespace=='Microsoft.Sql' || namespace=='Microsoft.ContainerRegistry'] \
+           .{Provider:namespace, State:registrationState}" \
+  --output table</code></pre>
+          <div class="callout callout-tip">
+            <div class="callout-title">You need permission to register</div>
+            <p><code>az provider register</code> requires <code>Microsoft.Resources/subscriptions/providers/register/action</code>, which Contributor holds but a narrowly scoped custom role may not. In a governed subscription this is often done centrally - check with <code>az provider list</code> before assuming you can do it yourself.</p>
+          </div>
+
+          <h2>2. Operator Roles Required</h2>
+          <div class="callout callout-danger">
+            <div class="callout-title">Contributor cannot create role assignments</div>
+            <p>Contributor can create almost every resource in this guide but cannot grant access to any of them. The moment you run <code>az aks update --attach-acr</code>, wire up workload identity, or assign a Key Vault role, you need <strong>Owner</strong>, <strong>User Access Administrator</strong>, or <strong>Role Based Access Control Administrator</strong>. Sort this out before you start - it blocks roughly half the guide.</p>
+          </div>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Role</th><th>Scope</th><th>Needed for</th></tr></thead>
+              <tbody>
+                <tr><td><code>Contributor</code></td><td>Subscription or resource group</td><td>Creating the resource group, VNet, AKS, SQL, storage, ACR</td></tr>
+                <tr><td><code>Role Based Access Control Administrator</code></td><td>Resource group</td><td>Creating role assignments - narrower than User Access Administrator, prefer it</td></tr>
+                <tr><td><code>User Access Administrator</code></td><td>Subscription</td><td>Same, when the assignment scope crosses resource groups</td></tr>
+                <tr><td><code>Azure Kubernetes Service Cluster User Role</code></td><td>AKS cluster</td><td>Pulling kubeconfig with <code>az aks get-credentials</code></td></tr>
+                <tr><td><code>Azure Kubernetes Service RBAC Cluster Admin</code></td><td>AKS cluster</td><td>Full <code>kubectl</code> access when Azure RBAC for Kubernetes is enabled</td></tr>
+                <tr><td><code>Network Contributor</code></td><td>VNet or subnet</td><td>Required when AKS uses a VNet in a different resource group</td></tr>
+                <tr><td><code>AcrPush</code></td><td>Container registry</td><td>Pushing images from your workstation</td></tr>
+                <tr><td><code>Key Vault Administrator</code></td><td>Key vault</td><td>Creating secrets when the vault uses RBAC rather than access policies</td></tr>
+                <tr><td><code>DNS Zone Contributor</code></td><td>DNS zone</td><td>Records for your custom domain</td></tr>
+                <tr><td><code>Managed Identity Operator</code></td><td>Managed identity</td><td>Assigning a user-assigned identity to AKS or AGIC</td></tr>
+                <tr><td><code>Application Developer</code> (Entra ID)</td><td>Directory</td><td>Only if you create app registrations instead of managed identities</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code>export SUB_ID=$(az account show --query id -o tsv)
+export RG="myapp-rg"
+export OPERATOR_OID=$(az ad signed-in-user show --query id -o tsv)
+
+az role assignment create \
+  --assignee-object-id "$OPERATOR_OID" --assignee-principal-type User \
+  --role "Contributor" \
+  --scope "/subscriptions/$SUB_ID/resourceGroups/$RG"
+
+az role assignment create \
+  --assignee-object-id "$OPERATOR_OID" --assignee-principal-type User \
+  --role "Role Based Access Control Administrator" \
+  --scope "/subscriptions/$SUB_ID/resourceGroups/$RG"</code></pre>
+
+          <h3>Check What You Actually Have</h3>
+          <pre><code># Every role assigned to you, including inherited ones
+az role assignment list --assignee "$OPERATOR_OID" --all --include-inherited \
+  --query "[].{Role:roleDefinitionName, Scope:scope}" --output table
+
+# Confirm you can create role assignments at all
+az role assignment list --assignee "$OPERATOR_OID" --all \
+  --query "[?roleDefinitionName=='Owner' \
+            || roleDefinitionName=='User Access Administrator' \
+            || roleDefinitionName=='Role Based Access Control Administrator']" \
+  --output table</code></pre>
+
+          <h2>3. Cluster and Workload Identity Permissions</h2>
+          <p>AKS runs on managed identities. Each one needs specific grants, and three of them are common failure points.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Identity</th><th>Role</th><th>Scope</th><th>Symptom if missing</th></tr></thead>
+              <tbody>
+                <tr><td rowspan="2">Cluster (control plane)</td><td><code>Network Contributor</code></td><td>Custom VNet or subnet</td><td>Cluster creation fails, or LoadBalancer services never get an IP</td></tr>
+                <tr><td><code>Contributor</code></td><td>Node resource group (<code>MC_*</code>)</td><td>Assigned automatically - do not remove it</td></tr>
+                <tr><td>Kubelet</td><td><code>AcrPull</code></td><td>Container registry</td><td><code>ImagePullBackOff</code> with <code>401 Unauthorized</code></td></tr>
+                <tr><td rowspan="3">AGIC</td><td><code>Contributor</code></td><td>Application gateway</td><td>Ingress objects never reach the gateway</td></tr>
+                <tr><td><code>Reader</code></td><td>Gateway resource group</td><td>AGIC pod crash-loops on startup</td></tr>
+                <tr><td><code>Network Contributor</code></td><td>Gateway subnet</td><td>Gateway cannot bind to the subnet</td></tr>
+                <tr><td rowspan="3">Workload (application)</td><td><code>Key Vault Secrets User</code></td><td>Key vault</td><td>Secret mount fails, pod stuck in <code>ContainerCreating</code></td></tr>
+                <tr><td><code>Storage Blob Data Contributor</code></td><td>Storage account</td><td>File uploads return 403</td></tr>
+                <tr><td>Entra admin on the SQL server</td><td>Azure SQL</td><td>Login fails for the managed identity</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Attach ACR</h3>
+          <pre><code># The convenience command - it creates an AcrPull role assignment for you,
+# which is why it needs Owner or User Access Administrator
+az aks update --name myapp-aks --resource-group "$RG" --attach-acr myappacr
+
+# The explicit equivalent, usable with only RBAC Administrator
+KUBELET_OID=$(az aks show -n myapp-aks -g "$RG" \
+  --query identityProfile.kubeletidentity.objectId -o tsv)
+ACR_ID=$(az acr show -n myappacr --query id -o tsv)
+
+az role assignment create \
+  --assignee-object-id "$KUBELET_OID" --assignee-principal-type ServicePrincipal \
+  --role AcrPull --scope "$ACR_ID"</code></pre>
+
+          <h3>Custom VNet</h3>
+          <div class="callout callout-warning">
+            <div class="callout-title">The bring-your-own-VNet trap</div>
+            <p>AKS creating its own VNet works out of the box. Point it at a VNet you already own - the usual pattern in an enterprise - and the cluster identity has no rights over that subnet. Creation may still succeed, then the first <code>LoadBalancer</code> service sits at <code>&lt;pending&gt;</code> forever with nothing useful in the events. Grant Network Contributor on the subnet before creating the cluster.</p>
+          </div>
+          <pre><code>SUBNET_ID=$(az network vnet subnet show \
+  -g "$RG" --vnet-name myapp-vnet -n aks-nodes --query id -o tsv)
+
+CLUSTER_OID=$(az aks show -n myapp-aks -g "$RG" \
+  --query identity.principalId -o tsv)
+
+az role assignment create \
+  --assignee-object-id "$CLUSTER_OID" --assignee-principal-type ServicePrincipal \
+  --role "Network Contributor" --scope "$SUBNET_ID"</code></pre>
+
+          <h3>Workload Identity Federation</h3>
+          <pre><code># User-assigned identity for the application
+az identity create --name myapp-workload-id --resource-group "$RG"
+
+IDENTITY_CLIENT_ID=$(az identity show -n myapp-workload-id -g "$RG" \
+  --query clientId -o tsv)
+OIDC_ISSUER=$(az aks show -n myapp-aks -g "$RG" \
+  --query oidcIssuerProfile.issuerUrl -o tsv)
+
+# Federate it to the Kubernetes service account - subject must match exactly
+az identity federated-credential create \
+  --name myapp-federated \
+  --identity-name myapp-workload-id \
+  --resource-group "$RG" \
+  --issuer "$OIDC_ISSUER" \
+  --subject "system:serviceaccount:app:app-sa" \
+  --audience api://AzureADTokenExchange
+
+# Grant it what it needs at runtime
+az role assignment create \
+  --assignee "$IDENTITY_CLIENT_ID" \
+  --role "Key Vault Secrets User" \
+  --scope "$(az keyvault show -n myapp-kv --query id -o tsv)"</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">The subject string is unforgiving</div>
+            <p><code>system:serviceaccount:NAMESPACE:SERVICEACCOUNT</code> must match the pod's actual service account character for character. A namespace typo produces <code>AADSTS70021: No matching federated identity record found</code> and nothing more specific. Confirm the OIDC issuer is enabled with <code>--enable-oidc-issuer --enable-workload-identity</code>.</p>
+          </div>
+
+          <h2>4. Who Can Run kubectl</h2>
+          <p>AKS offers three authorization models. Pick one deliberately - mixing them causes confusing partial access.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Model</th><th>How access is granted</th><th>Use when</th></tr></thead>
+              <tbody>
+                <tr><td>Local accounts</td><td><code>az aks get-credentials --admin</code> returns a certificate</td><td>Never in production - disable with <code>--disable-local-accounts</code></td></tr>
+                <tr><td>Entra ID + Kubernetes RBAC</td><td>Entra group mapped to a ClusterRoleBinding by group object ID</td><td>You want Kubernetes-native RBAC with Entra sign-in</td></tr>
+                <tr><td>Entra ID + Azure RBAC</td><td>Azure role assignments on the cluster resource</td><td>Recommended - access is visible and auditable in Azure</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># Enable Entra integration with Azure RBAC for Kubernetes authorization
+az aks update --name myapp-aks --resource-group "$RG" \
+  --enable-azure-rbac --enable-aad --disable-local-accounts
+
+CLUSTER_ID=$(az aks show -n myapp-aks -g "$RG" --query id -o tsv)
+
+# Platform engineers - full cluster admin
+az role assignment create \
+  --assignee "platform-team@example.com" \
+  --role "Azure Kubernetes Service RBAC Cluster Admin" \
+  --scope "$CLUSTER_ID"
+
+# CI/CD - write access to one namespace only
+az role assignment create \
+  --assignee "$PIPELINE_CLIENT_ID" \
+  --role "Azure Kubernetes Service RBAC Writer" \
+  --scope "$CLUSTER_ID/namespaces/app"
+
+# Everyone still needs Cluster User Role just to download kubeconfig
+az role assignment create \
+  --assignee "developers@example.com" \
+  --role "Azure Kubernetes Service Cluster User Role" \
+  --scope "$CLUSTER_ID"</code></pre>
+          <pre><code>az aks get-credentials --name myapp-aks --resource-group "$RG"
+kubectl auth can-i --list --namespace app</code></pre>
+
+          <h3>Private Clusters</h3>
+          <pre><code># A private cluster has no public API endpoint at all
+az aks create ... --enable-private-cluster
+
+# Or keep the public endpoint and restrict it by source IP
+az aks update --name myapp-aks --resource-group "$RG" \
+  --api-server-authorized-ip-ranges 203.0.113.10/32,198.51.100.0/24
+
+# Run a command inside a private cluster without a jumpbox or VPN
+az aks command invoke --name myapp-aks --resource-group "$RG" \
+  --command "kubectl get pods -n app"</code></pre>
+
+          <h2>5. Network Security Group Rules</h2>
+          <p>NSGs attach to subnets or NICs and are evaluated by priority, lowest number first. AKS manages the rules it needs on the load balancer, but rules you add to the node subnet can still break the cluster.</p>
+
+          <h3>Application Gateway Subnet</h3>
+          <div class="callout callout-danger">
+            <div class="callout-title">Ports 65200-65535 are not optional</div>
+            <p>Application Gateway v2 receives its health and configuration traffic from the <code>GatewayManager</code> service tag on ports <code>65200-65535</code>. Block them and the gateway reports an unhealthy backend or fails provisioning entirely, with an error that says nothing about NSGs. The gateway subnet must also be dedicated - no other resource may share it.</p>
+          </div>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Priority</th><th>Direction</th><th>Source</th><th>Port</th><th>Action</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>100</td><td>Inbound</td><td><code>GatewayManager</code></td><td>65200-65535</td><td>Allow</td><td>Gateway v2 control plane - mandatory</td></tr>
+                <tr><td>110</td><td>Inbound</td><td><code>AzureLoadBalancer</code></td><td>Any</td><td>Allow</td><td>Health probes</td></tr>
+                <tr><td>120</td><td>Inbound</td><td><code>Internet</code></td><td>443</td><td>Allow</td><td>Public HTTPS</td></tr>
+                <tr><td>130</td><td>Inbound</td><td><code>Internet</code></td><td>80</td><td>Allow</td><td>HTTP, redirected to HTTPS</td></tr>
+                <tr><td>4000</td><td>Inbound</td><td><code>Internet</code></td><td>Any</td><td>Deny</td><td>Catch-all</td></tr>
+                <tr><td>100</td><td>Outbound</td><td>AKS node subnet</td><td>80, 443, 30000-32767</td><td>Allow</td><td>Forward to backend pods</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>AKS Node Subnet</h3>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Priority</th><th>Direction</th><th>Source or destination</th><th>Port</th><th>Action</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>100</td><td>Inbound</td><td>App Gateway subnet <code>10.0.2.0/24</code></td><td>80, 443, 30000-32767</td><td>Allow</td><td>Ingress traffic to pods</td></tr>
+                <tr><td>110</td><td>Inbound</td><td><code>AzureLoadBalancer</code></td><td>Any</td><td>Allow</td><td>Health probes - required</td></tr>
+                <tr><td>120</td><td>Inbound</td><td><code>VirtualNetwork</code></td><td>Any</td><td>Allow</td><td>Node-to-node and pod-to-pod</td></tr>
+                <tr><td>4000</td><td>Inbound</td><td><code>Internet</code></td><td>Any</td><td>Deny</td><td>Nodes are never directly reachable</td></tr>
+                <tr><td>100</td><td>Outbound</td><td><code>AzureCloud</code></td><td>443</td><td>Allow</td><td>Control plane, ACR, Key Vault, Monitor</td></tr>
+                <tr><td>110</td><td>Outbound</td><td>Database subnet</td><td>1433</td><td>Allow</td><td>Azure SQL</td></tr>
+                <tr><td>120</td><td>Outbound</td><td><code>Internet</code></td><td>123 (UDP)</td><td>Allow</td><td>NTP - clock skew breaks token validation</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Database Subnet</h3>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Priority</th><th>Direction</th><th>Source</th><th>Port</th><th>Action</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>100</td><td>Inbound</td><td>AKS node subnet <code>10.0.1.0/24</code></td><td>1433</td><td>Allow</td><td>Application to database</td></tr>
+                <tr><td>4000</td><td>Inbound</td><td>Any</td><td>Any</td><td>Deny</td><td>Nothing else reaches the database</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <pre><code># Application Gateway subnet NSG
+az network nsg create --name agw-nsg --resource-group "$RG"
+
+az network nsg rule create --nsg-name agw-nsg --resource-group "$RG" \
+  --name allow-gateway-manager --priority 100 \
+  --direction Inbound --access Allow --protocol Tcp \
+  --source-address-prefixes GatewayManager \
+  --destination-port-ranges 65200-65535 \
+  --description "Application Gateway v2 control plane - required"
+
+az network nsg rule create --nsg-name agw-nsg --resource-group "$RG" \
+  --name allow-lb-probes --priority 110 \
+  --direction Inbound --access Allow --protocol "*" \
+  --source-address-prefixes AzureLoadBalancer \
+  --destination-port-ranges "*"
+
+az network nsg rule create --nsg-name agw-nsg --resource-group "$RG" \
+  --name allow-https --priority 120 \
+  --direction Inbound --access Allow --protocol Tcp \
+  --source-address-prefixes Internet --destination-port-ranges 443
+
+az network nsg rule create --nsg-name agw-nsg --resource-group "$RG" \
+  --name deny-all-inbound --priority 4000 \
+  --direction Inbound --access Deny --protocol "*" \
+  --source-address-prefixes Internet --destination-port-ranges "*"
+
+az network vnet subnet update --resource-group "$RG" \
+  --vnet-name myapp-vnet --name app-gateway --network-security-group agw-nsg</code></pre>
+
+          <pre><code># Database subnet NSG - reachable from the node subnet only
+az network nsg create --name db-nsg --resource-group "$RG"
+
+az network nsg rule create --nsg-name db-nsg --resource-group "$RG" \
+  --name allow-sql-from-aks --priority 100 \
+  --direction Inbound --access Allow --protocol Tcp \
+  --source-address-prefixes 10.0.1.0/24 --destination-port-ranges 1433
+
+az network nsg rule create --nsg-name db-nsg --resource-group "$RG" \
+  --name deny-all-inbound --priority 4000 \
+  --direction Inbound --access Deny --protocol "*" \
+  --source-address-prefixes "*" --destination-port-ranges "*"
+
+az network vnet subnet update --resource-group "$RG" \
+  --vnet-name myapp-vnet --name database --network-security-group db-nsg</code></pre>
+
+          <h2>6. Azure SQL Firewall</h2>
+          <p>Azure SQL enforces its own firewall on top of the NSG. Three access models, in increasing order of safety.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Model</th><th>How it works</th><th>Verdict</th></tr></thead>
+              <tbody>
+                <tr><td>Server firewall rules</td><td>Allowlist of public IP ranges</td><td>Acceptable for an admin workstation, never for the application path</td></tr>
+                <tr><td>Allow Azure services</td><td><code>0.0.0.0</code> pseudo-rule</td><td>Opens the server to <em>every</em> Azure tenant - do not use it</td></tr>
+                <tr><td>Private endpoint</td><td>Private IP in your VNet, public access disabled</td><td>Use this - the guide's target state</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># Turn off public access and use a private endpoint
+az sql server update --name myapp-sql --resource-group "$RG" \
+  --enable-public-network false
+
+az network private-endpoint create \
+  --name myapp-sql-pe --resource-group "$RG" \
+  --vnet-name myapp-vnet --subnet database \
+  --private-connection-resource-id "$(az sql server show -n myapp-sql -g "$RG" --query id -o tsv)" \
+  --group-id sqlServer \
+  --connection-name myapp-sql-conn
+
+# Private DNS so the server FQDN resolves to the private IP
+az network private-dns zone create -g "$RG" -n "privatelink.database.windows.net"
+az network private-dns link vnet create -g "$RG" \
+  --zone-name "privatelink.database.windows.net" \
+  --name sql-dns-link --virtual-network myapp-vnet --registration-enabled false
+
+# Verify no broad firewall rules were left behind
+az sql server firewall-rule list --server myapp-sql --resource-group "$RG" --output table</code></pre>
+          <div class="callout callout-danger">
+            <div class="callout-title">Check for the 0.0.0.0 rule</div>
+            <p>A firewall rule with start and end IP both <code>0.0.0.0</code> is the "Allow Azure services" toggle. It permits connections from any Azure resource in any subscription belonging to any customer. Portal wizards enable it by default. Delete it.</p>
+          </div>
+
+          <h2>7. Egress Allowlist</h2>
+          <p>If egress goes through Azure Firewall or an appliance with a user-defined route, AKS needs these destinations. Missing any of them leaves nodes stuck in <code>NotReady</code> during bootstrap.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Destination</th><th>Port</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td><code>*.hcp.REGION.azmk8s.io</code></td><td>443</td><td>AKS control plane</td></tr>
+                <tr><td><code>mcr.microsoft.com</code>, <code>*.data.mcr.microsoft.com</code></td><td>443</td><td>System container images</td></tr>
+                <tr><td><code>management.azure.com</code></td><td>443</td><td>Azure Resource Manager calls from add-ons</td></tr>
+                <tr><td><code>login.microsoftonline.com</code></td><td>443</td><td>Entra ID authentication</td></tr>
+                <tr><td><code>packages.microsoft.com</code></td><td>443</td><td>Node OS package updates</td></tr>
+                <tr><td><code>acs-mirror.azureedge.net</code></td><td>443</td><td>Node binaries such as kubelet and CNI plugins</td></tr>
+                <tr><td><code>*.azurecr.io</code>, <code>*.blob.core.windows.net</code></td><td>443</td><td>ACR images and layer storage</td></tr>
+                <tr><td><code>*.vault.azure.net</code></td><td>443</td><td>Key Vault secrets</td></tr>
+                <tr><td><code>dc.services.visualstudio.com</code>, <code>*.ods.opinsights.azure.com</code></td><td>443</td><td>Azure Monitor and Container Insights</td></tr>
+                <tr><td><code>ntp.ubuntu.com</code></td><td>123 (UDP)</td><td>Time sync - clock skew breaks token validation</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># Azure Firewall ships an FQDN tag that covers the AKS requirements
+az network firewall application-rule create \
+  --firewall-name myapp-fw --resource-group "$RG" \
+  --collection-name aks-egress --name allow-aks \
+  --source-addresses 10.0.1.0/24 \
+  --fqdn-tags AzureKubernetesService \
+  --action Allow --priority 100</code></pre>
+
+          <h2>8. Pod-Level Network Policy</h2>
+          <pre><code># Network policy must be chosen at cluster creation - it cannot be added later
+az aks create ... --network-plugin azure --network-policy calico</code></pre>
+          <pre><code># k8s/security/default-deny.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: app
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-api
+  namespace: app
+spec:
+  podSelector:
+    matchLabels: { app: dotnet-api }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { app: react-frontend }
+      ports:
+        - protocol: TCP
+          port: 8080</code></pre>
+
+          <h2>9. Azure Policy Guardrails</h2>
+          <p>Azure Policy is evaluated at deployment time and overrides RBAC. A deny effect blocks the request no matter what roles you hold.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Common policy</th><th>Effect on this guide</th><th>How to proceed</th></tr></thead>
+              <tbody>
+                <tr><td>Allowed locations</td><td>Resource creation denied outside approved regions</td><td>Set your region to an approved one before starting</td></tr>
+                <tr><td>Deny public network access on PaaS</td><td>Azure SQL and Storage must use private endpoints</td><td>Already compatible - the guide targets private endpoints</td></tr>
+                <tr><td>Require NSG on every subnet</td><td>Subnet creation fails without an NSG attached</td><td>Create the NSG in the same Terraform apply as the subnet</td></tr>
+                <tr><td>Deny public IP addresses</td><td>Standard load balancer cannot get a public IP</td><td>Use an internal load balancer behind Application Gateway or Front Door</td></tr>
+                <tr><td>Require customer-managed keys</td><td>Storage and disks must use your own key</td><td>Provision the key vault key before the storage account</td></tr>
+                <tr><td>Enforce required tags</td><td>Untagged resources denied</td><td>Set tags in the Terraform provider defaults</td></tr>
+                <tr><td>AKS policy add-on (Gatekeeper)</td><td>Privileged pods, host networking, and latest tags rejected</td><td>Set <code>securityContext</code> and pin image tags in your manifests</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code># What is assigned to this subscription
+az policy assignment list --output table
+
+# What has already been flagged non-compliant
+az policy state summarize --resource-group "$RG"
+
+# Enable the AKS policy add-on
+az aks enable-addons --addons azure-policy --name myapp-aks --resource-group "$RG"</code></pre>
+
+          <h2>10. Pre-Flight Verification</h2>
+          <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+RG="${RG:-myapp-rg}"
+CLUSTER="${CLUSTER:-myapp-aks}"
+
+echo "== Subscription =="
+az account show --query "{Name:name, Id:id, Tenant:tenantId}" --output table
+
+echo "== Resource providers =="
+az provider list \
+  --query "[?namespace=='Microsoft.ContainerService' || namespace=='Microsoft.Network' \
+            || namespace=='Microsoft.Sql' || namespace=='Microsoft.KeyVault' \
+            || namespace=='Microsoft.ContainerRegistry' \
+            || namespace=='Microsoft.ManagedIdentity'] \
+           .{Provider:namespace, State:registrationState}" --output table
+
+echo "== My role assignments =="
+OID=$(az ad signed-in-user show --query id -o tsv)
+az role assignment list --assignee "$OID" --all --include-inherited \
+  --query "[].{Role:roleDefinitionName, Scope:scope}" --output table
+
+echo "== Can I create role assignments? =="
+az role assignment list --assignee "$OID" --all \
+  --query "[?roleDefinitionName=='Owner' || roleDefinitionName=='User Access Administrator' \
+            || roleDefinitionName=='Role Based Access Control Administrator'] | length(@)"
+
+echo "== Policy assignments that could block me =="
+az policy assignment list --query "[].{Name:displayName, Scope:scope}" --output table
+
+echo "== NSG rules =="
+for NSG in $(az network nsg list -g "$RG" --query "[].name" -o tsv); do
+  echo "--- $NSG ---"
+  az network nsg rule list -g "$RG" --nsg-name "$NSG" \
+    --query "[].{P:priority,Dir:direction,Access:access,Src:sourceAddressPrefix,Port:destinationPortRange}" \
+    --output table
+done
+
+echo "== Azure SQL firewall rules (0.0.0.0 means 'all Azure services') =="
+az sql server firewall-rule list --server myapp-sql -g "$RG" --output table 2&gt;/dev/null || true</code></pre>
+
+          <h2>11. Error Message to Root Cause</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+              <tbody>
+                <tr><td><code>AuthorizationFailed ... does not have authorization to perform action</code></td><td>Missing Azure RBAC role at that scope</td><td>Check the scope in the message - it names the exact resource</td></tr>
+                <tr><td><code>Authorization_RequestDenied</code> on role assignment</td><td>Contributor cannot grant access</td><td>Get Owner, User Access Administrator, or RBAC Administrator</td></tr>
+                <tr><td><code>MissingSubscriptionRegistration</code></td><td>Resource provider not registered</td><td><code>az provider register --namespace Microsoft.X</code></td></tr>
+                <tr><td><code>RequestDisallowedByPolicy</code></td><td>Azure Policy deny effect, not RBAC</td><td>Read the policy name in the error and adjust the resource</td></tr>
+                <tr><td>LoadBalancer service stuck at <code>&lt;pending&gt;</code></td><td>Cluster identity lacks Network Contributor on the subnet</td><td>Assign it on the subnet, then delete and recreate the service</td></tr>
+                <tr><td><code>ImagePullBackOff</code> with <code>401 Unauthorized</code></td><td>Kubelet identity has no <code>AcrPull</code></td><td><code>az aks update --attach-acr</code>, or assign AcrPull explicitly</td></tr>
+                <tr><td>Application Gateway backend unhealthy</td><td>NSG blocks <code>GatewayManager</code> on 65200-65535</td><td>Add the allow rule at a priority below any deny</td></tr>
+                <tr><td>AGIC pod crash-loops</td><td>AGIC identity lacks Contributor on the gateway or Reader on the RG</td><td>Assign both, then restart the AGIC deployment</td></tr>
+                <tr><td><code>AADSTS70021: No matching federated identity record found</code></td><td>Federated credential subject does not match the service account</td><td>Recheck <code>system:serviceaccount:NAMESPACE:NAME</code> character for character</td></tr>
+                <tr><td>Key Vault secret mount fails</td><td>Workload identity lacks <code>Key Vault Secrets User</code>, or the vault uses access policies</td><td>Assign the role, or switch the vault to RBAC authorization</td></tr>
+                <tr><td>Cannot connect to Azure SQL from a pod</td><td>Private endpoint DNS not linked, or NSG blocks 1433</td><td>Verify the private DNS zone link and the database subnet NSG</td></tr>
+                <tr><td>Nodes stay <code>NotReady</code> behind a firewall</td><td>Required egress FQDNs blocked</td><td>Apply the <code>AzureKubernetesService</code> FQDN tag rule</td></tr>
+                <tr><td><code>kubectl</code> returns <code>Forbidden</code> after a successful login</td><td>Entra sign-in worked, Azure RBAC role missing</td><td>Assign an AKS RBAC Reader, Writer, or Admin role on the cluster</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-title">Same problem, other clouds</div>
+            <p>The equivalent pages are <a href="../../foundation/permissions.html">GCP - Permissions &amp; Firewall Rules</a> and <a href="../../aws/foundation/permissions.html">AWS - Permissions &amp; Security Groups</a>.</p>
+          </div>
+        </div>
+        <nav class="page-navigation">
+          <a href="./" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Resource Group &amp; VNet</span></a>
+          <a href="../infrastructure/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Infrastructure</span></a>
+        </nav>
+      </article>
+    </main>
+  </div>
+  <footer class="site-footer"><div class="footer-container"><p class="copyright">CloudDevOps</p></div></footer>
+  <script src="../../../assets/js/navigation.js" defer></script>
+  <script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

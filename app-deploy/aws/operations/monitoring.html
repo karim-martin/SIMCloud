@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -79,7 +80,7 @@
         <div class="article-body">
 
           <h2>Enable Container Insights</h2>
-          <pre><code"># Enable Container Insights for EKS
+          <pre><code># Enable Container Insights for EKS
 aws eks create-addon \
   --cluster-name myapp-cluster \
   --addon-name amazon-cloudwatch-observability \
@@ -87,7 +88,7 @@ aws eks create-addon \
   --region us-east-1</code></pre>
 
           <h2>Create CloudWatch Dashboard (Terraform)</h2>
-          <pre><code"># Important metrics to track:
+          <pre><code># Important metrics to track:
 # - Pod CPU/Memory utilization
 # - HTTP 5xx error rate from ALB
 # - RDS connections and read/write IOPS

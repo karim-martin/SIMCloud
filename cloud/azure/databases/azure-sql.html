@@ -92,7 +92,7 @@ az sql server firewall-rule create \
   --end-ip-address 10.0.11.255</code></pre>
 
           <h2>Connect from .NET</h2>
-          <pre><code">// Program.cs - retrieve connection string from Key Vault
+          <pre><code>// Program.cs - retrieve connection string from Key Vault
 var keyVaultUri = new Uri("https://myapp-vault.vault.azure.net/");
 var credential = new DefaultAzureCredential();  // Workload Identity
 var client = new SecretClient(keyVaultUri, credential);

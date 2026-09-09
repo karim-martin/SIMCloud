@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -83,7 +84,7 @@
           </div>
 
           <h2>Ingress Manifest</h2>
-          <pre><code"># ingress.yaml
+          <pre><code># ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -118,7 +119,7 @@ spec:
               number: 80</code></pre>
 
           <h2>Apply and Verify</h2>
-          <pre><code">kubectl apply -f ingress.yaml -n myapp
+          <pre><code>kubectl apply -f ingress.yaml -n myapp
 
 # Get the App Gateway public IP
 kubectl get ingress myapp-ingress -n myapp

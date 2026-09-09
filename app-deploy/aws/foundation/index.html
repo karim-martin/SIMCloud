@@ -36,6 +36,7 @@
         <li><a href="../foundation/" class="active">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -80,6 +81,27 @@
 
           <p>Before deploying to EKS, you need an AWS account with IAM configured and a VPC with public/private subnets set up.</p>
 
+          <h2>What You'll Configure</h2>
+          <div class="card-grid">
+            <a href="./account-setup.html" class="card card-link">
+              <h3 class="card-title">AWS Account Setup</h3>
+              <p class="card-description">A non-root IAM identity, MFA on the root account, and a billing alarm.</p>
+            </a>
+            <a href="./networking.html" class="card card-link">
+              <h3 class="card-title">VPC &amp; Networking</h3>
+              <p class="card-description">A multi-AZ VPC with public, private, and database subnets ready for EKS.</p>
+            </a>
+            <a href="./permissions.html" class="card card-link">
+              <h3 class="card-title">Permissions &amp; Security Groups</h3>
+              <p class="card-description">Deployer IAM policy, IRSA roles, EKS access entries, and the full security group matrix.</p>
+            </a>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Check your access before you build</div>
+            <p>The <code>AdministratorAccess</code> shortcut below works in a sandbox account. In a shared account, read <a href="./permissions.html">Permissions &amp; Security Groups</a> first - it lists the actual IAM actions required, the security group rules every layer needs, and the EKS access entries without which <code>kubectl</code> returns <code>Unauthorized</code> no matter what IAM says.</p>
+          </div>
+
           <h2>IAM Setup</h2>
           <pre><code># Create an admin IAM user for deployment (avoid root)
 aws iam create-user --user-name eks-deployer
@@ -93,7 +115,7 @@ aws iam attach-user-policy \
 aws iam create-access-key --user-name eks-deployer</code></pre>
 
           <h2>VPC Setup with Terraform</h2>
-          <pre><code"># main.tf
+          <pre><code># main.tf
 terraform {
   required_providers {
     aws = { source = "hashicorp/aws", version = "~> 5.0" }
@@ -132,7 +154,7 @@ output "private_subnet_ids" { value = module.vpc.private_subnets }
 output "public_subnet_ids" { value = module.vpc.public_subnets }
 output "database_subnet_ids" { value = module.vpc.database_subnets }</code></pre>
 
-          <pre><code">terraform init
+          <pre><code>terraform init
 terraform plan
 terraform apply  # Takes ~5 minutes</code></pre>
         </div>

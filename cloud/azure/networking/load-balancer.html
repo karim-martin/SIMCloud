@@ -54,14 +54,14 @@
           </div>
 
           <h2>AGIC - Application Gateway Ingress Controller</h2>
-          <pre><code"># Enable AGIC when creating AKS
+          <pre><code># Enable AGIC when creating AKS
 az aks create \
   --name myapp-cluster \
   --resource-group myapp-rg \
   --enable-addons ingress-appgw \
   --appgw-name myapp-gateway \
   --appgw-subnet-cidr 10.1.0.0/16</code></pre>
-          <pre><code"># ingress.yaml - Application Gateway routes automatically created
+          <pre><code># ingress.yaml - Application Gateway routes automatically created
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

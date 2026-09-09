@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -79,7 +80,7 @@
         <div class="article-body">
 
           <h2>Kubernetes Deployment</h2>
-          <pre><code"># k8s/frontend/deployment.yaml
+          <pre><code># k8s/frontend/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -120,7 +121,7 @@ spec:
   - port: 80
     targetPort: 80</code></pre>
 
-          <pre><code">kubectl apply -f k8s/frontend/
+          <pre><code>kubectl apply -f k8s/frontend/
 kubectl -n production rollout status deployment/frontend
 kubectl -n production get pods  # Should see 3 Running pods</code></pre>
         </div>

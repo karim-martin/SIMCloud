@@ -54,7 +54,7 @@
           </div>
 
           <h2>Store and Retrieve Secrets</h2>
-          <pre><code"># Create Key Vault
+          <pre><code># Create Key Vault
 az keyvault create \
   --name myapp-vault \
   --resource-group myapp-rg \
@@ -72,7 +72,7 @@ az keyvault secret show \
   --vault-name myapp-vault \
   --name "db-password" \
   --query value -o tsv</code></pre>
-          <pre><code">// .NET 8 - integrate Key Vault with configuration
+          <pre><code>// .NET 8 - integrate Key Vault with configuration
 builder.Configuration.AddAzureKeyVault(
     new Uri("https://myapp-vault.vault.azure.net/"),
     new DefaultAzureCredential());
@@ -81,12 +81,12 @@ builder.Configuration.AddAzureKeyVault(
 var dbPassword = builder.Configuration["db-password"];</code></pre>
 
           <h2>Mount Secrets as Kubernetes Files (CSI Driver)</h2>
-          <pre><code"># Install Azure Key Vault Secret Store CSI Driver
+          <pre><code># Install Azure Key Vault Secret Store CSI Driver
 az aks enable-addons \
   --addons azure-keyvault-secrets-provider \
   --name myapp-cluster \
   --resource-group myapp-rg</code></pre>
-          <pre><code">apiVersion: secrets-store.csi.x-k8s.io/v1
+          <pre><code>apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
   name: myapp-secrets

@@ -67,7 +67,7 @@
           </table></div>
 
           <h2>Deploy Front Door with Terraform</h2>
-          <pre><code">resource "azurerm_cdn_frontdoor_profile" "main" {
+          <pre><code>resource "azurerm_cdn_frontdoor_profile" "main" {
   name                = "myapp-frontdoor"
   resource_group_name = azurerm_resource_group.main.name
   sku_name            = "Standard_AzureFrontDoor"

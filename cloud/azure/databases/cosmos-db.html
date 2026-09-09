@@ -62,7 +62,7 @@
           </div>
 
           <h2>Create and Query (NoSQL API)</h2>
-          <pre><code">az cosmosdb create \
+          <pre><code>az cosmosdb create \
   --name myapp-cosmos \
   --resource-group myapp-rg \
   --kind GlobalDocumentDB \
@@ -80,7 +80,7 @@ az cosmosdb sql container create \
   --name users \
   --partition-key-path /userId \
   --throughput 400</code></pre>
-          <pre><code">// .NET SDK
+          <pre><code>// .NET SDK
 var client = new CosmosClient(endpoint, new DefaultAzureCredential());
 var container = client.GetContainer("myapp-db", "users");
 

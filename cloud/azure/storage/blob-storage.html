@@ -65,7 +65,7 @@
           </table></div>
 
           <h2>Upload and Manage Blobs</h2>
-          <pre><code"># Azure CLI - upload a file
+          <pre><code># Azure CLI - upload a file
 az storage blob upload \
   --account-name myappstorage \
   --container-name uploads \
@@ -80,7 +80,7 @@ az storage blob generate-sas \
   --name photos/photo.jpg \
   --permissions rw \
   --expiry $(date -u -d '1 hour' '+%Y-%m-%dT%H:%MZ')</code></pre>
-          <pre><code">// .NET SDK - upload from stream
+          <pre><code>// .NET SDK - upload from stream
 var credential = new DefaultAzureCredential();  // Workload Identity
 var blobClient = new BlobClient(
     new Uri("https://myappstorage.blob.core.windows.net/uploads/photo.jpg"),

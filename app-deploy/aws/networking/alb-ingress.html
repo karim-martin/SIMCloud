@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -79,7 +80,7 @@
         <div class="article-body">
 
           <h2>Install AWS Load Balancer Controller</h2>
-          <pre><code"># Create IRSA for the controller
+          <pre><code># Create IRSA for the controller
 eksctl create iamserviceaccount \
   --cluster myapp-cluster \
   --namespace kube-system \
@@ -96,7 +97,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set serviceAccount.name=aws-load-balancer-controller</code></pre>
 
           <h2>Create Ingress Resource</h2>
-          <pre><code"># k8s/ingress.yaml
+          <pre><code># k8s/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -123,7 +124,7 @@ spec:
         backend:
           service: {name: frontend-svc, port: {number: 80}}</code></pre>
 
-          <pre><code">kubectl apply -f k8s/ingress.yaml
+          <pre><code>kubectl apply -f k8s/ingress.yaml
 # Wait for ALB to be created (~2 minutes)
 kubectl -n production get ingress myapp-ingress
 # Note the ADDRESS - that's your ALB DNS name</code></pre>

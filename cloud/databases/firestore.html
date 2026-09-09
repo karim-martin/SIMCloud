@@ -187,7 +187,7 @@ FirestoreDb db = FirestoreDb.Create(projectId);
 
 // Add document
 DocumentReference docRef = db.Collection("users").Document("user123");
-await docRef.SetAsync(new Dictionary<string, object>
+await docRef.SetAsync(new Dictionary&lt;string, object&gt;
 {
     { "name", "John" },
     { "email", "john@example.com" }
@@ -197,7 +197,7 @@ await docRef.SetAsync(new Dictionary<string, object>
 DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
 if (snapshot.Exists)
 {
-    Dictionary<string, object> user = snapshot.ToDictionary();
+    Dictionary&lt;string, object&gt; user = snapshot.ToDictionary();
 }
 
 // Query

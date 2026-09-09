@@ -54,7 +54,7 @@
           </div>
 
           <h2>Create DNS Zone and Records</h2>
-          <pre><code"># Create public DNS zone
+          <pre><code># Create public DNS zone
 az network dns zone create \
   --name myapp.example.com \
   --resource-group myapp-rg
@@ -74,7 +74,7 @@ az network dns record-set a create \
   --target-resource $(az cdn endpoint show --name myapp-endpoint --profile-name myapp-frontdoor --resource-group myapp-rg --query id -o tsv)</code></pre>
 
           <h2>Private DNS for AKS</h2>
-          <pre><code">resource "azurerm_private_dns_zone" "sql" {
+          <pre><code>resource "azurerm_private_dns_zone" "sql" {
   name                = "privatelink.database.windows.net"
   resource_group_name = azurerm_resource_group.main.name
 }

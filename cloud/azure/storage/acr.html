@@ -54,7 +54,7 @@
           </div>
 
           <h2>Create ACR and Push Images</h2>
-          <pre><code"># Create container registry
+          <pre><code># Create container registry
 az acr create \
   --name myappcr \
   --resource-group myapp-rg \
@@ -76,7 +76,7 @@ az acr build \
   .</code></pre>
 
           <h2>Attach ACR to AKS</h2>
-          <pre><code"># Grant AKS pull permission from ACR (managed identity)
+          <pre><code># Grant AKS pull permission from ACR (managed identity)
 az aks update \
   --name myapp-cluster \
   --resource-group myapp-rg \
@@ -86,7 +86,7 @@ az aks update \
 # image: myappcr.azurecr.io/api:v1.0</code></pre>
 
           <h2>ACR Tasks - Build in the Cloud</h2>
-          <pre><code"># Trigger a build on every git commit
+          <pre><code># Trigger a build on every git commit
 az acr task create \
   --name build-api \
   --registry myappcr \

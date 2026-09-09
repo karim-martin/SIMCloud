@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -78,7 +79,7 @@
         <div class="article-body">
 
           <h2>Option A - cert-manager (Let's Encrypt, free)</h2>
-          <pre><code"># Install cert-manager
+          <pre><code># Install cert-manager
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 helm install cert-manager jetstack/cert-manager \
@@ -105,12 +106,12 @@ spec:
 EOF</code></pre>
 
           <h2>Update Ingress for cert-manager</h2>
-          <pre><code"># Add annotation to your ingress:
+          <pre><code># Add annotation to your ingress:
 annotations:
   cert-manager.io/cluster-issuer: "letsencrypt-prod"</code></pre>
 
           <h2>Option B - Azure Key Vault Certificate</h2>
-          <pre><code"># Import certificate into Key Vault
+          <pre><code># Import certificate into Key Vault
 az keyvault certificate import \
   --vault-name myapp-kv \
   --name myapp-cert \
@@ -127,7 +128,7 @@ resource "azurerm_application_gateway" "main" {
 }</code></pre>
 
           <h2>DNS - Point Your Domain</h2>
-          <pre><code"># Get App Gateway public IP
+          <pre><code># Get App Gateway public IP
 AGW_IP=$(kubectl get ingress myapp-ingress -n myapp -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 echo "App Gateway IP: $AGW_IP"
 

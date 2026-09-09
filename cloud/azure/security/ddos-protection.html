@@ -68,7 +68,7 @@
 
           <h2>WAF with Application Gateway</h2>
           <p>For Layer 7 (HTTP) attack protection, use Web Application Firewall on Application Gateway or Azure Front Door:</p>
-          <pre><code">resource "azurerm_web_application_firewall_policy" "main" {
+          <pre><code>resource "azurerm_web_application_firewall_policy" "main" {
   name                = "myapp-waf-policy"
   resource_group_name = azurerm_resource_group.main.name
   location            = "eastus"

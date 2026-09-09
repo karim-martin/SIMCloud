@@ -27,6 +27,7 @@
         <li><a href="./" class="active">Overview</a></li>
         <li><a href="./project-setup.html">Project Setup</a></li>
         <li><a href="./networking.html">Networking</a></li>
+        <li><a href="./permissions.html">Permissions &amp; Firewall</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -75,6 +76,10 @@
               <h3 class="card-title">Networking</h3>
               <p class="card-description">Create a VPC, subnets, firewall rules, and Cloud NAT for private nodes.</p>
             </a>
+            <a href="./permissions.html" class="card card-link">
+              <h3 class="card-title">Permissions &amp; Firewall</h3>
+              <p class="card-description">Operator IAM roles, org policy constraints, the full firewall rule set, and cluster access control.</p>
+            </a>
           </div>
 
           <h2>Foundation Architecture</h2>
@@ -109,6 +114,11 @@
                 <tr><td><strong>Cloud NAT</strong></td><td>Allows private resources to access the internet</td></tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Check your access before you build</div>
+            <p>If you are working in a corporate project rather than a personal sandbox, read <a href="./permissions.html">Permissions &amp; Firewall Rules</a> first. It lists every IAM role you need, the organization policy constraints that can block you regardless of those roles, and a pre-flight script that tells you in one run whether you can complete the guide.</p>
           </div>
 
           <div class="callout callout-info">

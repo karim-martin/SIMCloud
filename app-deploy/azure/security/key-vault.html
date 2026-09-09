@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -78,7 +79,7 @@
         <div class="article-body">
 
           <h2>Create Key Vault</h2>
-          <pre><code"># Create Key Vault
+          <pre><code># Create Key Vault
 az keyvault create \
   --name myapp-kv \
   --resource-group myapp-rg \
@@ -92,16 +93,16 @@ az keyvault secret set \
   --value "Server=myapp-sql-server.database.windows.net;Database=myapp-db;..."</code></pre>
 
           <h2>.NET 8 - Read from Key Vault</h2>
-          <pre><code"># Install NuGet packages
+          <pre><code># Install NuGet packages
 dotnet add package Azure.Extensions.AspNetCore.Configuration.Secrets
 dotnet add package Azure.Identity</code></pre>
-          <pre><code">// Program.cs
+          <pre><code>// Program.cs
 var keyVaultUri = new Uri(builder.Configuration["KeyVaultUri"]!);
 builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
 // DefaultAzureCredential uses Workload Identity in AKS automatically</code></pre>
 
           <h2>Key Vault CSI Driver (Mount as Files)</h2>
-          <pre><code"># SecretProviderClass - mount Key Vault secrets as files
+          <pre><code># SecretProviderClass - mount Key Vault secrets as files
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:

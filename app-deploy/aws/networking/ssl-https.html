@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -79,7 +80,7 @@
         <div class="article-body">
 
           <h2>Request ACM Certificate</h2>
-          <pre><code"># Request a free SSL certificate
+          <pre><code># Request a free SSL certificate
 aws acm request-certificate \
   --domain-name myapp.example.com \
   --subject-alternative-names "*.myapp.example.com" \
@@ -95,7 +96,7 @@ aws acm describe-certificate \
   --query "Certificate.DomainValidationOptions"</code></pre>
 
           <h2>Add DNS Validation Record</h2>
-          <pre><code"># Add CNAME record to Route 53 for certificate validation
+          <pre><code># Add CNAME record to Route 53 for certificate validation
 aws route53 change-resource-record-sets \
   --hosted-zone-id Z1234567890 \
   --change-batch '{
@@ -116,7 +117,7 @@ aws acm wait certificate-validated \
 echo "Certificate validated!"</code></pre>
 
           <h2>Point Domain to ALB</h2>
-          <pre><code"># Get ALB DNS name from Ingress
+          <pre><code># Get ALB DNS name from Ingress
 ALB_DNS=$(kubectl -n production get ingress myapp-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
 # Create Route 53 alias record

@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -96,7 +97,7 @@
           </div>
 
           <h2>Step 1 - Create Managed Identity</h2>
-          <pre><code"># Create a User-Assigned Managed Identity
+          <pre><code># Create a User-Assigned Managed Identity
 az identity create \
   --name myapp-identity \
   --resource-group myapp-rg
@@ -113,13 +114,13 @@ IDENTITY_OBJECT_ID=$(az identity show \
   --query principalId -o tsv)</code></pre>
 
           <h2>Step 2 - Get AKS OIDC Issuer</h2>
-          <pre><code">AKS_OIDC_ISSUER=$(az aks show \
+          <pre><code>AKS_OIDC_ISSUER=$(az aks show \
   --name myapp-aks \
   --resource-group myapp-rg \
   --query "oidcIssuerProfile.issuerUrl" -o tsv)</code></pre>
 
           <h2>Step 3 - Create Federated Credential</h2>
-          <pre><code">az identity federated-credential create \
+          <pre><code>az identity federated-credential create \
   --name myapp-fedcred \
   --identity-name myapp-identity \
   --resource-group myapp-rg \
@@ -128,7 +129,7 @@ IDENTITY_OBJECT_ID=$(az identity show \
   --audience api://AzureADTokenExchange</code></pre>
 
           <h2>Step 4 - Create Kubernetes Service Account</h2>
-          <pre><code"># backend-sa.yaml
+          <pre><code># backend-sa.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -136,10 +137,10 @@ metadata:
   namespace: myapp
   annotations:
     azure.workload.identity/client-id: "&lt;IDENTITY_CLIENT_ID&gt;"</code></pre>
-          <pre><code">kubectl apply -f backend-sa.yaml</code></pre>
+          <pre><code>kubectl apply -f backend-sa.yaml</code></pre>
 
           <h2>Step 5 - Assign RBAC Role</h2>
-          <pre><code"># Grant the identity access to Key Vault secrets
+          <pre><code># Grant the identity access to Key Vault secrets
 az role assignment create \
   --assignee-object-id "$IDENTITY_OBJECT_ID" \
   --role "Key Vault Secrets User" \

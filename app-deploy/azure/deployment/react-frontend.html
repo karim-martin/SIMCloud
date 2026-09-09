@@ -34,6 +34,7 @@
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Foundation</h3><ul class="sidebar-links">
         <li><a href=".././foundation/">Resource Group & VNet</a></li>
+        <li><a href=".././foundation/permissions.html">Permissions &amp; NSG Rules</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href=".././infrastructure/">Overview</a></li>
@@ -78,7 +79,7 @@
         <div class="article-body">
 
           <h2>Kubernetes Deployment</h2>
-          <pre><code"># frontend-deployment.yaml
+          <pre><code># frontend-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -127,7 +128,7 @@ spec:
   type: ClusterIP</code></pre>
 
           <h2>Create Namespace and Deploy</h2>
-          <pre><code">kubectl create namespace myapp
+          <pre><code>kubectl create namespace myapp
 kubectl apply -f frontend-deployment.yaml -n myapp
 kubectl rollout status deployment/frontend -n myapp
 kubectl get pods -n myapp</code></pre>

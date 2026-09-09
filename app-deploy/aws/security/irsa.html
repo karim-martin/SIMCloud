@@ -36,6 +36,7 @@
         <li><a href="../foundation/">Overview</a></li>
         <li><a href="../foundation/account-setup.html">AWS Account Setup</a></li>
         <li><a href="../foundation/networking.html">VPC &amp; Networking</a></li>
+        <li><a href="../foundation/permissions.html">Permissions &amp; Security Groups</a></li>
       </ul></div>
       <div class="sidebar-section"><h3 class="sidebar-section-title">Infrastructure</h3><ul class="sidebar-links">
         <li><a href="../infrastructure/">Overview</a></li>
@@ -98,7 +99,7 @@
           </div>
 
           <h2>Setup IRSA Step by Step</h2>
-          <pre><code"># 1. Associate OIDC provider with cluster (one-time)
+          <pre><code># 1. Associate OIDC provider with cluster (one-time)
 eksctl utils associate-iam-oidc-provider \
   --cluster myapp-cluster \
   --approve
