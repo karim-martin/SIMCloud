@@ -50,7 +50,7 @@
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">CodePipeline is the Conductor</div>
-            <p>CodePipeline itself doesn't build or deploy anything — it coordinates other services. It connects your source code repo (GitHub, CodeCommit), triggers a CodeBuild job to build and test, optionally requires a manual approval, then deploys to EKS or Elastic Beanstalk. Think of it as a workflow engine that knows what to run and when, reacting to code changes automatically.</p>
+            <p>CodePipeline itself doesn't build or deploy anything - it coordinates other services. It connects your source code repo (GitHub, CodeCommit), triggers a CodeBuild job to build and test, optionally requires a manual approval, then deploys to EKS or Elastic Beanstalk. Think of it as a workflow engine that knows what to run and when, reacting to code changes automatically.</p>
           </div>
 
           <h2>Pipeline Stages</h2>
@@ -59,7 +59,7 @@ Pipeline:
   Type: AWS::CodePipeline::Pipeline
   Properties:
     Stages:
-      # Stage 1: Source — pull from GitHub on push
+      # Stage 1: Source - pull from GitHub on push
       - Name: Source
         Actions:
           - Name: GitHub
@@ -70,7 +70,7 @@ Pipeline:
               Branch: main
               OAuthToken: !Ref GitHubToken
 
-      # Stage 2: Build — run CodeBuild
+      # Stage 2: Build - run CodeBuild
       - Name: Build
         Actions:
           - Name: BuildAndTest
@@ -93,7 +93,7 @@ Pipeline:
               ProjectName: !Ref DeployProject</code></pre>
 
           <h2>Typical buildspec.yml</h2>
-          <pre><code># buildspec.yml — runs in CodeBuild
+          <pre><code># buildspec.yml - runs in CodeBuild
 version: 0.2
 phases:
   pre_build:

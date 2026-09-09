@@ -45,12 +45,12 @@
             <h1 style="margin:0;">Azure VNet</h1>
             <span class="provider-badge provider-badge-azure">Azure</span>
           </div>
-          <p class="text-secondary text-lg">Virtual Network — your isolated, secure network inside Azure.</p>
+          <p class="text-secondary text-lg">Virtual Network - your isolated, secure network inside Azure.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">VNet = Your Private Network in Azure</div>
-            <p>A VNet is Azure's equivalent of an on-prem network. It's isolated by default — nothing from the internet can reach it unless you explicitly open a path. You divide a VNet into subnets: a public subnet hosts load balancers that internet traffic reaches; a private subnet hosts your AKS nodes and databases. <strong>Network Security Groups (NSGs)</strong> are stateful firewalls applied to subnets or individual NICs.</p>
+            <p>A VNet is Azure's equivalent of an on-prem network. It's isolated by default - nothing from the internet can reach it unless you explicitly open a path. You divide a VNet into subnets: a public subnet hosts load balancers that internet traffic reaches; a private subnet hosts your AKS nodes and databases. <strong>Network Security Groups (NSGs)</strong> are stateful firewalls applied to subnets or individual NICs.</p>
           </div>
 
           <h2>VNet Design for AKS</h2>
@@ -75,7 +75,7 @@ resource "azurerm_subnet" "aks_nodes" {
   address_prefixes     = ["10.2.0.0/16"]
 }
 
-# Network Security Group — restrict database access
+# Network Security Group - restrict database access
 resource "azurerm_network_security_rule" "allow_aks_to_db" {
   name                        = "allow-aks-to-db"
   priority                    = 100
@@ -91,7 +91,7 @@ resource "azurerm_network_security_rule" "allow_aks_to_db" {
 }</code></pre>
 
           <h2>Private Endpoints</h2>
-          <p>Private endpoints give Azure PaaS services (Azure SQL, Storage, Key Vault) a private IP inside your VNet. Traffic never leaves your VNet — no public internet exposure.</p>
+          <p>Private endpoints give Azure PaaS services (Azure SQL, Storage, Key Vault) a private IP inside your VNet. Traffic never leaves your VNet - no public internet exposure.</p>
           <pre><code">resource "azurerm_private_endpoint" "sql" {
   name                = "sql-private-endpoint"
   location            = "eastus"

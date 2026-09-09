@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CI/CD — Azure Deploy | CloudDevOps</title>
+  <title>CI/CD - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -73,13 +73,13 @@
         </ol></nav>
         <header class="article-header">
           <h1>Azure Pipelines CI/CD</h1>
-          <p class="text-secondary text-lg">Build, test, and deploy automatically on every push — using OIDC workload federation (no stored credentials).</p>
+          <p class="text-secondary text-lg">Build, test, and deploy automatically on every push - using OIDC workload federation (no stored credentials).</p>
         </header>
         <div class="article-body">
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">What Does This Pipeline Do?</div>
-            <p>Every time you push code to the main branch: (1) Azure Pipelines builds and tests your code, (2) builds Docker images and pushes to ACR, (3) deploys new images to AKS. The pipeline authenticates to Azure using a Federated Credential — no passwords or service principal secrets are stored.</p>
+            <p>Every time you push code to the main branch: (1) Azure Pipelines builds and tests your code, (2) builds Docker images and pushes to ACR, (3) deploys new images to AKS. The pipeline authenticates to Azure using a Federated Credential - no passwords or service principal secrets are stored.</p>
           </div>
 
           <h2>azure-pipelines.yml</h2>
@@ -163,7 +163,7 @@ stages:
                 kubectl rollout status deployment/backend -n $(NAMESPACE)</code></pre>
 
           <h2>Set Up Service Connection</h2>
-          <p>In Azure DevOps, go to <strong>Project Settings → Service Connections → New → Azure Resource Manager</strong>. Choose <strong>Workload Identity Federation</strong> — Azure DevOps creates a federated credential automatically. No secrets stored.</p>
+          <p>In Azure DevOps, go to <strong>Project Settings → Service Connections → New → Azure Resource Manager</strong>. Choose <strong>Workload Identity Federation</strong> - Azure DevOps creates a federated credential automatically. No secrets stored.</p>
         </div>
         <nav class="page-navigation">
           <a href="./" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Operations Overview</span></a>

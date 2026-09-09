@@ -45,12 +45,12 @@
             <h1 style="margin:0;">Amazon ECR</h1>
             <span class="provider-badge provider-badge-aws">AWS</span>
           </div>
-          <p class="text-secondary text-lg">Elastic Container Registry — private Docker image storage for AWS.</p>
+          <p class="text-secondary text-lg">Elastic Container Registry - private Docker image storage for AWS.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">ECR = A Private Hub for Your Docker Images</div>
-            <p>When you build a Docker image, you need somewhere to store it so Kubernetes can pull it when deploying. ECR is AWS's private container registry — like Docker Hub, but private and integrated with your AWS account. Your EKS cluster, Fargate tasks, and CodeBuild jobs all authenticate to ECR automatically using IAM.</p>
+            <p>When you build a Docker image, you need somewhere to store it so Kubernetes can pull it when deploying. ECR is AWS's private container registry - like Docker Hub, but private and integrated with your AWS account. Your EKS cluster, Fargate tasks, and CodeBuild jobs all authenticate to ECR automatically using IAM.</p>
           </div>
 
           <h2>Push an Image to ECR</h2>
@@ -83,7 +83,7 @@ spec:
       containers:
       - name: my-app
         image: 123456789.dkr.ecr.us-east-1.amazonaws.com/my-app:v1.0.0
-        # EKS nodes/Fargate automatically authenticate via IAM — no imagePullSecrets needed!</code></pre>
+        # EKS nodes/Fargate automatically authenticate via IAM - no imagePullSecrets needed!</code></pre>
 
           <h2>ECR Features</h2>
           <div class="feature-grid">

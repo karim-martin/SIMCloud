@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SSL / HTTPS — Azure Deploy | CloudDevOps</title>
+  <title>SSL / HTTPS - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -77,7 +77,7 @@
         </header>
         <div class="article-body">
 
-          <h2>Option A — cert-manager (Let's Encrypt, free)</h2>
+          <h2>Option A - cert-manager (Let's Encrypt, free)</h2>
           <pre><code"># Install cert-manager
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
@@ -109,7 +109,7 @@ EOF</code></pre>
 annotations:
   cert-manager.io/cluster-issuer: "letsencrypt-prod"</code></pre>
 
-          <h2>Option B — Azure Key Vault Certificate</h2>
+          <h2>Option B - Azure Key Vault Certificate</h2>
           <pre><code"># Import certificate into Key Vault
 az keyvault certificate import \
   --vault-name myapp-kv \
@@ -126,7 +126,7 @@ resource "azurerm_application_gateway" "main" {
   }
 }</code></pre>
 
-          <h2>DNS — Point Your Domain</h2>
+          <h2>DNS - Point Your Domain</h2>
           <pre><code"># Get App Gateway public IP
 AGW_IP=$(kubectl get ingress myapp-ingress -n myapp -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 echo "App Gateway IP: $AGW_IP"

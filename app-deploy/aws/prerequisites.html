@@ -95,7 +95,7 @@ unzip awscliv2.zip && sudo ./aws/install
 
 aws --version  # aws-cli/2.x.x
 
-# 2. eksctl — EKS cluster management
+# 2. eksctl - EKS cluster management
 # macOS:
 brew tap weaveworks/tap
 brew install weaveworks/tap/eksctl
@@ -146,10 +146,10 @@ aws sts get-caller-identity</code></pre>
           <h2>Application Requirements</h2>
           <p>This guide deploys a React + .NET 8 app. Your app needs:</p>
           <ul>
-            <li><strong>React frontend</strong> — build with <code>npm run build</code>, serve with Nginx or serve-static</li>
-            <li><strong>.NET 8 backend</strong> — Web API project that reads config from environment variables or AWS Secrets Manager</li>
-            <li><strong>Dockerfiles</strong> — one per service (we'll create these in the Deployment section)</li>
-            <li><strong>Health check endpoints</strong> — <code>GET /health</code> returning HTTP 200 for Kubernetes liveness probes</li>
+            <li><strong>React frontend</strong> - build with <code>npm run build</code>, serve with Nginx or serve-static</li>
+            <li><strong>.NET 8 backend</strong> - Web API project that reads config from environment variables or AWS Secrets Manager</li>
+            <li><strong>Dockerfiles</strong> - one per service (we'll create these in the Deployment section)</li>
+            <li><strong>Health check endpoints</strong> - <code>GET /health</code> returning HTTP 200 for Kubernetes liveness probes</li>
           </ul>
         </div>
         <nav class="page-navigation">

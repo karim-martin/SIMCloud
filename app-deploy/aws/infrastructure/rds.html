@@ -75,7 +75,7 @@
         </ol></nav>
         <header class="article-header">
           <h1>RDS for SQL Server</h1>
-          <p class="text-secondary text-lg">Managed SQL Server on RDS for the .NET 8 backend — private, Multi-AZ, with automatic backups.</p>
+          <p class="text-secondary text-lg">Managed SQL Server on RDS for the .NET 8 backend - private, Multi-AZ, with automatic backups.</p>
         </header>
         <div class="article-body">
 
@@ -132,13 +132,13 @@ output "rds_endpoint" { value = aws_db_instance.main.address }</code></pre>
   }
 }
 
-// Program.cs — Entity Framework Core
+// Program.cs - Entity Framework Core
 builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));</code></pre>
 
           <div class="callout callout-tip">
             <div class="callout-title">Store the Password in Secrets Manager</div>
-            <p>Don't put the DB password in <code>appsettings.json</code> or a plain Kubernetes Secret. Store it in AWS Secrets Manager and retrieve it at runtime via IRSA — see the <a href="../security/irsa.html">IRSA</a> section.</p>
+            <p>Don't put the DB password in <code>appsettings.json</code> or a plain Kubernetes Secret. Store it in AWS Secrets Manager and retrieve it at runtime via IRSA - see the <a href="../security/irsa.html">IRSA</a> section.</p>
           </div>
         </div>
         <nav class="page-navigation">

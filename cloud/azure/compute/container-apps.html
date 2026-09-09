@@ -45,12 +45,12 @@
             <h1 style="margin:0;">Azure Container Apps</h1>
             <span class="provider-badge provider-badge-azure">Azure</span>
           </div>
-          <p class="text-secondary text-lg">Serverless containers — run microservices and event-driven workloads without managing Kubernetes.</p>
+          <p class="text-secondary text-lg">Serverless containers - run microservices and event-driven workloads without managing Kubernetes.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Container Apps = Kubernetes Without the Kubernetes</div>
-            <p>Azure Container Apps runs on Kubernetes under the hood, but you never interact with K8s directly. You just say 'run this container, scale it based on HTTP traffic or queue depth.' It uses <strong>KEDA</strong> (Kubernetes Event-Driven Autoscaling) to scale from 0 to 1000 instances based on any event source — HTTP requests, Azure Service Bus messages, cron schedules, or custom metrics.</p>
+            <p>Azure Container Apps runs on Kubernetes under the hood, but you never interact with K8s directly. You just say 'run this container, scale it based on HTTP traffic or queue depth.' It uses <strong>KEDA</strong> (Kubernetes Event-Driven Autoscaling) to scale from 0 to 1000 instances based on any event source - HTTP requests, Azure Service Bus messages, cron schedules, or custom metrics.</p>
           </div>
 
           <h2>Deploy a Container App</h2>
@@ -76,7 +76,7 @@ az containerapp create \
   --scale-rule-http-concurrency 100</code></pre>
 
           <h2>KEDA Scaling Rules</h2>
-          <pre><code># containerapp.yaml — scale on Azure Service Bus queue depth
+          <pre><code># containerapp.yaml - scale on Azure Service Bus queue depth
 properties:
   configuration:
     ingress:

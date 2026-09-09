@@ -78,7 +78,7 @@
         </header>
         <div class="article-body">
 
-          <p>This guide walks you through deploying a production-ready React + .NET 8 application to Amazon Elastic Kubernetes Service (EKS) — the industry standard for running Kubernetes on AWS.</p>
+          <p>This guide walks you through deploying a production-ready React + .NET 8 application to Amazon Elastic Kubernetes Service (EKS) - the industry standard for running Kubernetes on AWS.</p>
 
           <div class="arch-diagram">
             <div class="arch-diagram-title">Target AWS Architecture</div>
@@ -90,7 +90,7 @@
               <div class="arch-box arch-box-aws"><div class="arch-box-title">⚖️ ALB (AWS Load Balancer Controller)</div></div>
               <div class="arch-arrow-down"></div>
               <div class="arch-cluster" style="width:100%;">
-                <span class="arch-cluster-label">EKS Cluster — Private Subnets</span>
+                <span class="arch-cluster-label">EKS Cluster - Private Subnets</span>
                 <div class="arch-row" style="margin-top:0.5rem;">
                   <div class="arch-box arch-box-aws"><div class="arch-box-title">⚛️ React (3 pods)</div></div>
                   <div class="arch-arrow-right">→</div>
@@ -110,14 +110,14 @@
 
           <h2>What You'll Build</h2>
           <ul>
-            <li><strong>EKS Cluster</strong> — Managed Kubernetes with Managed Node Groups across 3 AZs</li>
-            <li><strong>React Frontend</strong> — 3 replicas, served via ALB with CloudFront CDN</li>
-            <li><strong>.NET 8 Backend</strong> — 3 replicas with Horizontal Pod Autoscaler</li>
-            <li><strong>RDS PostgreSQL</strong> — Multi-AZ managed database in private subnets</li>
-            <li><strong>S3</strong> — Object storage for file uploads</li>
-            <li><strong>ACM SSL</strong> — AWS-managed certificates with auto-renewal</li>
-            <li><strong>IRSA</strong> — Keyless authentication for pods via IAM Roles for Service Accounts</li>
-            <li><strong>CI/CD</strong> — GitHub Actions pushing to ECR and deploying to EKS</li>
+            <li><strong>EKS Cluster</strong> - Managed Kubernetes with Managed Node Groups across 3 AZs</li>
+            <li><strong>React Frontend</strong> - 3 replicas, served via ALB with CloudFront CDN</li>
+            <li><strong>.NET 8 Backend</strong> - 3 replicas with Horizontal Pod Autoscaler</li>
+            <li><strong>RDS PostgreSQL</strong> - Multi-AZ managed database in private subnets</li>
+            <li><strong>S3</strong> - Object storage for file uploads</li>
+            <li><strong>ACM SSL</strong> - AWS-managed certificates with auto-renewal</li>
+            <li><strong>IRSA</strong> - Keyless authentication for pods via IAM Roles for Service Accounts</li>
+            <li><strong>CI/CD</strong> - GitHub Actions pushing to ECR and deploying to EKS</li>
           </ul>
 
           <h2>Learning Path</h2>

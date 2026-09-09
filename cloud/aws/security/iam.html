@@ -45,17 +45,17 @@
             <h1 style="margin:0;">AWS IAM</h1>
             <span class="provider-badge provider-badge-aws">AWS</span>
           </div>
-          <p class="text-secondary text-lg">Identity and Access Management — control access to every AWS service.</p>
+          <p class="text-secondary text-lg">Identity and Access Management - control access to every AWS service.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">IAM = The Bouncer for Every AWS Door</div>
-            <p>Every action in AWS — reading from S3, launching EC2, connecting to RDS — requires permission. IAM controls these permissions. An IAM <strong>Role</strong> is a set of permissions you can assign to an AWS service (your EC2 instance, Lambda, or EKS pod). A <strong>Policy</strong> is a JSON document listing what's allowed. The golden rule: <strong>least privilege</strong> — grant only the minimum permissions needed.</p>
+            <p>Every action in AWS - reading from S3, launching EC2, connecting to RDS - requires permission. IAM controls these permissions. An IAM <strong>Role</strong> is a set of permissions you can assign to an AWS service (your EC2 instance, Lambda, or EKS pod). A <strong>Policy</strong> is a JSON document listing what's allowed. The golden rule: <strong>least privilege</strong> - grant only the minimum permissions needed.</p>
           </div>
 
           <h2>IAM Concepts</h2>
           <div class="feature-grid">
-            <div class="feature-item"><div class="feature-icon">👤</div><div class="feature-text"><h4>IAM Users</h4><p>Human users with permanent credentials. Best practice: don't use for apps — use Roles instead. Enable MFA for all human users.</p></div></div>
+            <div class="feature-item"><div class="feature-icon">👤</div><div class="feature-text"><h4>IAM Users</h4><p>Human users with permanent credentials. Best practice: don't use for apps - use Roles instead. Enable MFA for all human users.</p></div></div>
             <div class="feature-item"><div class="feature-icon">🎭</div><div class="feature-text"><h4>IAM Roles</h4><p>Assumed by services (EC2, Lambda, EKS pods). Temporary credentials auto-rotated. No long-lived secrets. Always prefer roles over users for applications.</p></div></div>
             <div class="feature-item"><div class="feature-icon">📋</div><div class="feature-text"><h4>IAM Policies</h4><p>JSON documents that define permissions. Attach to roles/users/groups. AWS provides managed policies; you can create custom ones.</p></div></div>
             <div class="feature-item"><div class="feature-icon">🔗</div><div class="feature-text"><h4>IRSA (for EKS)</h4><p>IAM Roles for Service Accounts. Maps a Kubernetes Service Account to an IAM Role so pods get AWS permissions without any credentials.</p></div></div>
@@ -81,7 +81,7 @@
   ]
 }</code></pre>
 
-          <h2>IRSA — EKS Pod IAM Access</h2>
+          <h2>IRSA - EKS Pod IAM Access</h2>
           <pre><code># 1. Enable OIDC provider for your EKS cluster
 eksctl utils associate-iam-oidc-provider \
   --cluster my-cluster --approve
@@ -96,7 +96,7 @@ eksctl create iamserviceaccount \
 
 # 3. Use in Kubernetes deployment
 # spec.serviceAccountName: backend-sa
-# The pod now has AWS permissions — no credentials needed!</code></pre>
+# The pod now has AWS permissions - no credentials needed!</code></pre>
         </div>
         <nav class="page-navigation">
           <a href="./" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">AWS Security</span></a>

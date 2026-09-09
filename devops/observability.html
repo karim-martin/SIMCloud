@@ -84,7 +84,7 @@
 
           <header class="article-header">
             <h1>Observability</h1>
-            <p class="text-secondary text-lg">Metrics, logs, and traces — Prometheus, Grafana, and Loki for Kubernetes.</p>
+            <p class="text-secondary text-lg">Metrics, logs, and traces - Prometheus, Grafana, and Loki for Kubernetes.</p>
           </header>
 
           <div class="callout-beginner">
@@ -111,7 +111,7 @@
             <div class="arch-arrow-down"></div>
             <div class="arch-box arch-box-neutral" style="text-align:center;">
               <div class="arch-box-title">📈 Grafana</div>
-              <div class="arch-box-subtitle">Single UI — dashboards, alerts, log search, trace viewer</div>
+              <div class="arch-box-subtitle">Single UI - dashboards, alerts, log search, trace viewer</div>
             </div>
           </div>
 
@@ -139,7 +139,7 @@ kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
           <h2>Expose App Metrics from .NET 8</h2>
           <pre><code"># Install prometheus-net NuGet package
 dotnet add package prometheus-net.AspNetCore</code></pre>
-          <pre><code">// Program.cs — expose /metrics endpoint
+          <pre><code">// Program.cs - expose /metrics endpoint
 using Prometheus;
 
 app.UseHttpMetrics();      // track HTTP request metrics

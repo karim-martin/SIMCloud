@@ -45,12 +45,12 @@
             <h1 style="margin:0;">AWS X-Ray</h1>
             <span class="provider-badge provider-badge-aws">AWS</span>
           </div>
-          <p class="text-secondary text-lg">Distributed tracing — understand how requests flow through your services.</p>
+          <p class="text-secondary text-lg">Distributed tracing - understand how requests flow through your services.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">X-Ray Shows You the Life of a Request</div>
-            <p>In a microservices app, a single user request might touch 5–10 services. If something is slow, which service is the bottleneck? X-Ray instruments your code to track each step a request takes, measuring the time spent in each service. It shows a <strong>service map</strong> and a <strong>trace waterfall</strong> — like browser DevTools Network tab, but for your backend services.</p>
+            <p>In a microservices app, a single user request might touch 5–10 services. If something is slow, which service is the bottleneck? X-Ray instruments your code to track each step a request takes, measuring the time spent in each service. It shows a <strong>service map</strong> and a <strong>trace waterfall</strong> - like browser DevTools Network tab, but for your backend services.</p>
           </div>
 
           <h2>X-Ray SDK Integration</h2>
@@ -64,7 +64,7 @@ XRayMiddleware(app, xray_recorder)
 
 @app.route('/users/&lt;id&gt;')
 def get_user(id):
-    # Automatically traced — X-Ray records this segment
+    # Automatically traced - X-Ray records this segment
     with xray_recorder.in_subsegment('database'):
         user = db.get_user(id)
     return jsonify(user)</code></pre>
@@ -77,14 +77,14 @@ app.UseXRay("my-api");</code></pre>
           <h2>Trace Analysis</h2>
           <p>Once instrumented, X-Ray shows:</p>
           <ul>
-            <li><strong>Service Map</strong> — visual graph of all services and their connections</li>
-            <li><strong>Trace List</strong> — individual requests with their full call tree</li>
-            <li><strong>Latency Distribution</strong> — histogram of response times</li>
-            <li><strong>Error Analysis</strong> — which services have the most errors and faults</li>
+            <li><strong>Service Map</strong> - visual graph of all services and their connections</li>
+            <li><strong>Trace List</strong> - individual requests with their full call tree</li>
+            <li><strong>Latency Distribution</strong> - histogram of response times</li>
+            <li><strong>Error Analysis</strong> - which services have the most errors and faults</li>
           </ul>
           <div class="callout callout-tip">
             <div class="callout-title">OpenTelemetry Alternative</div>
-            <p>AWS supports <strong>OpenTelemetry</strong> (vendor-neutral tracing standard) via the AWS Distro for OpenTelemetry (ADOT). This lets you send traces to X-Ray, Jaeger, or any backend — useful if you want to avoid vendor lock-in.</p>
+            <p>AWS supports <strong>OpenTelemetry</strong> (vendor-neutral tracing standard) via the AWS Distro for OpenTelemetry (ADOT). This lets you send traces to X-Ray, Jaeger, or any backend - useful if you want to avoid vendor lock-in.</p>
           </div>
         </div>
         <nav class="page-navigation">

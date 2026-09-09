@@ -50,10 +50,10 @@
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Two Load Balancers for Two Different Jobs</div>
-            <p><strong>Azure Load Balancer</strong> operates at Layer 4 (TCP/UDP) — it just forwards packets without looking at HTTP content. It's simple, fast, and ultra-low latency. <strong>Application Gateway</strong> operates at Layer 7 (HTTP/HTTPS) — it can inspect URLs, headers, and cookies, do SSL termination, WAF protection, and route <code>/api</code> traffic to your backend and <code>/</code> to your frontend. For AKS Ingress, use Application Gateway via the AGIC add-on.</p>
+            <p><strong>Azure Load Balancer</strong> operates at Layer 4 (TCP/UDP) - it just forwards packets without looking at HTTP content. It's simple, fast, and ultra-low latency. <strong>Application Gateway</strong> operates at Layer 7 (HTTP/HTTPS) - it can inspect URLs, headers, and cookies, do SSL termination, WAF protection, and route <code>/api</code> traffic to your backend and <code>/</code> to your frontend. For AKS Ingress, use Application Gateway via the AGIC add-on.</p>
           </div>
 
-          <h2>AGIC — Application Gateway Ingress Controller</h2>
+          <h2>AGIC - Application Gateway Ingress Controller</h2>
           <pre><code"># Enable AGIC when creating AKS
 az aks create \
   --name myapp-cluster \
@@ -61,7 +61,7 @@ az aks create \
   --enable-addons ingress-appgw \
   --appgw-name myapp-gateway \
   --appgw-subnet-cidr 10.1.0.0/16</code></pre>
-          <pre><code"># ingress.yaml — Application Gateway routes automatically created
+          <pre><code"># ingress.yaml - Application Gateway routes automatically created
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

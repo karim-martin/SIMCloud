@@ -104,7 +104,7 @@ spec:
       labels:
         app: backend
     spec:
-      serviceAccountName: backend-sa  # IRSA — pod gets AWS permissions
+      serviceAccountName: backend-sa  # IRSA - pod gets AWS permissions
       containers:
       - name: backend
         image: 123456789.dkr.ecr.us-east-1.amazonaws.com/myapp/backend:latest
@@ -138,7 +138,7 @@ spec:
 
           <h2>Read Secrets in .NET 8</h2>
           <pre><code">// Program.cs
-// Uses AWS SDK — IRSA provides credentials automatically
+// Uses AWS SDK - IRSA provides credentials automatically
 builder.Services.AddAWSService&lt;IAmazonSecretsManager&gt;();
 builder.Services.AddSingleton&lt;IDbConfig&gt;(sp => {
     var sm = sp.GetRequiredService&lt;IAmazonSecretsManager&gt;();

@@ -84,12 +84,12 @@
 
           <header class="article-header">
             <h1>GitOps &amp; ArgoCD</h1>
-            <p class="text-secondary text-lg">Deploy by merging a PR — GitOps uses Git as the single source of truth for cluster state.</p>
+            <p class="text-secondary text-lg">Deploy by merging a PR - GitOps uses Git as the single source of truth for cluster state.</p>
           </header>
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">What is GitOps?</div>
-            <p>Traditional CI/CD: your pipeline <em>pushes</em> changes to the cluster ("push model"). GitOps flips this: a tool running <em>inside</em> the cluster watches a Git repo and <em>pulls</em> changes automatically ("pull model"). The Git repo becomes the exact truth about what should be running. To deploy, you just merge a PR — the cluster self-heals to match.</p>
+            <p>Traditional CI/CD: your pipeline <em>pushes</em> changes to the cluster ("push model"). GitOps flips this: a tool running <em>inside</em> the cluster watches a Git repo and <em>pulls</em> changes automatically ("pull model"). The Git repo becomes the exact truth about what should be running. To deploy, you just merge a PR - the cluster self-heals to match.</p>
           </div>
 
           <div class="arch-diagram">
@@ -101,7 +101,7 @@
               <div class="arch-arrow-down"></div>
               <div class="arch-box arch-box-gcp" style="border-color:#e34c26;"><div class="arch-box-title">🔄 ArgoCD</div><div class="arch-box-subtitle">Watches Git repo, syncs cluster automatically</div></div>
               <div class="arch-arrow-down"></div>
-              <div class="arch-box arch-box-neutral"><div class="arch-box-title">☸️ Kubernetes Cluster</div><div class="arch-box-subtitle">State matches Git — always</div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">☸️ Kubernetes Cluster</div><div class="arch-box-subtitle">State matches Git - always</div></div>
             </div>
           </div>
 
@@ -172,7 +172,7 @@ argocd app sync myapp</code></pre>
         └── kustomization.yaml</code></pre>
 
           <div class="callout callout-tip">
-            <div class="callout-title">Push vs Pull — Key Difference</div>
+            <div class="callout-title">Push vs Pull - Key Difference</div>
             <p><strong>Push CI/CD (GitHub Actions, Azure Pipelines)</strong>: The pipeline needs cluster credentials stored as secrets. If someone deletes a deployment manually, it stays deleted until the next deploy.<br>
             <strong>Pull GitOps (ArgoCD)</strong>: No external credentials needed. If someone deletes a deployment, ArgoCD recreates it within 3 minutes. Drift is impossible.</p>
           </div>
@@ -181,8 +181,8 @@ argocd app sync myapp</code></pre>
           <div class="table-wrapper"><table class="cheatsheet-table">
             <thead><tr><th>Strategy</th><th>Behavior</th><th>Use Case</th></tr></thead>
             <tbody>
-              <tr><td>Manual</td><td>Changes only apply when you run <code>argocd app sync</code></td><td>Production — require human approval</td></tr>
-              <tr><td>Automated</td><td>ArgoCD syncs automatically when Git changes</td><td>Dev/staging — fast iteration</td></tr>
+              <tr><td>Manual</td><td>Changes only apply when you run <code>argocd app sync</code></td><td>Production - require human approval</td></tr>
+              <tr><td>Automated</td><td>ArgoCD syncs automatically when Git changes</td><td>Dev/staging - fast iteration</td></tr>
               <tr><td>Automated + Self-Heal</td><td>Also reverts manual <code>kubectl</code> changes</td><td>Production with strict GitOps</td></tr>
             </tbody>
           </table></div>

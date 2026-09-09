@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AWS EKS — Elastic Kubernetes Service. Managed Kubernetes on Amazon Web Services.">
+  <meta name="description" content="AWS EKS - Elastic Kubernetes Service. Managed Kubernetes on Amazon Web Services.">
   <title>EKS | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
@@ -46,13 +46,13 @@
             <h1 style="margin:0;">Amazon EKS</h1>
             <span class="provider-badge provider-badge-aws">AWS</span>
           </div>
-          <p class="text-secondary text-lg">Elastic Kubernetes Service — managed Kubernetes on AWS.</p>
+          <p class="text-secondary text-lg">Elastic Kubernetes Service - managed Kubernetes on AWS.</p>
         </header>
         <div class="article-body">
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">What is EKS?</div>
-            <p>EKS (Elastic Kubernetes Service) lets you run Kubernetes on AWS <strong>without installing or managing the Kubernetes control plane yourself</strong>. Think of Kubernetes as an "operating system for containers" — it decides which machine runs which container, restarts crashed containers, and balances traffic. EKS means AWS manages the control plane (the brain), and you just deploy your apps.</p>
+            <p>EKS (Elastic Kubernetes Service) lets you run Kubernetes on AWS <strong>without installing or managing the Kubernetes control plane yourself</strong>. Think of Kubernetes as an "operating system for containers" - it decides which machine runs which container, restarts crashed containers, and balances traffic. EKS means AWS manages the control plane (the brain), and you just deploy your apps.</p>
           </div>
 
           <!-- EKS Architecture Diagram -->
@@ -61,11 +61,11 @@
             <div class="arch-flow">
               <div class="arch-box arch-box-aws">
                 <div class="arch-box-title">🧠 EKS Control Plane</div>
-                <div class="arch-box-subtitle">AWS managed — API server, etcd, scheduler</div>
+                <div class="arch-box-subtitle">AWS managed - API server, etcd, scheduler</div>
               </div>
               <div class="arch-arrow-down"></div>
               <div class="arch-cluster" style="width:100%;">
-                <span class="arch-cluster-label">Worker Nodes (EC2 or Fargate) — your VPC</span>
+                <span class="arch-cluster-label">Worker Nodes (EC2 or Fargate) - your VPC</span>
                 <div class="arch-row" style="margin-top:0.5rem;flex-wrap:wrap;gap:0.5rem;">
                   <div class="arch-box arch-box-aws" style="min-width:130px;">
                     <div class="arch-box-title">📦 Pod</div>
@@ -98,13 +98,13 @@
           <p>A <strong>Node Group</strong> is a set of EC2 instances that act as Kubernetes worker nodes. You define the instance type (e.g., <code>t3.medium</code>), min/max count, and AWS manages launching and registering them with EKS.</p>
           <div class="callout callout-tip">
             <div class="callout-title">Managed vs Self-Managed Nodes</div>
-            <p>Use <strong>Managed Node Groups</strong> — AWS handles node updates, draining, and replacement. Self-managed nodes give more control but require more ops work.</p>
+            <p>Use <strong>Managed Node Groups</strong> - AWS handles node updates, draining, and replacement. Self-managed nodes give more control but require more ops work.</p>
           </div>
 
           <h3>Fargate Profiles</h3>
-          <p>Instead of EC2 nodes, EKS can run pods on <strong>AWS Fargate</strong> — fully serverless. No nodes to manage, patch, or scale. Fargate is ideal for bursty workloads and CI/CD jobs.</p>
+          <p>Instead of EC2 nodes, EKS can run pods on <strong>AWS Fargate</strong> - fully serverless. No nodes to manage, patch, or scale. Fargate is ideal for bursty workloads and CI/CD jobs.</p>
 
-          <h3>IRSA — IAM Roles for Service Accounts</h3>
+          <h3>IRSA - IAM Roles for Service Accounts</h3>
           <p>This is how EKS pods authenticate to AWS services (S3, RDS, Secrets Manager) <strong>without any credentials</strong>. Each pod gets a Kubernetes Service Account linked to an IAM Role. AWS verifies the pod's identity via OIDC and grants the IAM permissions.</p>
           <pre><code># Annotate a Service Account to use an IAM role
 kubectl annotate serviceaccount my-app \

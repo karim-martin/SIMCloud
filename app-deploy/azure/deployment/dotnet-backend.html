@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>.NET Backend — Azure Deploy | CloudDevOps</title>
+  <title>.NET Backend - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -127,13 +127,13 @@ spec:
     targetPort: 8080
   type: ClusterIP</code></pre>
 
-          <h2>.NET 8 — Read Secrets from Key Vault</h2>
+          <h2>.NET 8 - Read Secrets from Key Vault</h2>
           <pre><code">// Program.cs
 using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Key Vault — uses Workload Identity automatically
+// Add Key Vault - uses Workload Identity automatically
 var keyVaultUri = new Uri(builder.Configuration["KeyVaultUri"]!);
 builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
 

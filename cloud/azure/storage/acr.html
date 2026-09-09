@@ -50,7 +50,7 @@
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">ACR = Your Private Docker Hub on Azure</div>
-            <p>When you build a Docker image and want AKS to run it, you need somewhere to store it. ACR is Azure's private container registry. AKS can pull images from ACR using a Managed Identity — no credentials needed. You can also build images directly in ACR using ACR Tasks (similar to CodeBuild/Cloud Build).</p>
+            <p>When you build a Docker image and want AKS to run it, you need somewhere to store it. ACR is Azure's private container registry. AKS can pull images from ACR using a Managed Identity - no credentials needed. You can also build images directly in ACR using ACR Tasks (similar to CodeBuild/Cloud Build).</p>
           </div>
 
           <h2>Create ACR and Push Images</h2>
@@ -82,10 +82,10 @@ az aks update \
   --resource-group myapp-rg \
   --attach-acr myappcr
 
-# Now use ACR images in deployments — no imagePullSecrets needed!
+# Now use ACR images in deployments - no imagePullSecrets needed!
 # image: myappcr.azurecr.io/api:v1.0</code></pre>
 
-          <h2>ACR Tasks — Build in the Cloud</h2>
+          <h2>ACR Tasks - Build in the Cloud</h2>
           <pre><code"># Trigger a build on every git commit
 az acr task create \
   --name build-api \

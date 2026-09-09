@@ -86,10 +86,10 @@
 
           <h2>Network Layout</h2>
           <ul>
-            <li><strong>VPC CIDR:</strong> <code>10.0.0.0/16</code> — ~65k addresses across 3 AZs.</li>
-            <li><strong>Public subnets:</strong> <code>10.0.1.0/24</code>, <code>10.0.2.0/24</code>, <code>10.0.3.0/24</code> — for ALBs and NAT gateways.</li>
-            <li><strong>Private subnets:</strong> <code>10.0.11.0/24</code>, <code>10.0.12.0/24</code>, <code>10.0.13.0/24</code> — for EKS worker nodes and pods.</li>
-            <li><strong>Database subnets:</strong> <code>10.0.21.0/24</code>, <code>10.0.22.0/24</code>, <code>10.0.23.0/24</code> — isolated for RDS.</li>
+            <li><strong>VPC CIDR:</strong> <code>10.0.0.0/16</code> - ~65k addresses across 3 AZs.</li>
+            <li><strong>Public subnets:</strong> <code>10.0.1.0/24</code>, <code>10.0.2.0/24</code>, <code>10.0.3.0/24</code> - for ALBs and NAT gateways.</li>
+            <li><strong>Private subnets:</strong> <code>10.0.11.0/24</code>, <code>10.0.12.0/24</code>, <code>10.0.13.0/24</code> - for EKS worker nodes and pods.</li>
+            <li><strong>Database subnets:</strong> <code>10.0.21.0/24</code>, <code>10.0.22.0/24</code>, <code>10.0.23.0/24</code> - isolated for RDS.</li>
           </ul>
 
           <h2>Terraform VPC Module</h2>
@@ -140,7 +140,7 @@ terraform apply   # ~5 minutes (NAT gateways take the longest)</code></pre>
 
           <div class="callout callout-tip">
             <div class="callout-title">NAT Gateway Cost</div>
-            <p>One NAT gateway per AZ costs roughly $100/mo for three AZs before data transfer. For non-prod environments, set <code>single_nat_gateway = true</code> and cut this to ~$33/mo — at the cost of cross-AZ traffic if that one AZ goes down.</p>
+            <p>One NAT gateway per AZ costs roughly $100/mo for three AZs before data transfer. For non-prod environments, set <code>single_nat_gateway = true</code> and cut this to ~$33/mo - at the cost of cross-AZ traffic if that one AZ goes down.</p>
           </div>
         </div>
         <nav class="page-navigation">

@@ -45,12 +45,12 @@
             <h1 style="margin:0;">Azure Monitor</h1>
             <span class="provider-badge provider-badge-azure">Azure</span>
           </div>
-          <p class="text-secondary text-lg">Unified observability — metrics, alerts, and Container Insights for AKS.</p>
+          <p class="text-secondary text-lg">Unified observability - metrics, alerts, and Container Insights for AKS.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Azure Monitor Watches Everything Automatically</div>
-            <p>Azure Monitor automatically collects metrics from Azure resources — your AKS cluster's CPU, your SQL Database's DTU consumption, your App Gateway's request rate. You define <strong>Alerts</strong> that trigger when metrics cross thresholds, sending notifications to email, PagerDuty, or Teams. <strong>Workbooks</strong> let you build rich interactive dashboards. <strong>Container Insights</strong> provides pod-level metrics for AKS.</p>
+            <p>Azure Monitor automatically collects metrics from Azure resources - your AKS cluster's CPU, your SQL Database's DTU consumption, your App Gateway's request rate. You define <strong>Alerts</strong> that trigger when metrics cross thresholds, sending notifications to email, PagerDuty, or Teams. <strong>Workbooks</strong> let you build rich interactive dashboards. <strong>Container Insights</strong> provides pod-level metrics for AKS.</p>
           </div>
 
           <h2>Enable Container Insights for AKS</h2>
@@ -92,7 +92,7 @@ az aks enable-addons \
 }</code></pre>
 
           <h2>Application Insights for APM</h2>
-          <pre><code">// Program.cs — add Application Insights
+          <pre><code">// Program.cs - add Application Insights
 builder.Services.AddApplicationInsightsTelemetry(
     builder.Configuration["ApplicationInsights:InstrumentationKey"]);</code></pre>
           <p>Application Insights automatically tracks: HTTP request rates and durations, dependency calls (SQL, HTTP, Redis), exceptions, custom events, and user sessions.</p>

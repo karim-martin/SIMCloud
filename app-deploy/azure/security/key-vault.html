@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Key Vault — Azure Deploy | CloudDevOps</title>
+  <title>Key Vault - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -73,7 +73,7 @@
         </ol></nav>
         <header class="article-header">
           <h1>Azure Key Vault</h1>
-          <p class="text-secondary text-lg">Central secrets store — connection strings, API keys, and certificates, retrieved at runtime.</p>
+          <p class="text-secondary text-lg">Central secrets store - connection strings, API keys, and certificates, retrieved at runtime.</p>
         </header>
         <div class="article-body">
 
@@ -91,7 +91,7 @@ az keyvault secret set \
   --name "ConnectionStrings--DefaultConnection" \
   --value "Server=myapp-sql-server.database.windows.net;Database=myapp-db;..."</code></pre>
 
-          <h2>.NET 8 — Read from Key Vault</h2>
+          <h2>.NET 8 - Read from Key Vault</h2>
           <pre><code"># Install NuGet packages
 dotnet add package Azure.Extensions.AspNetCore.Configuration.Secrets
 dotnet add package Azure.Identity</code></pre>
@@ -101,7 +101,7 @@ builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential()
 // DefaultAzureCredential uses Workload Identity in AKS automatically</code></pre>
 
           <h2>Key Vault CSI Driver (Mount as Files)</h2>
-          <pre><code"># SecretProviderClass — mount Key Vault secrets as files
+          <pre><code"># SecretProviderClass - mount Key Vault secrets as files
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
@@ -122,7 +122,7 @@ spec:
 
           <div class="callout callout-tip">
             <div class="callout-title">Use AddAzureKeyVault in .NET</div>
-            <p>For .NET apps, <code>AddAzureKeyVault()</code> is simpler than the CSI Driver — secrets appear as regular <code>IConfiguration</code> values with dashes replaced by double-dashes (<code>ConnectionStrings:DefaultConnection</code> → <code>ConnectionStrings--DefaultConnection</code> in Key Vault).</p>
+            <p>For .NET apps, <code>AddAzureKeyVault()</code> is simpler than the CSI Driver - secrets appear as regular <code>IConfiguration</code> values with dashes replaced by double-dashes (<code>ConnectionStrings:DefaultConnection</code> → <code>ConnectionStrings--DefaultConnection</code> in Key Vault).</p>
           </div>
         </div>
         <nav class="page-navigation">

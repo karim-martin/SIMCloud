@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Workload Identity — Azure Deploy | CloudDevOps</title>
+  <title>Workload Identity - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -73,13 +73,13 @@
         </ol></nav>
         <header class="article-header">
           <h1>Workload Identity</h1>
-          <p class="text-secondary text-lg">AKS pods authenticate to Azure services using Managed Identity — zero hardcoded credentials.</p>
+          <p class="text-secondary text-lg">AKS pods authenticate to Azure services using Managed Identity - zero hardcoded credentials.</p>
         </header>
         <div class="article-body">
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">Why Workload Identity?</div>
-            <p>Traditional apps put passwords in config files. If someone reads the config, they have your database password. Workload Identity works like a building access badge — the pod proves its identity to Azure (via OIDC), and Azure grants access to the right resources. No passwords ever leave the system.</p>
+            <p>Traditional apps put passwords in config files. If someone reads the config, they have your database password. Workload Identity works like a building access badge - the pod proves its identity to Azure (via OIDC), and Azure grants access to the right resources. No passwords ever leave the system.</p>
           </div>
 
           <div class="arch-diagram">
@@ -95,7 +95,7 @@
             </div>
           </div>
 
-          <h2>Step 1 — Create Managed Identity</h2>
+          <h2>Step 1 - Create Managed Identity</h2>
           <pre><code"># Create a User-Assigned Managed Identity
 az identity create \
   --name myapp-identity \
@@ -112,13 +112,13 @@ IDENTITY_OBJECT_ID=$(az identity show \
   --resource-group myapp-rg \
   --query principalId -o tsv)</code></pre>
 
-          <h2>Step 2 — Get AKS OIDC Issuer</h2>
+          <h2>Step 2 - Get AKS OIDC Issuer</h2>
           <pre><code">AKS_OIDC_ISSUER=$(az aks show \
   --name myapp-aks \
   --resource-group myapp-rg \
   --query "oidcIssuerProfile.issuerUrl" -o tsv)</code></pre>
 
-          <h2>Step 3 — Create Federated Credential</h2>
+          <h2>Step 3 - Create Federated Credential</h2>
           <pre><code">az identity federated-credential create \
   --name myapp-fedcred \
   --identity-name myapp-identity \
@@ -127,7 +127,7 @@ IDENTITY_OBJECT_ID=$(az identity show \
   --subject "system:serviceaccount:myapp:backend-sa" \
   --audience api://AzureADTokenExchange</code></pre>
 
-          <h2>Step 4 — Create Kubernetes Service Account</h2>
+          <h2>Step 4 - Create Kubernetes Service Account</h2>
           <pre><code"># backend-sa.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -138,7 +138,7 @@ metadata:
     azure.workload.identity/client-id: "&lt;IDENTITY_CLIENT_ID&gt;"</code></pre>
           <pre><code">kubectl apply -f backend-sa.yaml</code></pre>
 
-          <h2>Step 5 — Assign RBAC Role</h2>
+          <h2>Step 5 - Assign RBAC Role</h2>
           <pre><code"># Grant the identity access to Key Vault secrets
 az role assignment create \
   --assignee-object-id "$IDENTITY_OBJECT_ID" \

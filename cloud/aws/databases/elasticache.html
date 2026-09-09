@@ -50,7 +50,7 @@
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Caching = Serving Answers Without Asking the Database</div>
-            <p>Imagine your app fetches the same user profile from the database 1,000 times per second. Each database query takes 5–20ms. With caching, the first request fetches from the database and stores the result in Redis (in-memory, ~0.1ms reads). The next 999 requests read from Redis — 100× faster. ElastiCache is a managed Redis or Memcached cluster.</p>
+            <p>Imagine your app fetches the same user profile from the database 1,000 times per second. Each database query takes 5–20ms. With caching, the first request fetches from the database and stores the result in Redis (in-memory, ~0.1ms reads). The next 999 requests read from Redis - 100× faster. ElastiCache is a managed Redis or Memcached cluster.</p>
           </div>
 
           <h2>Redis vs Memcached</h2>
@@ -78,7 +78,7 @@ def get_user(user_id: str):
     if cached:
         return json.loads(cached)  # Cache hit!
     
-    # Cache miss — fetch from database
+    # Cache miss - fetch from database
     user = db.query("SELECT * FROM users WHERE id = %s", user_id)
     
     # Store in cache for 5 minutes (TTL = 300s)
@@ -87,7 +87,7 @@ def get_user(user_id: str):
 
           <div class="callout callout-tip">
             <div class="callout-title">Session Storage</div>
-            <p>ElastiCache Redis is the standard way to store HTTP sessions in distributed apps. Instead of sticky sessions (routing users to the same server), all servers read/write to Redis — any pod can serve any request.</p>
+            <p>ElastiCache Redis is the standard way to store HTTP sessions in distributed apps. Instead of sticky sessions (routing users to the same server), all servers read/write to Redis - any pod can serve any request.</p>
           </div>
         </div>
         <nav class="page-navigation">

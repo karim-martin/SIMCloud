@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monitoring — Azure Deploy | CloudDevOps</title>
+  <title>Monitoring - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -79,7 +79,7 @@
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">What to Monitor</div>
-            <p>You need three things: <strong>metrics</strong> (CPU, memory, request rate — numbers over time), <strong>logs</strong> (what each pod printed to stdout), and <strong>alerts</strong> (notify your team when something goes wrong). Azure Monitor provides all three.</p>
+            <p>You need three things: <strong>metrics</strong> (CPU, memory, request rate - numbers over time), <strong>logs</strong> (what each pod printed to stdout), and <strong>alerts</strong> (notify your team when something goes wrong). Azure Monitor provides all three.</p>
           </div>
 
           <h2>Container Insights (Already Enabled via Terraform)</h2>
@@ -106,7 +106,7 @@ Perf
 | summarize avg(CounterValue) by Computer, bin(TimeGenerated, 5m)</code></pre>
 
           <h2>Azure Monitor Alert</h2>
-          <pre><code"># Terraform — alert when CPU exceeds 80%
+          <pre><code"># Terraform - alert when CPU exceeds 80%
 resource "azurerm_monitor_metric_alert" "cpu_alert" {
   name                = "aks-high-cpu"
   resource_group_name = azurerm_resource_group.main.name

@@ -45,21 +45,21 @@
             <h1 style="margin:0;">Azure AKS</h1>
             <span class="provider-badge provider-badge-azure">Azure</span>
           </div>
-          <p class="text-secondary text-lg">Azure Kubernetes Service — managed Kubernetes with enterprise integrations.</p>
+          <p class="text-secondary text-lg">Azure Kubernetes Service - managed Kubernetes with enterprise integrations.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">AKS = Kubernetes, Managed by Microsoft</div>
-            <p>AKS handles the Kubernetes control plane (the brain) — you just create a cluster and deploy your apps. AKS integrates deeply with Azure services: <strong>Entra ID</strong> for authentication, <strong>Key Vault</strong> for secrets (mounted as files in pods), <strong>Azure Monitor</strong> for observability, and <strong>Azure Container Registry</strong> for images. It also supports <strong>Workload Identity</strong> — pods get Azure permissions without any credentials.</p>
+            <p>AKS handles the Kubernetes control plane (the brain) - you just create a cluster and deploy your apps. AKS integrates deeply with Azure services: <strong>Entra ID</strong> for authentication, <strong>Key Vault</strong> for secrets (mounted as files in pods), <strong>Azure Monitor</strong> for observability, and <strong>Azure Container Registry</strong> for images. It also supports <strong>Workload Identity</strong> - pods get Azure permissions without any credentials.</p>
           </div>
 
           <div class="arch-diagram">
             <div class="arch-diagram-title">AKS Architecture</div>
             <div class="arch-flow">
-              <div class="arch-box arch-box-azure"><div class="arch-box-title">🧠 AKS Control Plane</div><div class="arch-box-subtitle">Microsoft managed — free!</div></div>
+              <div class="arch-box arch-box-azure"><div class="arch-box-title">🧠 AKS Control Plane</div><div class="arch-box-subtitle">Microsoft managed - free!</div></div>
               <div class="arch-arrow-down"></div>
               <div class="arch-cluster" style="width:100%;">
-                <span class="arch-cluster-label">Node Pools — your Azure VNet</span>
+                <span class="arch-cluster-label">Node Pools - your Azure VNet</span>
                 <div class="arch-row" style="margin-top:0.5rem;flex-wrap:wrap;gap:0.5rem;">
                   <div class="arch-box arch-box-azure" style="min-width:120px;"><div class="arch-box-title">📦 Pod</div><div class="arch-box-subtitle">Frontend</div></div>
                   <div class="arch-box arch-box-azure" style="min-width:120px;"><div class="arch-box-title">📦 Pod</div><div class="arch-box-subtitle">Backend API</div></div>

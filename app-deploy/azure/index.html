@@ -82,20 +82,20 @@
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">What You'll Build</div>
-            <p>You'll deploy a production-ready web application to Azure — the same thing a DevOps team at a company would do. Your React frontend will be served from Azure CDN, your .NET 8 API will run in Kubernetes (AKS), and your data will live in Azure SQL with automated backups. Azure Pipelines will deploy new versions automatically whenever you push code.</p>
+            <p>You'll deploy a production-ready web application to Azure - the same thing a DevOps team at a company would do. Your React frontend will be served from Azure CDN, your .NET 8 API will run in Kubernetes (AKS), and your data will live in Azure SQL with automated backups. Azure Pipelines will deploy new versions automatically whenever you push code.</p>
           </div>
 
           <div class="arch-diagram">
-            <div class="arch-diagram-title">Target Architecture — Azure AKS</div>
+            <div class="arch-diagram-title">Target Architecture - Azure AKS</div>
             <div class="arch-flow">
               <div class="arch-box arch-box-user"><div class="arch-box-title">👤 User / Browser</div></div>
               <div class="arch-arrow-down"></div>
               <div class="arch-box arch-box-azure"><div class="arch-box-title">🌐 Azure Front Door + CDN</div><div class="arch-box-subtitle">Global routing, WAF, React static files</div></div>
               <div class="arch-arrow-down"></div>
-              <div class="arch-box arch-box-azure"><div class="arch-box-title">⚖️ App Gateway (AGIC)</div><div class="arch-box-subtitle">HTTPS Ingress for AKS — SSL termination</div></div>
+              <div class="arch-box arch-box-azure"><div class="arch-box-title">⚖️ App Gateway (AGIC)</div><div class="arch-box-subtitle">HTTPS Ingress for AKS - SSL termination</div></div>
               <div class="arch-arrow-down"></div>
               <div class="arch-cluster" style="width:100%;">
-                <span class="arch-cluster-label">Azure VNet — East US (Private Subnet)</span>
+                <span class="arch-cluster-label">Azure VNet - East US (Private Subnet)</span>
                 <div class="arch-row" style="margin-top:0.5rem;flex-wrap:wrap;gap:0.5rem;">
                   <div class="arch-box arch-box-azure" style="min-width:130px;"><div class="arch-box-title">⚛️ React Pod</div><div class="arch-box-subtitle">Nginx container</div></div>
                   <div class="arch-box arch-box-azure" style="min-width:130px;"><div class="arch-box-title">⚙️ .NET API Pod</div><div class="arch-box-subtitle">ASP.NET Core 8</div></div>
@@ -113,9 +113,9 @@
 
           <h2>What You'll Learn</h2>
           <div class="feature-grid">
-            <div class="feature-item"><div class="feature-icon">🏗️</div><div class="feature-text"><h4>Infrastructure as Code</h4><p>Provision VNet, AKS, Azure SQL, and Key Vault using Terraform — reproducible and version-controlled.</p></div></div>
+            <div class="feature-item"><div class="feature-icon">🏗️</div><div class="feature-text"><h4>Infrastructure as Code</h4><p>Provision VNet, AKS, Azure SQL, and Key Vault using Terraform - reproducible and version-controlled.</p></div></div>
             <div class="feature-item"><div class="feature-icon">🐳</div><div class="feature-text"><h4>Containerization</h4><p>Build production Docker images for React (multi-stage) and .NET 8 with security best practices.</p></div></div>
-            <div class="feature-item"><div class="feature-icon">🔐</div><div class="feature-text"><h4>Workload Identity</h4><p>AKS pods authenticate to Azure services (Key Vault, SQL) without any passwords — using managed identity.</p></div></div>
+            <div class="feature-item"><div class="feature-icon">🔐</div><div class="feature-text"><h4>Workload Identity</h4><p>AKS pods authenticate to Azure services (Key Vault, SQL) without any passwords - using managed identity.</p></div></div>
             <div class="feature-item"><div class="feature-icon">🔄</div><div class="feature-text"><h4>Azure Pipelines CI/CD</h4><p>Automate build, test, and deployment on every git push using Azure Pipelines and OIDC authentication.</p></div></div>
           </div>
 
@@ -152,7 +152,7 @@
 
           <div class="callout callout-info">
             <div class="callout-title">Estimated Cost</div>
-            <p>Running this stack on Azure costs roughly <strong>$100–180/month</strong>: AKS (~$75 for 2× Standard_B2s nodes), Azure SQL Basic (~$5), Key Vault (~$1), Front Door (~$20+). Always delete resources when done practicing — use <code>az group delete --name myapp-rg</code> to tear down everything.</p>
+            <p>Running this stack on Azure costs roughly <strong>$100–180/month</strong>: AKS (~$75 for 2× Standard_B2s nodes), Azure SQL Basic (~$5), Key Vault (~$1), Front Door (~$20+). Always delete resources when done practicing - use <code>az group delete --name myapp-rg</code> to tear down everything.</p>
           </div>
         </div>
         <nav class="page-navigation">

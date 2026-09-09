@@ -45,24 +45,24 @@
             <h1 style="margin:0;">AWS Security</h1>
             <span class="provider-badge provider-badge-aws">AWS</span>
           </div>
-          <p class="text-secondary text-lg">IAM, Secrets Manager, WAF and Shield — securing your AWS workloads.</p>
+          <p class="text-secondary text-lg">IAM, Secrets Manager, WAF and Shield - securing your AWS workloads.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Security is Not Optional in the Cloud</div>
-            <p>Cloud security breaches usually happen because of misconfigurations — an S3 bucket left public, hardcoded credentials in source code, overly permissive IAM policies. AWS provides tools to prevent these, but you have to use them. The shared responsibility model: <strong>AWS secures the infrastructure; you secure what you put on it.</strong></p>
+            <p>Cloud security breaches usually happen because of misconfigurations - an S3 bucket left public, hardcoded credentials in source code, overly permissive IAM policies. AWS provides tools to prevent these, but you have to use them. The shared responsibility model: <strong>AWS secures the infrastructure; you secure what you put on it.</strong></p>
           </div>
 
           <div class="card-grid">
             <a href="./iam.html" class="card card-link"><h3 class="card-title">IAM</h3><p class="card-description">Identity and Access Management. Control who (users, roles, services) can do what on AWS. Includes IRSA for EKS pod permissions.</p></a>
-            <a href="./secrets-manager.html" class="card card-link"><h3 class="card-title">Secrets Manager</h3><p class="card-description">Securely store database passwords, API keys, and certificates. Apps retrieve at runtime — no credentials in code.</p></a>
-            <a href="./waf.html" class="card card-link"><h3 class="card-title">WAF &amp; Shield</h3><p class="card-description">Web Application Firewall blocks common attacks (SQLi, XSS). Shield provides DDoS protection — Standard is free for all.</p></a>
+            <a href="./secrets-manager.html" class="card card-link"><h3 class="card-title">Secrets Manager</h3><p class="card-description">Securely store database passwords, API keys, and certificates. Apps retrieve at runtime - no credentials in code.</p></a>
+            <a href="./waf.html" class="card card-link"><h3 class="card-title">WAF &amp; Shield</h3><p class="card-description">Web Application Firewall blocks common attacks (SQLi, XSS). Shield provides DDoS protection - Standard is free for all.</p></a>
           </div>
           <div class="callout callout-warning">
             <div class="callout-title">Top AWS Security Mistakes to Avoid</div>
             <ul>
-              <li>Never use root account for daily operations — create IAM users/roles</li>
-              <li>Never put credentials in code — use Secrets Manager or IRSA</li>
+              <li>Never use root account for daily operations - create IAM users/roles</li>
+              <li>Never put credentials in code - use Secrets Manager or IRSA</li>
               <li>Never make S3 buckets public unless serving static websites</li>
               <li>Always enable MFA on all IAM users</li>
               <li>Enable CloudTrail in all regions for audit logging</li>

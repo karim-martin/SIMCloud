@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Azure SQL — Azure Deploy | CloudDevOps</title>
+  <title>Azure SQL - Azure Deploy | CloudDevOps</title>
   <link rel="stylesheet" href="../../../assets/css/base.css">
   <link rel="stylesheet" href="../../../assets/css/layout.css">
   <link rel="stylesheet" href="../../../assets/css/components.css">
@@ -73,7 +73,7 @@
         </ol></nav>
         <header class="article-header">
           <h1>Azure SQL Database</h1>
-          <p class="text-secondary text-lg">Managed SQL Server for your .NET 8 application — with private endpoint and automatic backups.</p>
+          <p class="text-secondary text-lg">Managed SQL Server for your .NET 8 application - with private endpoint and automatic backups.</p>
         </header>
         <div class="article-body">
 
@@ -106,7 +106,7 @@ resource "azurerm_mssql_database" "main" {
   }
 }
 
-# Firewall rule — allow Azure services
+# Firewall rule - allow Azure services
 resource "azurerm_mssql_firewall_rule" "azure_services" {
   name             = "AllowAzureServices"
   server_id        = azurerm_mssql_server.main.id
@@ -114,7 +114,7 @@ resource "azurerm_mssql_firewall_rule" "azure_services" {
   end_ip_address   = "0.0.0.0"
 }
 
-# VNet rule — restrict to AKS subnet
+# VNet rule - restrict to AKS subnet
 resource "azurerm_mssql_virtual_network_rule" "aks" {
   name      = "aks-subnet"
   server_id = azurerm_mssql_server.main.id
@@ -122,20 +122,20 @@ resource "azurerm_mssql_virtual_network_rule" "aks" {
 }</code></pre>
 
           <h2>.NET 8 Connection String</h2>
-          <pre><code>// appsettings.json — connection string stored in Key Vault
+          <pre><code>// appsettings.json - connection string stored in Key Vault
 {
   "ConnectionStrings": {
     "DefaultConnection": "Server=myapp-sql-server.database.windows.net;Database=myapp-db;Authentication=Active Directory Default;"
   }
 }
 
-// Program.cs — using Entity Framework Core
+// Program.cs - using Entity Framework Core
 builder.Services.AddDbContext&lt;AppDbContext&gt;(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));</code></pre>
 
           <div class="callout callout-tip">
-            <div class="callout-title">Use Active Directory Auth — No Passwords</div>
-            <p>The connection string above uses <code>Authentication=Active Directory Default</code> — your AKS pod's Managed Identity authenticates automatically. No password needed, no credentials to rotate.</p>
+            <div class="callout-title">Use Active Directory Auth - No Passwords</div>
+            <p>The connection string above uses <code>Authentication=Active Directory Default</code> - your AKS pod's Managed Identity authenticates automatically. No password needed, no credentials to rotate.</p>
           </div>
         </div>
         <nav class="page-navigation">

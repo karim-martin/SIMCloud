@@ -50,7 +50,7 @@
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Key Vault = A Secure Safe for All Your App's Secrets</div>
-            <p>Never store database passwords, API keys, or certificates in your code or environment variables in Kubernetes manifests. Key Vault stores them securely and your app retrieves them at runtime using its Managed Identity — no hardcoded credentials anywhere. The AKS Secret Store CSI Driver can even mount Key Vault secrets directly as files or Kubernetes secrets.</p>
+            <p>Never store database passwords, API keys, or certificates in your code or environment variables in Kubernetes manifests. Key Vault stores them securely and your app retrieves them at runtime using its Managed Identity - no hardcoded credentials anywhere. The AKS Secret Store CSI Driver can even mount Key Vault secrets directly as files or Kubernetes secrets.</p>
           </div>
 
           <h2>Store and Retrieve Secrets</h2>
@@ -72,7 +72,7 @@ az keyvault secret show \
   --vault-name myapp-vault \
   --name "db-password" \
   --query value -o tsv</code></pre>
-          <pre><code">// .NET 8 — integrate Key Vault with configuration
+          <pre><code">// .NET 8 - integrate Key Vault with configuration
 builder.Configuration.AddAzureKeyVault(
     new Uri("https://myapp-vault.vault.azure.net/"),
     new DefaultAzureCredential());

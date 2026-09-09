@@ -45,12 +45,12 @@
             <h1 style="margin:0;">Azure SQL</h1>
             <span class="provider-badge provider-badge-azure">Azure</span>
           </div>
-          <p class="text-secondary text-lg">Managed SQL Server — intelligent, always up-to-date cloud database.</p>
+          <p class="text-secondary text-lg">Managed SQL Server - intelligent, always up-to-date cloud database.</p>
         </header>
         <div class="article-body">
           <div class="callout-beginner">
             <div class="callout-beginner-title">Azure SQL = SQL Server, Without the Server</div>
-            <p>Azure SQL Database is Microsoft's managed SQL Server in the cloud. It's <strong>100% compatible with SQL Server</strong> — so if you have an on-prem SQL Server app, you can migrate it to Azure SQL with minimal code changes. Azure manages backups (point-in-time restore up to 35 days), patches, high availability (3 replicas by default on the Business Critical tier), and automatic scaling.</p>
+            <p>Azure SQL Database is Microsoft's managed SQL Server in the cloud. It's <strong>100% compatible with SQL Server</strong> - so if you have an on-prem SQL Server app, you can migrate it to Azure SQL with minimal code changes. Azure manages backups (point-in-time restore up to 35 days), patches, high availability (3 replicas by default on the Business Critical tier), and automatic scaling.</p>
           </div>
 
           <h2>Service Tiers</h2>
@@ -92,7 +92,7 @@ az sql server firewall-rule create \
   --end-ip-address 10.0.11.255</code></pre>
 
           <h2>Connect from .NET</h2>
-          <pre><code">// Program.cs — retrieve connection string from Key Vault
+          <pre><code">// Program.cs - retrieve connection string from Key Vault
 var keyVaultUri = new Uri("https://myapp-vault.vault.azure.net/");
 var credential = new DefaultAzureCredential();  // Workload Identity
 var client = new SecretClient(keyVaultUri, credential);

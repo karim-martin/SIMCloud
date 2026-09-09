@@ -84,12 +84,12 @@
 
           <header class="article-header">
             <h1>Security Scanning</h1>
-            <p class="text-secondary text-lg">SAST, container scanning, dependency audits, and secret detection — shift security left.</p>
+            <p class="text-secondary text-lg">SAST, container scanning, dependency audits, and secret detection - shift security left.</p>
           </header>
 
           <div class="callout-beginner">
             <div class="callout-beginner-title">What is "Shifting Left"?</div>
-            <p>Traditionally, security teams checked the final product before release. "Shifting left" means catching security issues <em>earlier</em> — in the developer's editor, in the CI pipeline, before code merges. It's much cheaper to fix a vulnerability at PR review than after a breach.</p>
+            <p>Traditionally, security teams checked the final product before release. "Shifting left" means catching security issues <em>earlier</em> - in the developer's editor, in the CI pipeline, before code merges. It's much cheaper to fix a vulnerability at PR review than after a breach.</p>
           </div>
 
           <div class="arch-diagram">
@@ -107,7 +107,7 @@
             </div>
           </div>
 
-          <h2>Container Image Scanning — Trivy</h2>
+          <h2>Container Image Scanning - Trivy</h2>
           <p>Trivy scans Docker images for known CVEs (Common Vulnerabilities and Exposures) in OS packages and language dependencies.</p>
           <pre><code"># Install Trivy
 brew install trivy  # macOS
@@ -128,7 +128,7 @@ trivy image --exit-code 1 --severity CRITICAL myapp-backend:latest
     severity: CRITICAL,HIGH</code></pre>
 
           <h2>Dependency Auditing</h2>
-          <pre><code"># .NET — check for known vulnerable NuGet packages
+          <pre><code"># .NET - check for known vulnerable NuGet packages
 dotnet list package --vulnerable
 
 # Node.js / React
@@ -139,7 +139,7 @@ npm audit --audit-level=high   # fail on high/critical only
 - name: Audit dependencies
   run: npm audit --audit-level=high</code></pre>
 
-          <h2>Secret Detection — GitLeaks</h2>
+          <h2>Secret Detection - GitLeaks</h2>
           <p>GitLeaks scans your git history for accidentally committed secrets (API keys, passwords, tokens).</p>
           <pre><code"># Install
 brew install gitleaks
@@ -157,15 +157,15 @@ repos:
   hooks:
   - id: gitleaks</code></pre>
 
-          <h2>SAST — Static Analysis</h2>
-          <pre><code"># .NET — use Roslyn analyzers (built-in)
+          <h2>SAST - Static Analysis</h2>
+          <pre><code"># .NET - use Roslyn analyzers (built-in)
 # Add to your .csproj:
 &lt;ItemGroup&gt;
   &lt;PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.*" /&gt;
   &lt;PackageReference Include="SecurityCodeScan.VS2019" Version="5.*" /&gt;
 &lt;/ItemGroup&gt;
 
-# JavaScript / TypeScript — ESLint with security plugin
+# JavaScript / TypeScript - ESLint with security plugin
 npm install --save-dev eslint-plugin-security
 # Add to .eslintrc:
 { "plugins": ["security"], "extends": ["plugin:security/recommended"] }</code></pre>
