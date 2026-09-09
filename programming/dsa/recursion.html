@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Recursion explained for beginners - base cases, the call stack, memoisation, and when to prefer a loop, in C#.">
+  <title>Recursion | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html" class="active">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Recursion</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Recursion</h1>
+          <p class="text-secondary text-lg">A method that calls itself. Strange the first time you see it, and then the only sensible way to walk a tree.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Recursion in one sentence</div>
+            <p>A recursive method solves a problem by calling itself on a smaller version of the same problem, until the problem is small enough to answer outright. Like standing in a queue and asking the person in front "how many people are ahead of you?" - eventually someone at the front can answer without asking anyone.</p>
+          </div>
+
+          <h2 id="parts">Every recursive method has two parts</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Part</th><th>Job</th><th>What happens without it</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Base case</strong></td><td>The smallest input, answered directly with no further calls</td><td>The method never stops - <code>StackOverflowException</code></td></tr>
+                <tr><td><strong>Recursive case</strong></td><td>Calls itself on a <em>smaller</em> input and builds on the result</td><td>It is not recursion, just a method</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-csharp">public static long Factorial(int n)
+{
+    // BASE CASE - 0! is 1 by definition, no recursion needed
+    if (n &lt;= 1) return 1;
+
+    // RECURSIVE CASE - n! is n times (n-1)!, a smaller version of the same problem
+    return n * Factorial(n - 1);
+}
+
+Console.WriteLine(Factorial(5));   // 120</code></pre>
+
+          <h2 id="stack">Watching the call stack</h2>
+          <p>Each call is paused, waiting for the one it made, and its local state is kept on the <a href="./stacks-queues.html">call stack</a>. Nothing is actually multiplied until the base case returns and the stack unwinds:</p>
+          <pre><code class="language-text">Factorial(5)
+ └─ 5 * Factorial(4)          &lt;- paused, waiting
+     └─ 4 * Factorial(3)      &lt;- paused, waiting
+         └─ 3 * Factorial(2)  &lt;- paused, waiting
+             └─ 2 * Factorial(1)
+                 └─ returns 1          &lt;- BASE CASE reached
+             returns 2 * 1  = 2
+         returns 3 * 2  = 6
+     returns 4 * 6  = 24
+ returns 5 * 24 = 120</code></pre>
+          <pre><code class="language-csharp">// Add tracing to see it happen
+public static long Factorial(int n, int depth = 0)
+{
+    string indent = new string(' ', depth * 2);
+    Console.WriteLine($"{indent}Factorial({n}) called");
+
+    if (n &lt;= 1)
+    {
+        Console.WriteLine($"{indent}base case, returning 1");
+        return 1;
+    }
+
+    long result = n * Factorial(n - 1, depth + 1);
+    Console.WriteLine($"{indent}Factorial({n}) returning {result}");
+    return result;
+}</code></pre>
+
+          <h2 id="examples">Worked examples</h2>
+
+          <h3>Sum of a list</h3>
+          <pre><code class="language-csharp">public static int Sum(IReadOnlyList&lt;int&gt; numbers, int index = 0)
+{
+    if (index == numbers.Count) return 0;              // base: nothing left
+    return numbers[index] + Sum(numbers, index + 1);   // this one + the rest
+}
+
+Console.WriteLine(Sum(new[] { 1, 2, 3, 4 }));          // 10</code></pre>
+
+          <h3>Reverse a string</h3>
+          <pre><code class="language-csharp">public static string Reverse(string s)
+{
+    if (s.Length &lt;= 1) return s;                       // base: nothing to swap
+    return Reverse(s[1..]) + s[0];                     // reverse the tail, append the head
+}
+
+Console.WriteLine(Reverse("recursion"));               // noisrucer</code></pre>
+
+          <h3>Palindrome check</h3>
+          <pre><code class="language-csharp">public static bool IsPalindrome(string s)
+{
+    if (s.Length &lt;= 1) return true;                    // base: trivially symmetric
+    if (s[0] != s[^1]) return false;                   // base: ends differ
+    return IsPalindrome(s[1..^1]);                     // check the inside
+}
+
+Console.WriteLine(IsPalindrome("racecar"));            // True
+Console.WriteLine(IsPalindrome("hello"));              // False</code></pre>
+
+          <h3>Walking a folder tree</h3>
+          <p>This is where recursion stops being a puzzle and becomes the obvious solution - the data itself is nested, so the code that walks it is naturally nested too.</p>
+          <pre><code class="language-csharp">public static long DirectorySize(string path, int depth = 0)
+{
+    long total = 0;
+
+    foreach (string file in Directory.GetFiles(path))
+        total += new FileInfo(file).Length;
+
+    // Each subdirectory is the same problem, one level down
+    foreach (string subdirectory in Directory.GetDirectories(path))
+        total += DirectorySize(subdirectory, depth + 1);
+
+    Console.WriteLine($"{new string(' ', depth * 2)}{Path.GetFileName(path)}: {total:N0} bytes");
+    return total;
+}</code></pre>
+
+          <h3>Walking a tree</h3>
+          <pre><code class="language-csharp">// Compare with the loop you would need otherwise: an explicit stack, plus
+// bookkeeping for where you were. Recursion hides all of that.
+public static int CountNodes&lt;T&gt;(TreeNode&lt;T&gt;? node)
+{
+    if (node is null) return 0;                                  // base case
+    return 1 + CountNodes(node.Left) + CountNodes(node.Right);
+}
+
+public static int Height&lt;T&gt;(TreeNode&lt;T&gt;? node)
+{
+    if (node is null) return -1;
+    return 1 + Math.Max(Height(node.Left), Height(node.Right));
+}</code></pre>
+
+          <h2 id="fibonacci">When recursion goes wrong</h2>
+          <p>The classic naive Fibonacci looks elegant and is catastrophically slow, because it recomputes the same values over and over:</p>
+          <pre><code class="language-csharp">public static long FibSlow(int n)
+{
+    if (n &lt;= 1) return n;
+    return FibSlow(n - 1) + FibSlow(n - 2);     // TWO calls per call - O(2^n)
+}
+
+// Fib(40) makes over 300 million calls and takes seconds.
+// Fib(50) would take hours.</code></pre>
+          <pre><code class="language-text">                    Fib(5)
+              /                 \
+          Fib(4)               Fib(3)
+        /       \             /      \
+    Fib(3)     Fib(2)     Fib(2)    Fib(1)
+    /    \      /   \      /   \
+ Fib(2) Fib(1) ...  ...  ...   ...
+
+Fib(3) computed twice. Fib(2) three times. At n = 40, billions of repeats.</code></pre>
+
+          <h3>Fix 1: memoisation - remember what you already worked out</h3>
+          <pre><code class="language-csharp">public static long FibMemo(int n, Dictionary&lt;int, long&gt;? cache = null)
+{
+    cache ??= new Dictionary&lt;int, long&gt;();
+
+    if (n &lt;= 1) return n;
+    if (cache.TryGetValue(n, out long cached)) return cached;   // seen it before
+
+    long result = FibMemo(n - 1, cache) + FibMemo(n - 2, cache);
+    cache[n] = result;                                          // remember it
+    return result;
+}
+
+Console.WriteLine(FibMemo(90));    // 2880067194370816120 - instant</code></pre>
+          <p>Each value is now computed exactly once: O(2ⁿ) collapses to O(n). Trading memory for time like this is called <strong>dynamic programming</strong>.</p>
+
+          <h3>Fix 2: turn it into a loop</h3>
+          <pre><code class="language-csharp">public static long FibIterative(int n)
+{
+    if (n &lt;= 1) return n;
+
+    long previous = 0, current = 1;
+
+    for (int i = 2; i &lt;= n; i++)
+        (previous, current) = (current, previous + current);
+
+    return current;
+}
+
+Console.WriteLine(FibIterative(90));   // same answer, O(n) time and O(1) memory</code></pre>
+
+          <h2 id="overflow">Stack overflow</h2>
+          <p>Every pending call occupies a stack frame, and the stack is roughly 1 MB by default - a few thousand to tens of thousands of frames. Go deeper and the process dies. <code>StackOverflowException</code> <strong>cannot be caught</strong> in .NET: the process terminates immediately.</p>
+          <pre><code class="language-csharp">// Two ways to blow the stack:
+
+// 1. A missing or unreachable base case
+static int Broken(int n) =&gt; Broken(n - 1);     // never stops
+
+// 2. A base case that is simply too far away
+static long SumTo(int n) =&gt; n == 0 ? 0 : n + SumTo(n - 1);
+Console.WriteLine(SumTo(100_000));             // crashes - about 100,000 frames
+
+// The iterative version is unbounded and uses one frame
+static long SumToIterative(int n)
+{
+    long total = 0;
+    for (int i = 1; i &lt;= n; i++) total += i;
+    return total;
+}</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">C# does not guarantee tail-call optimisation</div>
+            <p>Some languages (F#, Scheme) turn a recursive call in the final position into a loop, making unlimited depth safe. The C# compiler does not promise this. So in C#, recursion depth is a real, hard limit - convert deep recursion to iteration with an explicit <code>Stack&lt;T&gt;</code>.</p>
+          </div>
+          <pre><code class="language-csharp">// Recursive tree walk - fine for a balanced tree, risky for a degenerate one
+void WalkRecursive(TreeNode&lt;int&gt;? node)
+{
+    if (node is null) return;
+    Console.WriteLine(node.Value);
+    WalkRecursive(node.Left);
+    WalkRecursive(node.Right);
+}
+
+// Same traversal with an explicit stack - depth limited by memory, not by frames
+void WalkIterative(TreeNode&lt;int&gt;? root)
+{
+    if (root is null) return;
+
+    var stack = new Stack&lt;TreeNode&lt;int&gt;&gt;();
+    stack.Push(root);
+
+    while (stack.Count &gt; 0)
+    {
+        TreeNode&lt;int&gt; node = stack.Pop();
+        Console.WriteLine(node.Value);
+
+        if (node.Right is not null) stack.Push(node.Right);   // right first...
+        if (node.Left is not null)  stack.Push(node.Left);    // ...so left pops first
+    }
+}</code></pre>
+
+          <h2 id="divide">Divide and conquer</h2>
+          <p>The most productive recursive pattern: split the problem into independent halves, solve each recursively, combine the results. <a href="./sorting.html">Merge sort</a> and quick sort are both built on it, and so is <a href="./searching.html">binary search</a>.</p>
+          <pre><code class="language-csharp">// Maximum of an array, by divide and conquer
+public static int Max(int[] a, int low, int high)
+{
+    if (low == high) return a[low];                    // base: one element
+
+    int mid = low + (high - low) / 2;
+    int leftMax  = Max(a, low, mid);                   // solve the left half
+    int rightMax = Max(a, mid + 1, high);              // solve the right half
+
+    return Math.Max(leftMax, rightMax);                // combine
+}
+
+int[] data = { 3, 9, 2, 8, 5 };
+Console.WriteLine(Max(data, 0, data.Length - 1));      // 9</code></pre>
+
+          <h2 id="backtracking">Backtracking</h2>
+          <p>Recursion also drives backtracking: try an option, recurse, and undo it if the path fails. Sudoku solvers, maze solvers, and permutation generators all work this way.</p>
+          <pre><code class="language-csharp">// Every permutation of a string
+public static void Permutations(char[] chars, int start = 0)
+{
+    if (start == chars.Length - 1)                     // base: one arrangement fixed
+    {
+        Console.WriteLine(new string(chars));
+        return;
+    }
+
+    for (int i = start; i &lt; chars.Length; i++)
+    {
+        (chars[start], chars[i]) = (chars[i], chars[start]);   // choose
+        Permutations(chars, start + 1);                        // explore
+        (chars[start], chars[i]) = (chars[i], chars[start]);   // UNDO - backtrack
+    }
+}
+
+Permutations("abc".ToCharArray());
+// abc, acb, bac, bca, cba, cab</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Forgetting to undo is the classic backtracking bug</div>
+            <p>Without the third line, later branches inherit changes from earlier ones and the output is quietly wrong. Every "choose" needs a matching "un-choose".</p>
+          </div>
+
+          <h2 id="when">Recursion or a loop?</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Use recursion when</th><th>Use a loop when</th></tr></thead>
+              <tbody>
+                <tr><td>The data is nested - trees, folders, JSON, the DOM</td><td>The data is flat - arrays, lists, ranges</td></tr>
+                <tr><td>The problem splits into smaller identical problems</td><td>You are repeating one step a known number of times</td></tr>
+                <tr><td>Depth is bounded and modest (a tree, not a chain of a million)</td><td>Depth could be large or unbounded</td></tr>
+                <tr><td>The recursive version is dramatically clearer</td><td>The loop is just as readable</td></tr>
+                <tr><td>Backtracking is needed</td><td>Raw performance in a hot path matters</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="checklist">Checklist for writing a recursive method</h2>
+          <div class="steps-timeline">
+            <div class="step-item"><div class="step-number">1</div><div class="step-content"><h4>Name the base case first</h4><p>What is the smallest input you can answer without recursing? Write that line before anything else.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-content"><h4>Make sure every path shrinks the input</h4><p>Smaller index, shorter string, one level deeper. If any branch recurses on the same input, it will never terminate.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-content"><h4>Trust the recursive call</h4><p>Assume it returns the right answer for the smaller problem, and write the one line that combines it. Do not try to trace every level in your head.</p></div></div>
+            <div class="step-item"><div class="step-number">4</div><div class="step-content"><h4>Check for repeated work</h4><p>If the same input can be computed more than once, add memoisation.</p></div></div>
+            <div class="step-item"><div class="step-number">5</div><div class="step-content"><h4>Estimate the depth</h4><p>Thousands of frames is fine. Hundreds of thousands is not - convert to iteration.</p></div></div>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./searching.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Searching</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An introduction to data structures and algorithms with C# - what they are, how to choose one, and a cheat sheet of .NET collections.">
+  <title>Data Structures &amp; Algorithms | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/" class="active">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li aria-current="page">Data Structures &amp; Algorithms</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Data Structures &amp; Algorithms</h1>
+          <p class="text-secondary text-lg">A data structure decides how your data is stored. An algorithm decides what you do with it. Pick the right pair and slow code becomes fast code.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Two words, defined</div>
+            <p>A <strong>data structure</strong> is a way of organising data in memory - a shelf, a queue, a filing cabinet, a family tree. An <strong>algorithm</strong> is a step-by-step procedure for getting something done - find this, sort that, walk everything. Choosing the right pair is most of what "writing efficient code" means.</p>
+          </div>
+
+          <h2 id="why">Why it matters, with numbers</h2>
+          <p>Suppose you have 100,000 customer records and you need to look one up by ID, 1,000 times. Same task, two data structures:</p>
+          <pre><code class="language-csharp">var list = new List&lt;Customer&gt;(customers);                       // 100,000 items
+var byId = customers.ToDictionary(c =&gt; c.Id);                   // same data, hashed
+
+// Option A: scan the list every time - up to 100,000 comparisons per lookup
+Customer? a = list.FirstOrDefault(c =&gt; c.Id == 98_765);
+
+// Option B: hash the key and jump straight to it - roughly 1 comparison
+byId.TryGetValue(98_765, out Customer? b);</code></pre>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Approach</th><th>Comparisons for 1,000 lookups</th><th>Typical time</th></tr></thead>
+              <tbody>
+                <tr><td><code>List</code> scan</td><td>~50,000,000</td><td>Seconds</td></tr>
+                <tr><td><code>Dictionary</code> lookup</td><td>~1,000</td><td>Under a millisecond</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>No cleverness, no micro-optimisation, no extra hardware. One line changed, and a report that took ten seconds now takes ten milliseconds. That is why this topic is worth a week of your time.</p>
+
+          <h2 id="choose">How to choose a data structure</h2>
+          <p>Ask what you will do with the data <em>most often</em>, then pick the structure that makes that operation cheap:</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>What you do most</th><th>Use</th><th>Why</th></tr></thead>
+              <tbody>
+                <tr><td>Access by position, iterate in order</td><td><code>List</code> / array</td><td>Contiguous memory, index arithmetic is instant</td></tr>
+                <tr><td>Look up by a key</td><td><code>Dictionary</code></td><td>Hashing jumps straight to the bucket</td></tr>
+                <tr><td>Ask "have I seen this before?"</td><td><code>HashSet</code></td><td>Membership test independent of size</td></tr>
+                <tr><td>Process newest first (undo, backtracking)</td><td><code>Stack</code></td><td>Last in, first out</td></tr>
+                <tr><td>Process oldest first (work queue)</td><td><code>Queue</code></td><td>First in, first out</td></tr>
+                <tr><td>Always take the most urgent item</td><td><code>PriorityQueue</code></td><td>A heap keeps the smallest at the top</td></tr>
+                <tr><td>Keep items sorted as you insert</td><td><code>SortedDictionary</code> / <code>SortedSet</code></td><td>Balanced tree, ordered traversal</td></tr>
+                <tr><td>Insert and remove constantly at both ends</td><td><code>LinkedList</code></td><td>No shifting of elements</td></tr>
+                <tr><td>Model connections between things</td><td>Graph (adjacency list)</td><td>Directly represents relationships</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="dotnet">.NET collection cheat sheet</h2>
+          <p>Average-case costs. <em>n</em> is the number of items. See <a href="./big-o.html">Big-O Notation</a> if this notation is new to you.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead>
+                <tr><th>Type</th><th>Access</th><th>Search</th><th>Insert</th><th>Delete</th><th>Keeps order?</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>T[]</code> (array)</td><td>O(1)</td><td>O(n)</td><td>n/a - fixed size</td><td>n/a</td><td>Insertion order</td></tr>
+                <tr><td><code>List</code></td><td>O(1)</td><td>O(n)</td><td>O(1) at end, O(n) elsewhere</td><td>O(n)</td><td>Insertion order</td></tr>
+                <tr><td><code>LinkedList</code></td><td>O(n)</td><td>O(n)</td><td>O(1) given the node</td><td>O(1) given the node</td><td>Insertion order</td></tr>
+                <tr><td><code>Stack</code></td><td>Top only</td><td>O(n)</td><td>O(1) push</td><td>O(1) pop</td><td>LIFO</td></tr>
+                <tr><td><code>Queue</code></td><td>Front only</td><td>O(n)</td><td>O(1) enqueue</td><td>O(1) dequeue</td><td>FIFO</td></tr>
+                <tr><td><code>Dictionary</code></td><td>O(1) by key</td><td>O(1) by key</td><td>O(1)</td><td>O(1)</td><td>No guarantee</td></tr>
+                <tr><td><code>HashSet</code></td><td>n/a</td><td>O(1)</td><td>O(1)</td><td>O(1)</td><td>No guarantee</td></tr>
+                <tr><td><code>SortedDictionary</code></td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>Sorted by key</td></tr>
+                <tr><td><code>SortedSet</code></td><td>n/a</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>Sorted</td></tr>
+                <tr><td><code>PriorityQueue</code></td><td>Min only</td><td>O(n)</td><td>O(log n)</td><td>O(log n) dequeue</td><td>By priority</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">The 90% answer</div>
+            <p>In everyday C#, <code>List</code> and <code>Dictionary</code> cover the large majority of cases. Learn where those two stop being the right answer and you have learned the practical half of this subject.</p>
+          </div>
+
+          <h2 id="algorithms">The algorithms worth knowing</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Algorithm</th><th>What it does</th><th>Cost</th></tr></thead>
+              <tbody>
+                <tr><td><a href="./searching.html">Linear search</a></td><td>Check every item until you find it</td><td>O(n)</td></tr>
+                <tr><td><a href="./searching.html">Binary search</a></td><td>Halve a sorted range each step</td><td>O(log n)</td></tr>
+                <tr><td><a href="./sorting.html">Bubble / insertion / selection sort</a></td><td>Simple sorts, good for learning</td><td>O(n²)</td></tr>
+                <tr><td><a href="./sorting.html">Merge sort</a></td><td>Split, sort halves, merge - predictable and stable</td><td>O(n log n)</td></tr>
+                <tr><td><a href="./sorting.html">Quick sort</a></td><td>Partition around a pivot - fast in practice</td><td>O(n log n) average</td></tr>
+                <tr><td><a href="./graphs.html">Breadth-first search</a></td><td>Explore level by level; shortest path in unweighted graphs</td><td>O(V + E)</td></tr>
+                <tr><td><a href="./graphs.html">Depth-first search</a></td><td>Follow one path to the end, then backtrack</td><td>O(V + E)</td></tr>
+                <tr><td><a href="./recursion.html">Recursion</a></td><td>Solve a problem using smaller copies of itself</td><td>Varies</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="pages">The pages</h2>
+          <div class="card-grid">
+            <a href="./big-o.html" class="card card-link"><h3 class="card-title">Big-O Notation</h3><p class="card-description">How to describe the way cost grows with data - and how to spot an accidental O(n²).</p></a>
+            <a href="./arrays-lists.html" class="card card-link"><h3 class="card-title">Arrays &amp; Lists</h3><p class="card-description">Contiguous storage, index maths, and how <code>List</code> grows itself.</p></a>
+            <a href="./linked-lists.html" class="card card-link"><h3 class="card-title">Linked Lists</h3><p class="card-description">Nodes and references, built from scratch and compared with arrays.</p></a>
+            <a href="./stacks-queues.html" class="card card-link"><h3 class="card-title">Stacks &amp; Queues</h3><p class="card-description">LIFO and FIFO, plus bracket matching and priority queues.</p></a>
+            <a href="./hash-tables.html" class="card card-link"><h3 class="card-title">Hash Tables &amp; Sets</h3><p class="card-description">Hash functions, buckets, collisions, and writing a working mini-dictionary.</p></a>
+            <a href="./trees.html" class="card card-link"><h3 class="card-title">Trees &amp; Heaps</h3><p class="card-description">Binary search trees, four traversals, balance, and priority queues.</p></a>
+            <a href="./graphs.html" class="card card-link"><h3 class="card-title">Graphs</h3><p class="card-description">Adjacency lists, BFS, DFS, cycle detection, and shortest paths.</p></a>
+            <a href="./sorting.html" class="card card-link"><h3 class="card-title">Sorting</h3><p class="card-description">Five sorts implemented in full, and the built-in you should use instead.</p></a>
+            <a href="./searching.html" class="card card-link"><h3 class="card-title">Searching</h3><p class="card-description">Linear, binary, and hash lookup, with the classic off-by-one traps.</p></a>
+            <a href="./recursion.html" class="card card-link"><h3 class="card-title">Recursion</h3><p class="card-description">Base cases, the call stack, memoisation, and when to use a loop instead.</p></a>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Measure before you optimise</div>
+            <p>Knowing Big-O tells you which solution scales. It does not tell you which one is faster on <em>your</em> data at <em>your</em> size - a linear scan of 20 items beats a dictionary. Use <a href="https://github.com/dotnet/BenchmarkDotNet">BenchmarkDotNet</a> or a profiler before rewriting working code.</p>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="../oop/polymorphism.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Polymorphism</span></a>
+          <a href="./big-o.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Big-O Notation</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

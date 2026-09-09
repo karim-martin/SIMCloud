@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arrays and List&lt;T&gt; in C# - contiguous storage, index access, dynamic resizing, and when to use each.">
+  <title>Arrays &amp; Lists | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html" class="active">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Arrays &amp; Lists</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Arrays &amp; Lists</h1>
+          <p class="text-secondary text-lg">The simplest and most-used data structure: a numbered row of slots, side by side in memory.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Arrays in one sentence</div>
+            <p>An array is a row of equal-sized boxes, side by side in memory, numbered from 0. Because the boxes are the same size and next to each other, the computer can jump to box number 4,000 by arithmetic alone - instantly, without touching boxes 0 to 3,999.</p>
+          </div>
+
+          <h2 id="memory">Why index access is instant</h2>
+          <p>If the array starts at memory address 1000 and each <code>int</code> takes 4 bytes, then item <code>i</code> lives at <code>1000 + (i * 4)</code>. One multiply, one add, done - the same amount of work whether the array holds 10 items or 10 million. That is what O(1) means.</p>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">int[] numbers = { 10, 20, 30, 40, 50 };</div>
+            <div class="arch-row">
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">10</div><div class="arch-box-subtitle">index 0 - addr 1000</div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">20</div><div class="arch-box-subtitle">index 1 - addr 1004</div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">30</div><div class="arch-box-subtitle">index 2 - addr 1008</div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">40</div><div class="arch-box-subtitle">index 3 - addr 1012</div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">50</div><div class="arch-box-subtitle">index 4 - addr 1016</div></div>
+            </div>
+          </div>
+          <p>The same layout is also why arrays are fast to loop over: the CPU pulls neighbouring memory into its cache, so the next item is usually already there.</p>
+
+          <h2 id="arrays">Arrays in C#</h2>
+          <pre><code class="language-csharp">// Declare with a fixed size - every slot starts at the type's default (0 for int)
+int[] scores = new int[5];
+scores[0] = 90;
+scores[4] = 75;
+
+// Or declare and fill in one go
+int[] numbers = { 10, 20, 30, 40, 50 };
+string[] names = new string[] { "Ada", "Alan", "Grace" };
+
+Console.WriteLine(numbers[2]);          // 30      - O(1)
+Console.WriteLine(numbers.Length);      // 5
+Console.WriteLine(numbers[^1]);         // 50      - ^1 means "last"
+
+// numbers[10] = 1;                     // IndexOutOfRangeException at run time
+
+foreach (int n in numbers)
+    Console.Write(n + " ");             // 10 20 30 40 50</code></pre>
+
+          <h3>Useful array operations</h3>
+          <pre><code class="language-csharp">int[] data = { 5, 3, 8, 1, 9 };
+
+Array.Sort(data);                              // 1 3 5 8 9        O(n log n)
+Array.Reverse(data);                           // 9 8 5 3 1        O(n)
+int idx = Array.IndexOf(data, 5);              // 2                O(n)
+Array.Clear(data, 0, data.Length);             // all back to 0
+
+int[] copy = new int[5];
+Array.Copy(data, copy, 5);                     // O(n)
+
+int[] slice = data[1..4];                      // items 1, 2, 3 (C# 8 ranges)
+int[] joined = data.Concat(copy).ToArray();    // LINQ, allocates a new array</code></pre>
+
+          <h3>Two-dimensional arrays</h3>
+          <pre><code class="language-csharp">// Rectangular: one block of memory, every row the same length
+int[,] grid = new int[3, 4];        // 3 rows, 4 columns
+grid[1, 2] = 7;
+Console.WriteLine(grid.GetLength(0));   // 3 rows
+Console.WriteLine(grid.GetLength(1));   // 4 columns
+
+int[,] board =
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 }
+};
+
+for (int row = 0; row &lt; board.GetLength(0); row++)
+{
+    for (int col = 0; col &lt; board.GetLength(1); col++)
+        Console.Write(board[row, col] + " ");
+    Console.WriteLine();
+}
+
+// Jagged: an array of arrays - rows can have different lengths
+int[][] jagged = new int[3][];
+jagged[0] = new int[] { 1, 2 };
+jagged[1] = new int[] { 3, 4, 5, 6 };
+jagged[2] = new int[] { 7 };
+Console.WriteLine(jagged[1][3]);        // 6</code></pre>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">The limitation: arrays cannot grow</div>
+            <p><code>new int[5]</code> is five slots forever. Adding a sixth item means allocating a bigger array and copying everything across. Doing that by hand on every insert is tedious and slow - which is exactly the problem <code>List</code> solves.</p>
+          </div>
+
+          <h2 id="list">List&lt;T&gt; - the resizable array</h2>
+          <p><code>List&lt;T&gt;</code> is an array that manages its own growth. Internally it holds a normal array plus a count; when the array fills up, it allocates a bigger one (doubling the capacity) and copies everything over.</p>
+          <pre><code class="language-csharp">var names = new List&lt;string&gt;();
+
+names.Add("Ada");                     // O(1) amortised
+names.Add("Alan");
+names.Add("Grace");
+
+names.Insert(1, "Barbara");           // O(n) - everything after shifts right
+names.Remove("Alan");                 // O(n) - find, then shift left
+names.RemoveAt(0);                    // O(n)
+
+Console.WriteLine(names[0]);          // Barbara            O(1)
+Console.WriteLine(names.Count);       // 2
+Console.WriteLine(names.Contains("Grace"));   // True       O(n)
+Console.WriteLine(names.IndexOf("Grace"));    // 1          O(n)
+
+names.Sort();                         // O(n log n)
+names.Clear();</code></pre>
+
+          <h3>Capacity vs Count</h3>
+          <pre><code class="language-csharp">var list = new List&lt;int&gt;();
+Console.WriteLine($"{list.Count} items, capacity {list.Capacity}");   // 0 items, capacity 0
+
+for (int i = 0; i &lt; 9; i++)
+{
+    list.Add(i);
+    Console.WriteLine($"{list.Count} items, capacity {list.Capacity}");
+}
+// 1/4, 2/4, 3/4, 4/4, 5/8, 6/8, 7/8, 8/8, 9/16  &lt;- capacity doubles when full
+
+// If you know the size up front, say so - it avoids every intermediate copy
+var preSized = new List&lt;int&gt;(capacity: 10_000);</code></pre>
+          <div class="callout callout-tip">
+            <div class="callout-title">Why doubling matters</div>
+            <p>Growing by one each time would make n adds cost O(n²). Doubling means the copies get rarer as the list grows, so the average cost of <code>Add</code> stays O(1) - the "amortised" guarantee from the <a href="./big-o.html">Big-O</a> page.</p>
+          </div>
+
+          <h2 id="from-scratch">Building a dynamic array yourself</h2>
+          <p>Fifty lines that show exactly what <code>List&lt;T&gt;</code> does behind the scenes:</p>
+          <pre><code class="language-csharp">public class MyList&lt;T&gt;
+{
+    private T[] _items = new T[4];       // the backing array
+    private int _count;                  // how many slots are actually in use
+
+    public int Count =&gt; _count;
+    public int Capacity =&gt; _items.Length;
+
+    public T this[int index]             // indexer: enables myList[0]
+    {
+        get
+        {
+            if (index &lt; 0 || index &gt;= _count) throw new IndexOutOfRangeException();
+            return _items[index];
+        }
+        set
+        {
+            if (index &lt; 0 || index &gt;= _count) throw new IndexOutOfRangeException();
+            _items[index] = value;
+        }
+    }
+
+    public void Add(T item)
+    {
+        if (_count == _items.Length) Grow();   // full? get a bigger array first
+        _items[_count] = item;
+        _count++;
+    }
+
+    public void Insert(int index, T item)
+    {
+        if (index &lt; 0 || index &gt; _count) throw new ArgumentOutOfRangeException(nameof(index));
+        if (_count == _items.Length) Grow();
+
+        // Shift everything from index onwards one slot right - this is the O(n) part
+        for (int i = _count; i &gt; index; i--)
+            _items[i] = _items[i - 1];
+
+        _items[index] = item;
+        _count++;
+    }
+
+    public void RemoveAt(int index)
+    {
+        if (index &lt; 0 || index &gt;= _count) throw new ArgumentOutOfRangeException(nameof(index));
+
+        // Shift everything after index one slot left
+        for (int i = index; i &lt; _count - 1; i++)
+            _items[i] = _items[i + 1];
+
+        _count--;
+        _items[_count] = default!;       // release the reference so the GC can collect
+    }
+
+    public int IndexOf(T item)
+    {
+        for (int i = 0; i &lt; _count; i++)
+            if (EqualityComparer&lt;T&gt;.Default.Equals(_items[i], item)) return i;
+        return -1;
+    }
+
+    private void Grow()
+    {
+        var bigger = new T[_items.Length * 2];
+        Array.Copy(_items, bigger, _count);   // the expensive step, done rarely
+        _items = bigger;
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var list = new MyList&lt;string&gt;();
+list.Add("a");
+list.Add("b");
+list.Add("c");
+list.Insert(1, "x");
+list.RemoveAt(0);
+
+for (int i = 0; i &lt; list.Count; i++)
+    Console.Write(list[i] + " ");        // x b c
+
+Console.WriteLine($"\nCount {list.Count}, capacity {list.Capacity}");  // Count 3, capacity 4</code></pre>
+
+          <h2 id="costs">Cost summary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Operation</th><th>Array</th><th>List&lt;T&gt;</th><th>Why</th></tr></thead>
+              <tbody>
+                <tr><td>Read/write by index</td><td>O(1)</td><td>O(1)</td><td>Address arithmetic</td></tr>
+                <tr><td>Add at the end</td><td>n/a</td><td>O(1) amortised</td><td>Write into a free slot; occasionally resize</td></tr>
+                <tr><td>Insert at the start or middle</td><td>n/a</td><td>O(n)</td><td>Everything after it shifts right</td></tr>
+                <tr><td>Remove by index</td><td>n/a</td><td>O(n)</td><td>Everything after it shifts left</td></tr>
+                <tr><td>Search by value</td><td>O(n)</td><td>O(n)</td><td>No shortcut without sorting or hashing</td></tr>
+                <tr><td>Search in a sorted array</td><td>O(log n)</td><td>O(log n)</td><td><code>Array.BinarySearch</code> / <code>List.BinarySearch</code></td></tr>
+                <tr><td>Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>Introsort</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="when">Choosing between them</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Use an array when</th><th>Use List&lt;T&gt; when</th></tr></thead>
+              <tbody>
+                <tr><td>The size is known and fixed</td><td>The size changes as you go</td></tr>
+                <tr><td>You need the last drop of performance in a hot loop</td><td>You want convenience methods - Add, Remove, Sort, LINQ</td></tr>
+                <tr><td>An API you are calling demands one</td><td>Which is nearly always, in application code</td></tr>
+                <tr><td>Working with a fixed grid or matrix</td><td>Building up a collection of unknown length</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Practical defaults</div>
+            <p>Use <code>List&lt;T&gt;</code> unless you have a reason not to. Pre-size it when you know roughly how many items are coming. Expose it as <code>IReadOnlyList&lt;T&gt;</code> or <code>IEnumerable&lt;T&gt;</code> from public members so callers cannot modify your internals - see <a href="../oop/encapsulation.html">Encapsulation</a>.</p>
+          </div>
+
+          <h2 id="pitfalls">Common mistakes</h2>
+          <pre><code class="language-csharp">// MISTAKE 1: modifying a collection while iterating it
+foreach (var item in list)
+    if (item.IsExpired) list.Remove(item);      // throws InvalidOperationException
+
+// FIX A: iterate backwards by index
+for (int i = list.Count - 1; i &gt;= 0; i--)
+    if (list[i].IsExpired) list.RemoveAt(i);
+
+// FIX B: one call, and clearer
+list.RemoveAll(x =&gt; x.IsExpired);</code></pre>
+          <pre><code class="language-csharp">// MISTAKE 2: Insert(0, ...) in a loop is O(n²)
+for (int i = 0; i &lt; 100_000; i++)
+    list.Insert(0, i);                          // every insert shifts everything
+
+// FIX: add at the end, then reverse once
+for (int i = 0; i &lt; 100_000; i++) list.Add(i);
+list.Reverse();</code></pre>
+          <pre><code class="language-csharp">// MISTAKE 3: assuming a copied list is a deep copy
+var original = new List&lt;Customer&gt; { customer };
+var copied = new List&lt;Customer&gt;(original);      // a NEW list...
+copied[0].Name = "Changed";                     // ...pointing at the SAME objects
+Console.WriteLine(original[0].Name);            // Changed</code></pre>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./big-o.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Big-O Notation</span></a>
+          <a href="./linked-lists.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Linked Lists</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

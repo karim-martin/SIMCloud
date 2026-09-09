@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hash tables explained - hashing, buckets, collisions, and using Dictionary&lt;K,V&gt; and HashSet&lt;T&gt; in C#.">
+  <title>Hash Tables &amp; Sets | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html" class="active">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Hash Tables &amp; Sets</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Hash Tables &amp; Sets</h1>
+          <p class="text-secondary text-lg">Turn a key into an array index with a hash function, and lookup stops depending on how much data you have.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Hash table in one sentence</div>
+            <p>A hash table is an array plus a bit of maths. A <strong>hash function</strong> turns your key ("ada@example.com") into a number, that number picks an array slot, and the value is stored there. Looking it up runs the same maths and jumps straight to the slot - no searching.</p>
+          </div>
+
+          <h2 id="how">How it works, step by step</h2>
+          <p>Say the internal array has 8 slots and we store <code>"Ada" -&gt; 42</code>:</p>
+          <div class="steps-timeline">
+            <div class="step-item"><div class="step-number">1</div><div class="step-content"><h4>Hash the key</h4><p><code>"Ada".GetHashCode()</code> returns some integer, say 1,842,761,913.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-content"><h4>Map it into the array</h4><p>Take the remainder: 1,842,761,913 % 8 = 1. So slot 1.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-content"><h4>Store the key and the value</h4><p>Slot 1 now holds the pair ("Ada", 42). The key is stored too - that is how collisions are resolved later.</p></div></div>
+            <div class="step-item"><div class="step-number">4</div><div class="step-content"><h4>Look up by repeating steps 1-2</h4><p>Hash "Ada" again, get slot 1, compare the stored key, return 42. Constant work regardless of how many entries exist.</p></div></div>
+          </div>
+
+          <h2 id="collisions">Collisions</h2>
+          <p>Two different keys can hash into the same slot - "Ada" and "Bob" might both land in slot 1. That is a <strong>collision</strong>, and it is normal, not a bug. The usual fix is <strong>chaining</strong>: each slot holds a small list of entries, and lookup compares keys within that list.</p>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Buckets with chaining</div>
+            <div class="arch-flow">
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Slot 0</div><div class="arch-box-subtitle">empty</div></div>
+                <div class="arch-box arch-box-gcp"><div class="arch-box-title">Slot 1</div><div class="arch-box-subtitle">("Ada", 42) → ("Bob", 7)</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Slot 2</div><div class="arch-box-subtitle">("Grace", 99)</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Slot 3</div><div class="arch-box-subtitle">empty</div></div>
+              </div>
+            </div>
+          </div>
+          <p>As long as the chains stay short, lookup is effectively O(1). Two things keep them short:</p>
+          <ul>
+            <li><strong>A good hash function</strong> - one that scatters keys evenly across the slots.</li>
+            <li><strong>Resizing</strong> - when the table gets too full (the <em>load factor</em> rises), it allocates a bigger array and rehashes everything into it.</li>
+          </ul>
+          <div class="callout callout-warning">
+            <div class="callout-title">The worst case is O(n)</div>
+            <p>If every key hashes to the same slot, every lookup walks one long chain and the hash table degrades into a linked list. In practice this only happens with a badly written <code>GetHashCode</code> - or, in a public-facing service, a deliberate hash-collision attack. .NET randomises string hashing per process to defend against that.</p>
+          </div>
+
+          <h2 id="dictionary">Dictionary&lt;TKey, TValue&gt;</h2>
+          <pre><code class="language-csharp">var ages = new Dictionary&lt;string, int&gt;();
+
+// Add - throws if the key already exists
+ages.Add("Ada", 36);
+
+// Indexer - adds or overwrites, no exception
+ages["Alan"] = 41;
+ages["Ada"] = 37;                      // updates the existing entry
+
+Console.WriteLine(ages["Ada"]);        // 37        O(1)
+Console.WriteLine(ages.Count);         // 2
+
+// The safe way to read - no exception when the key is missing
+if (ages.TryGetValue("Grace", out int age))
+    Console.WriteLine(age);
+else
+    Console.WriteLine("Not found");    // Not found
+
+Console.WriteLine(ages.ContainsKey("Alan"));    // True   O(1)
+Console.WriteLine(ages.ContainsValue(37));      // True   O(n) - values are not hashed
+
+ages.Remove("Alan");                            // O(1)
+
+// Iterating - order is NOT guaranteed, do not rely on it
+foreach (KeyValuePair&lt;string, int&gt; pair in ages)
+    Console.WriteLine($"{pair.Key} is {pair.Value}");
+
+foreach ((string name, int a) in ages)          // deconstruction, C# 7+
+    Console.WriteLine($"{name} is {a}");</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Prefer TryGetValue</div>
+            <p><code>if (d.ContainsKey(k)) { var v = d[k]; }</code> hashes the key twice. <code>d.TryGetValue(k, out var v)</code> does it once and reads better. Use <code>TryAdd</code> for the same reason when adding.</p>
+          </div>
+
+          <h3>Useful patterns</h3>
+          <pre><code class="language-csharp">// Counting occurrences - the single most common dictionary use
+string text = "the quick brown fox jumps over the lazy dog the end";
+var counts = new Dictionary&lt;string, int&gt;();
+
+foreach (string word in text.Split(' '))
+{
+    counts.TryGetValue(word, out int current);   // missing key gives 0
+    counts[word] = current + 1;
+}
+
+foreach (var pair in counts.OrderByDescending(p =&gt; p.Value).Take(3))
+    Console.WriteLine($"{pair.Key}: {pair.Value}");     // the: 3, ...
+
+// Grouping - a dictionary of lists
+var byLength = new Dictionary&lt;int, List&lt;string&gt;&gt;();
+foreach (string word in text.Split(' '))
+{
+    if (!byLength.TryGetValue(word.Length, out List&lt;string&gt;? bucket))
+        byLength[word.Length] = bucket = new List&lt;string&gt;();
+    bucket.Add(word);
+}
+
+// LINQ does both in one line
+var counts2 = text.Split(' ').GroupBy(w =&gt; w).ToDictionary(g =&gt; g.Key, g =&gt; g.Count());
+var byLength2 = text.Split(' ').ToLookup(w =&gt; w.Length);
+
+// Case-insensitive keys - pass a comparer
+var settings = new Dictionary&lt;string, string&gt;(StringComparer.OrdinalIgnoreCase);
+settings["ApiKey"] = "abc123";
+Console.WriteLine(settings["APIKEY"]);          // abc123</code></pre>
+
+          <h2 id="hashset">HashSet&lt;T&gt; - membership, not mapping</h2>
+          <p>A set is a hash table that stores only keys. Use it whenever the question is "have I seen this?" or "is this in the allowed list?".</p>
+          <pre><code class="language-csharp">var seen = new HashSet&lt;string&gt;();
+
+Console.WriteLine(seen.Add("ada"));     // True  - added
+Console.WriteLine(seen.Add("ada"));     // False - already present, not added again
+Console.WriteLine(seen.Contains("ada"));// True                   O(1)
+Console.WriteLine(seen.Count);          // 1
+
+// Deduplicating a list - O(n) instead of the O(n²) nested-loop version
+var numbers = new List&lt;int&gt; { 1, 2, 2, 3, 3, 3, 4 };
+var unique = new HashSet&lt;int&gt;(numbers);          // 1 2 3 4
+List&lt;int&gt; uniqueList = numbers.Distinct().ToList();
+
+// Set algebra
+var a = new HashSet&lt;int&gt; { 1, 2, 3, 4 };
+var b = new HashSet&lt;int&gt; { 3, 4, 5 };
+
+var union = new HashSet&lt;int&gt;(a); union.UnionWith(b);              // 1 2 3 4 5
+var inter = new HashSet&lt;int&gt;(a); inter.IntersectWith(b);          // 3 4
+var diff  = new HashSet&lt;int&gt;(a); diff.ExceptWith(b);              // 1 2
+
+Console.WriteLine(a.IsSupersetOf(new[] { 1, 2 }));                // True
+Console.WriteLine(a.Overlaps(b));                                 // True</code></pre>
+
+          <h2 id="custom-keys">Using your own class as a key</h2>
+          <p>A hash table finds the bucket with <code>GetHashCode()</code> and confirms the match with <code>Equals()</code>. If you use a custom class as a key without overriding both, .NET falls back to reference equality - and two objects with identical contents will be treated as different keys.</p>
+          <pre><code class="language-csharp">// BROKEN - no overrides, so equal-looking keys do not match
+public class Point { public int X, Y; }
+
+var d = new Dictionary&lt;Point, string&gt;();
+d[new Point { X = 1, Y = 2 }] = "first";
+Console.WriteLine(d.ContainsKey(new Point { X = 1, Y = 2 }));   // False!</code></pre>
+          <pre><code class="language-csharp">// FIXED - value-based equality and a matching hash code
+public class Point : IEquatable&lt;Point&gt;
+{
+    public int X { get; init; }
+    public int Y { get; init; }
+
+    public bool Equals(Point? other) =&gt;
+        other is not null &amp;&amp; other.X == X &amp;&amp; other.Y == Y;
+
+    public override bool Equals(object? obj) =&gt; Equals(obj as Point);
+
+    // MUST agree with Equals: equal objects must return the same hash code
+    public override int GetHashCode() =&gt; HashCode.Combine(X, Y);
+}
+
+var d2 = new Dictionary&lt;Point, string&gt;();
+d2[new Point { X = 1, Y = 2 }] = "first";
+Console.WriteLine(d2.ContainsKey(new Point { X = 1, Y = 2 }));  // True</code></pre>
+          <pre><code class="language-csharp">// EASIEST - a record generates Equals and GetHashCode for you
+public record PointRecord(int X, int Y);
+
+var d3 = new Dictionary&lt;PointRecord, string&gt;();
+d3[new PointRecord(1, 2)] = "first";
+Console.WriteLine(d3.ContainsKey(new PointRecord(1, 2)));            // True</code></pre>
+          <div class="callout callout-danger">
+            <div class="callout-title">Never mutate a key after inserting it</div>
+            <p>Changing a field that <code>GetHashCode</code> depends on moves the key's "correct" bucket without moving the entry. The item becomes unreachable - present in the dictionary, but no lookup will ever find it. Use immutable types (records, init-only properties) as keys.</p>
+          </div>
+
+          <h2 id="from-scratch">A working mini hash table</h2>
+          <p>Chaining, resizing, and all - about 60 lines:</p>
+          <pre><code class="language-csharp">public class MyHashTable&lt;TKey, TValue&gt; where TKey : notnull
+{
+    private class Entry
+    {
+        public TKey Key = default!;
+        public TValue Value = default!;
+        public Entry? Next;                      // the chain for this bucket
+    }
+
+    private Entry?[] _buckets = new Entry?[8];
+    private int _count;
+
+    // Load factor: resize once the table is 75% full, to keep chains short
+    private const double MaxLoad = 0.75;
+
+    public int Count =&gt; _count;
+
+    private int BucketFor(TKey key, int bucketCount)
+    {
+        // &amp; int.MaxValue clears the sign bit: GetHashCode can return a negative
+        int hash = key.GetHashCode() &amp; int.MaxValue;
+        return hash % bucketCount;
+    }
+
+    public void Set(TKey key, TValue value)
+    {
+        int index = BucketFor(key, _buckets.Length);
+
+        // Walk the chain: update if the key is already here
+        for (Entry? e = _buckets[index]; e is not null; e = e.Next)
+        {
+            if (EqualityComparer&lt;TKey&gt;.Default.Equals(e.Key, key))
+            {
+                e.Value = value;
+                return;
+            }
+        }
+
+        // Not found - add to the front of the chain
+        _buckets[index] = new Entry { Key = key, Value = value, Next = _buckets[index] };
+        _count++;
+
+        if (_count &gt; _buckets.Length * MaxLoad) Resize();
+    }
+
+    public bool TryGet(TKey key, out TValue value)
+    {
+        int index = BucketFor(key, _buckets.Length);
+
+        for (Entry? e = _buckets[index]; e is not null; e = e.Next)
+        {
+            if (EqualityComparer&lt;TKey&gt;.Default.Equals(e.Key, key))
+            {
+                value = e.Value;
+                return true;
+            }
+        }
+
+        value = default!;
+        return false;
+    }
+
+    public bool Remove(TKey key)
+    {
+        int index = BucketFor(key, _buckets.Length);
+        Entry? previous = null;
+
+        for (Entry? e = _buckets[index]; e is not null; e = e.Next)
+        {
+            if (EqualityComparer&lt;TKey&gt;.Default.Equals(e.Key, key))
+            {
+                if (previous is null) _buckets[index] = e.Next;
+                else previous.Next = e.Next;
+                _count--;
+                return true;
+            }
+            previous = e;
+        }
+        return false;
+    }
+
+    private void Resize()
+    {
+        var bigger = new Entry?[_buckets.Length * 2];
+
+        // Every key must be rehashed - the bucket count changed
+        foreach (Entry? head in _buckets)
+        {
+            for (Entry? e = head; e is not null;)
+            {
+                Entry? next = e.Next;
+                int index = BucketFor(e.Key, bigger.Length);
+                e.Next = bigger[index];
+                bigger[index] = e;
+                e = next;
+            }
+        }
+
+        _buckets = bigger;
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var table = new MyHashTable&lt;string, int&gt;();
+table.Set("Ada", 36);
+table.Set("Alan", 41);
+table.Set("Ada", 37);                      // updates, does not duplicate
+
+Console.WriteLine(table.Count);            // 2
+Console.WriteLine(table.TryGet("Ada", out int v) ? v : -1);      // 37
+Console.WriteLine(table.Remove("Alan"));   // True
+Console.WriteLine(table.TryGet("Alan", out _));                  // False</code></pre>
+
+          <h2 id="costs">Cost summary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Operation</th><th>Average</th><th>Worst</th><th>Note</th></tr></thead>
+              <tbody>
+                <tr><td>Add</td><td>O(1)</td><td>O(n)</td><td>Amortised - occasional resize rehashes everything</td></tr>
+                <tr><td>Lookup by key</td><td>O(1)</td><td>O(n)</td><td>Worst case only with pathological hashing</td></tr>
+                <tr><td>Remove by key</td><td>O(1)</td><td>O(n)</td><td></td></tr>
+                <tr><td>Search by value</td><td>O(n)</td><td>O(n)</td><td>Values are not indexed at all</td></tr>
+                <tr><td>Iterate everything</td><td>O(n)</td><td>O(n)</td><td>Order is unspecified</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Need</th><th>Type</th></tr></thead>
+              <tbody>
+                <tr><td>Key to value, fast lookup</td><td><code>Dictionary&lt;TKey, TValue&gt;</code></td></tr>
+                <tr><td>Membership only</td><td><code>HashSet&lt;T&gt;</code></td></tr>
+                <tr><td>Sorted iteration by key</td><td><code>SortedDictionary&lt;TKey, TValue&gt;</code> - O(log n), a tree not a hash</td></tr>
+                <tr><td>One key, many values</td><td><code>ILookup&lt;TKey, TElement&gt;</code> via <code>ToLookup</code></td></tr>
+                <tr><td>Shared across threads</td><td><code>ConcurrentDictionary&lt;TKey, TValue&gt;</code></td></tr>
+                <tr><td>Read-only public surface</td><td><code>IReadOnlyDictionary&lt;TKey, TValue&gt;</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./stacks-queues.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Stacks &amp; Queues</span></a>
+          <a href="./trees.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Trees &amp; Heaps</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

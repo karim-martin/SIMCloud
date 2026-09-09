@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sorting algorithms in C# - bubble, selection, insertion, merge, and quick sort, plus the built-in .NET sorts.">
+  <title>Sorting Algorithms | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html" class="active">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Sorting</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Sorting Algorithms</h1>
+          <p class="text-secondary text-lg">Five classic sorts, written out in full, and the one line of C# you should actually ship.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Read this first</div>
+            <p>In real code you will write <code>list.Sort()</code> and move on. The point of implementing sorts by hand is that they teach the core techniques - swapping, partitioning, divide and conquer, recursion - that turn up everywhere else. Learn them here, use the built-in in production.</p>
+          </div>
+
+          <h2 id="terms">Two words you need</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Term</th><th>Meaning</th><th>Why you care</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Stable</strong></td><td>Items that compare equal keep their original relative order</td><td>Sort by name, then by department, and names stay alphabetical within each department</td></tr>
+                <tr><td><strong>In place</strong></td><td>Sorts using O(1) extra memory, rearranging the original array</td><td>Matters when the data is large relative to available memory</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="bubble">Bubble sort - O(n²)</h2>
+          <p>Repeatedly walk the list, swapping any two neighbours that are in the wrong order. Big values "bubble" to the end. Slow, but the easiest sort to understand.</p>
+          <pre><code class="language-csharp">public static void BubbleSort(int[] a)
+{
+    for (int pass = 0; pass &lt; a.Length - 1; pass++)
+    {
+        bool swapped = false;
+
+        // After each pass, the largest remaining item is parked at the end,
+        // so the inner loop can stop one place earlier each time.
+        for (int i = 0; i &lt; a.Length - 1 - pass; i++)
+        {
+            if (a[i] &gt; a[i + 1])
+            {
+                (a[i], a[i + 1]) = (a[i + 1], a[i]);   // tuple swap, C# 7+
+                swapped = true;
+            }
+        }
+
+        if (!swapped) return;      // already sorted - nothing moved this pass
+    }
+}
+
+int[] data = { 5, 2, 9, 1, 7 };
+BubbleSort(data);
+Console.WriteLine(string.Join(" ", data));   // 1 2 5 7 9</code></pre>
+          <pre><code class="language-text">Start:  5 2 9 1 7
+Pass 1: 2 5 9 1 7 -&gt; 2 5 1 9 7 -&gt; 2 5 1 7 [9]
+Pass 2: 2 1 5 7 [9]
+Pass 3: 1 2 5 7 [9]
+Pass 4: no swaps - stop early</code></pre>
+          <p><strong>Best O(n)</strong> (already sorted, thanks to the early exit), <strong>average and worst O(n²)</strong>, stable, in place.</p>
+
+          <h2 id="selection">Selection sort - O(n²)</h2>
+          <p>Find the smallest remaining item and swap it into the next position. Always exactly n-1 swaps, which is its one selling point when writes are expensive.</p>
+          <pre><code class="language-csharp">public static void SelectionSort(int[] a)
+{
+    for (int i = 0; i &lt; a.Length - 1; i++)
+    {
+        int minIndex = i;
+
+        // Scan the unsorted remainder for the smallest value
+        for (int j = i + 1; j &lt; a.Length; j++)
+            if (a[j] &lt; a[minIndex]) minIndex = j;
+
+        if (minIndex != i)
+            (a[i], a[minIndex]) = (a[minIndex], a[i]);
+    }
+}</code></pre>
+          <p><strong>O(n²) in every case</strong> - it always scans the remainder, even on sorted input. Not stable, in place.</p>
+
+          <h2 id="insertion">Insertion sort - O(n²), but fast where it counts</h2>
+          <p>How most people sort a hand of playing cards: take the next item and slide it back into its place among the already-sorted ones.</p>
+          <pre><code class="language-csharp">public static void InsertionSort(int[] a)
+{
+    for (int i = 1; i &lt; a.Length; i++)
+    {
+        int current = a[i];
+        int j = i - 1;
+
+        // Shift everything larger than "current" one place right
+        while (j &gt;= 0 &amp;&amp; a[j] &gt; current)
+        {
+            a[j + 1] = a[j];
+            j--;
+        }
+
+        a[j + 1] = current;      // drop it into the gap
+    }
+}</code></pre>
+          <div class="callout callout-tip">
+            <div class="callout-title">Why insertion sort still matters</div>
+            <p>It is O(n) on nearly-sorted data and has tiny constant overhead, so it beats the clever sorts on small arrays. Production sorts - including .NET's - switch to insertion sort once a partition drops below about 16 elements.</p>
+          </div>
+          <p><strong>Best O(n)</strong>, <strong>average and worst O(n²)</strong>, stable, in place.</p>
+
+          <h2 id="merge">Merge sort - O(n log n)</h2>
+          <p>Divide and conquer: split the array in half, sort each half (by splitting again, all the way down to single items), then merge the two sorted halves back together.</p>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Split down, merge up</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">38 27 43 3 9 82 10</div><div class="arch-box-subtitle">split</div></div>
+              <div class="arch-arrow-down">divide</div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">38 27 43</div><div class="arch-box-subtitle">split again</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">3 9 82 10</div><div class="arch-box-subtitle">split again</div></div>
+              </div>
+              <div class="arch-arrow-down">down to single items, then merge back</div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">27 38 43</div><div class="arch-box-subtitle">sorted half</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">3 9 10 82</div><div class="arch-box-subtitle">sorted half</div></div>
+              </div>
+              <div class="arch-arrow-down">merge</div>
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">3 9 10 27 38 43 82</div><div class="arch-box-subtitle">sorted</div></div>
+            </div>
+          </div>
+          <pre><code class="language-csharp">public static int[] MergeSort(int[] a)
+{
+    if (a.Length &lt;= 1) return a;              // base case: already sorted
+
+    int mid = a.Length / 2;
+    int[] left  = MergeSort(a[..mid]);        // sort the first half
+    int[] right = MergeSort(a[mid..]);        // sort the second half
+
+    return Merge(left, right);
+}
+
+private static int[] Merge(int[] left, int[] right)
+{
+    var result = new int[left.Length + right.Length];
+    int i = 0, j = 0, k = 0;
+
+    // Repeatedly take the smaller of the two front items
+    while (i &lt; left.Length &amp;&amp; j &lt; right.Length)
+    {
+        // "&lt;=" keeps equal items in their original order, which makes this stable
+        result[k++] = left[i] &lt;= right[j] ? left[i++] : right[j++];
+    }
+
+    // One side is exhausted - copy whatever remains of the other
+    while (i &lt; left.Length)  result[k++] = left[i++];
+    while (j &lt; right.Length) result[k++] = right[j++];
+
+    return result;
+}
+
+int[] sorted = MergeSort(new[] { 38, 27, 43, 3, 9, 82, 10 });
+Console.WriteLine(string.Join(" ", sorted));   // 3 9 10 27 38 43 82</code></pre>
+          <p><strong>O(n log n) in every case</strong> - log n levels of splitting, n work to merge each level. Stable, but needs O(n) extra memory. That predictability is why it is used for external sorts (data too big for RAM) and stable sorts in Java and Python.</p>
+
+          <h2 id="quick">Quick sort - O(n log n) average</h2>
+          <p>Pick a <strong>pivot</strong>, move everything smaller to its left and everything larger to its right (so the pivot is now in its final position), then sort the two sides the same way.</p>
+          <pre><code class="language-csharp">public static void QuickSort(int[] a) =&gt; QuickSort(a, 0, a.Length - 1);
+
+private static void QuickSort(int[] a, int low, int high)
+{
+    if (low &gt;= high) return;                 // 0 or 1 element: done
+
+    int pivotIndex = Partition(a, low, high);
+    QuickSort(a, low, pivotIndex - 1);       // everything left of the pivot
+    QuickSort(a, pivotIndex + 1, high);      // everything right of it
+}
+
+// Lomuto partition: use the last element as the pivot
+private static int Partition(int[] a, int low, int high)
+{
+    int pivot = a[high];
+    int boundary = low - 1;                  // end of the "smaller than pivot" region
+
+    for (int i = low; i &lt; high; i++)
+    {
+        if (a[i] &lt;= pivot)
+        {
+            boundary++;
+            (a[boundary], a[i]) = (a[i], a[boundary]);
+        }
+    }
+
+    // Put the pivot immediately after the smaller region - its final place
+    (a[boundary + 1], a[high]) = (a[high], a[boundary + 1]);
+    return boundary + 1;
+}
+
+int[] data = { 38, 27, 43, 3, 9, 82, 10 };
+QuickSort(data);
+Console.WriteLine(string.Join(" ", data));    // 3 9 10 27 38 43 82</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Quick sort's worst case</div>
+            <p>If every pivot turns out to be the smallest or largest remaining value, the partitions are of size 0 and n-1, and the cost degrades to O(n²). With "last element as pivot", <em>already sorted input</em> triggers exactly that. Real implementations pick the median of three candidates, or a random index:</p>
+          </div>
+          <pre><code class="language-csharp">private static int Partition(int[] a, int low, int high)
+{
+    // Choose a random pivot and move it out of the way first.
+    // Sorted or reverse-sorted input is no longer a special case.
+    int random = Random.Shared.Next(low, high + 1);
+    (a[random], a[high]) = (a[high], a[random]);
+
+    // ...then partition exactly as before
+    int pivot = a[high];
+    int boundary = low - 1;
+
+    for (int i = low; i &lt; high; i++)
+    {
+        if (a[i] &lt;= pivot)
+        {
+            boundary++;
+            (a[boundary], a[i]) = (a[i], a[boundary]);
+        }
+    }
+
+    (a[boundary + 1], a[high]) = (a[high], a[boundary + 1]);
+    return boundary + 1;
+}</code></pre>
+          <p><strong>Best and average O(n log n)</strong>, <strong>worst O(n²)</strong>, not stable, sorts in place (O(log n) stack space). Usually the fastest general-purpose sort in practice, because partitioning is cache-friendly and needs no extra array.</p>
+
+          <h2 id="comparison">Comparison</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable</th><th>Use when</th></tr></thead>
+              <tbody>
+                <tr><td>Bubble</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td><td>Teaching only</td></tr>
+                <tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td><td>Writes are very expensive</td></tr>
+                <tr><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td><td>Small or nearly-sorted data</td></tr>
+                <tr><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td><td>Stability or predictability required</td></tr>
+                <tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No</td><td>General-purpose speed</td></tr>
+                <tr><td>Heap</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td>No</td><td>Guaranteed bound, no extra memory</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="builtin">What to actually use</h2>
+          <p>.NET's <code>Array.Sort</code> and <code>List&lt;T&gt;.Sort</code> use <strong>introsort</strong>: quick sort, switching to heap sort if the recursion goes too deep (removing the O(n²) worst case) and to insertion sort on small partitions. You will not beat it by hand.</p>
+          <pre><code class="language-csharp">// In place - fastest, mutates the original
+int[] numbers = { 5, 2, 9, 1 };
+Array.Sort(numbers);                          // 1 2 5 9
+
+var list = new List&lt;string&gt; { "pear", "apple", "fig" };
+list.Sort();                                  // apple, fig, pear
+
+// Custom order with a lambda comparison
+var people = new List&lt;(string Name, int Age)&gt;
+{
+    ("Ada", 36), ("Alan", 41), ("Grace", 45)
+};
+people.Sort((x, y) =&gt; x.Age.CompareTo(y.Age));            // youngest first
+people.Sort((x, y) =&gt; y.Age.CompareTo(x.Age));            // oldest first
+
+// LINQ - returns a NEW sequence, leaves the original untouched, and is stable
+var byAge = people.OrderBy(p =&gt; p.Age).ToList();
+var byNameThenAge = people.OrderBy(p =&gt; p.Name).ThenByDescending(p =&gt; p.Age).ToList();
+
+// .NET 7+ shorthand for OrderBy(x =&gt; x) on a self-comparable sequence
+var sortedNumbers = numbers.Order().ToList();</code></pre>
+
+          <h3>Sorting your own types</h3>
+          <pre><code class="language-csharp">// Option 1: IComparable&lt;T&gt; - the type's natural order
+public class AppVersion : IComparable&lt;AppVersion&gt;
+{
+    public int Major { get; init; }
+    public int Minor { get; init; }
+
+    public int CompareTo(AppVersion? other)
+    {
+        if (other is null) return 1;
+        int byMajor = Major.CompareTo(other.Major);
+        return byMajor != 0 ? byMajor : Minor.CompareTo(other.Minor);
+    }
+
+    public override string ToString() =&gt; $"{Major}.{Minor}";
+}
+
+var versions = new List&lt;AppVersion&gt;
+{
+    new() { Major = 2, Minor = 1 },
+    new() { Major = 1, Minor = 9 },
+    new() { Major = 2, Minor = 0 }
+};
+versions.Sort();                              // uses CompareTo: 1.9, 2.0, 2.1
+
+// Option 2: IComparer&lt;T&gt; - an alternative order, without touching the type
+public class DescendingVersionComparer : IComparer&lt;AppVersion&gt;
+{
+    public int Compare(AppVersion? x, AppVersion? y) =&gt; y!.CompareTo(x!);
+}
+
+versions.Sort(new DescendingVersionComparer());   // 2.1, 2.0, 1.9</code></pre>
+          <div class="callout callout-info">
+            <div class="callout-title">The comparison contract</div>
+            <p><code>CompareTo</code> returns a negative number if this instance sorts before the other, zero if they are equivalent, and a positive number if it sorts after. Be consistent - an inconsistent comparer makes <code>Array.Sort</code> throw <code>InvalidOperationException</code> or produce nonsense.</p>
+          </div>
+
+          <h2 id="rules">Practical rules</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Situation</th><th>Do this</th></tr></thead>
+              <tbody>
+                <tr><td>Ordinary application code</td><td><code>Array.Sort</code>, <code>List.Sort</code>, or <code>OrderBy</code></td></tr>
+                <tr><td>You need the original order preserved</td><td><code>OrderBy</code> - it is stable and returns a new sequence</td></tr>
+                <tr><td>You only need the top 10 of a million</td><td>A heap or <code>OrderBy(...).Take(10)</code> - do not sort everything by hand</td></tr>
+                <tr><td>Data comes from a database</td><td>Sort in SQL with <code>ORDER BY</code>; the index is already there</td></tr>
+                <tr><td>Sorting inside a loop</td><td>Sort once outside the loop</td></tr>
+                <tr><td>Sorting to then search repeatedly</td><td>Consider a <code>Dictionary</code> instead - O(1) beats O(log n)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./graphs.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Graphs</span></a>
+          <a href="./searching.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Searching</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

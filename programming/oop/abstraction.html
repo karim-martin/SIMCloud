@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Abstraction in C# - exposing only essential behaviour and hiding implementation detail with abstract classes and interfaces.">
+  <title>Abstraction | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html" class="active">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">OOP</a></li>
+            <li aria-current="page">Abstraction</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Pillar 2: Abstraction</h1>
+          <p class="text-secondary text-lg">Show what an object does. Hide how it does it.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Abstraction in one sentence</div>
+            <p>You drive a car with a steering wheel, three pedals, and a gear selector. You do not need to know about fuel injection or valve timing. The controls are the <strong>abstraction</strong>; the engine is the <strong>implementation</strong>.</p>
+          </div>
+
+          <h2 id="vs-encapsulation">Abstraction vs encapsulation</h2>
+          <p>These two are constantly confused because they overlap. The difference is what problem each one solves:</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th></th><th>Encapsulation</th><th>Abstraction</th></tr></thead>
+              <tbody>
+                <tr><td>Question it answers</td><td>"Who is allowed to change this data?"</td><td>"What does the caller need to know about?"</td></tr>
+                <tr><td>Concern</td><td>Protecting state from misuse</td><td>Simplifying the model presented to callers</td></tr>
+                <tr><td>Tools</td><td><code>private</code>, properties, validation</td><td><code>abstract</code> classes, <code>interface</code>s, method names</td></tr>
+                <tr><td>Level</td><td>Inside one class</td><td>Across a design</td></tr>
+                <tr><td>Slogan</td><td>Hide the <em>data</em></td><td>Hide the <em>complexity</em></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>They work together: encapsulation is largely <em>how</em> you achieve abstraction inside a single class.</p>
+
+          <h2 id="method-level">Abstraction starts with method names</h2>
+          <p>You do not need any special keyword to abstract. A well-named method that hides ten messy steps behind one clear call is already abstraction:</p>
+          <pre><code class="language-csharp">public class PasswordHasher
+{
+    // The caller sees one simple operation...
+    public string Hash(string password)
+    {
+        byte[] salt = GenerateSalt();
+        byte[] hash = DeriveKey(password, salt);
+        return Encode(salt, hash);
+    }
+
+    public bool Verify(string password, string stored)
+    {
+        (byte[] salt, byte[] expected) = Decode(stored);
+        byte[] actual = DeriveKey(password, salt);
+        return CryptographicOperations.FixedTimeEquals(actual, expected);
+    }
+
+    // ...and none of this: iteration counts, salt sizes, encoding format
+    private static byte[] GenerateSalt() =&gt; RandomNumberGenerator.GetBytes(16);
+
+    private static byte[] DeriveKey(string password, byte[] salt) =&gt;
+        Rfc2898DeriveBytes.Pbkdf2(password, salt, 210_000, HashAlgorithmName.SHA256, 32);
+
+    private static string Encode(byte[] salt, byte[] hash) =&gt;
+        $"{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
+
+    private static (byte[] salt, byte[] hash) Decode(string stored)
+    {
+        string[] parts = stored.Split('.');
+        return (Convert.FromBase64String(parts[0]), Convert.FromBase64String(parts[1]));
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var hasher = new PasswordHasher();
+string stored = hasher.Hash("correct horse battery staple");
+Console.WriteLine(hasher.Verify("correct horse battery staple", stored));  // True
+Console.WriteLine(hasher.Verify("wrong password", stored));                // False</code></pre>
+          <p>If the security team later raises the iteration count, every caller keeps working unchanged. That is the value: the abstraction stayed the same while the implementation moved.</p>
+
+          <h2 id="abstract-class">Abstract classes</h2>
+          <p>An <code>abstract</code> class describes a partially built idea. It cannot be instantiated - it exists to be inherited from. It can mix <strong>abstract members</strong> (a signature with no body, which every subclass must supply) with <strong>concrete members</strong> (shared code all subclasses inherit).</p>
+          <pre><code class="language-csharp">public abstract class PaymentMethod
+{
+    protected PaymentMethod(string reference) =&gt; Reference = reference;
+
+    public string Reference { get; }
+
+    // Abstract: no body. Every subclass MUST implement this.
+    public abstract bool Authorise(decimal amount);
+
+    // Abstract: each method knows its own fee structure.
+    public abstract decimal CalculateFee(decimal amount);
+
+    // Concrete: shared logic, written once, inherited by every subclass.
+    public string Describe(decimal amount) =&gt;
+        $"{GetType().Name} {Reference}: {amount:C} + {CalculateFee(amount):C} fee";
+}</code></pre>
+          <pre><code class="language-csharp">public class CreditCardPayment : PaymentMethod
+{
+    private readonly decimal _limit;
+
+    public CreditCardPayment(string reference, decimal limit) : base(reference)
+        =&gt; _limit = limit;
+
+    public override bool Authorise(decimal amount) =&gt; amount &lt;= _limit;
+
+    public override decimal CalculateFee(decimal amount) =&gt; Math.Round(amount * 0.029m, 2);
+}
+
+public class BankTransferPayment : PaymentMethod
+{
+    public BankTransferPayment(string reference) : base(reference) { }
+
+    public override bool Authorise(decimal amount) =&gt; amount &gt; 0;
+
+    public override decimal CalculateFee(decimal amount) =&gt; 0.30m;   // flat fee
+}</code></pre>
+          <pre><code class="language-csharp">// var p = new PaymentMethod("X");    // compile error: cannot instantiate abstract class
+
+var card = new CreditCardPayment("****4242", limit: 1000m);
+Console.WriteLine(card.Describe(200m));    // CreditCardPayment ****4242: £200.00 + £5.80 fee
+Console.WriteLine(card.Authorise(5000m));  // False
+
+var transfer = new BankTransferPayment("SORT-12-34-56");
+Console.WriteLine(transfer.Describe(200m)); // BankTransferPayment SORT-...: £200.00 + £0.30 fee</code></pre>
+
+          <h2 id="interface">Interfaces</h2>
+          <p>An <code>interface</code> is a pure contract: a list of members a class promises to provide, with no state and (traditionally) no implementation. Where an abstract class says "is a kind of", an interface says "is capable of".</p>
+          <pre><code class="language-csharp">public interface INotificationSender
+{
+    string Channel { get; }
+    Task SendAsync(string recipient, string message);
+}</code></pre>
+          <pre><code class="language-csharp">public class EmailSender : INotificationSender
+{
+    public string Channel =&gt; "Email";
+
+    public Task SendAsync(string recipient, string message)
+    {
+        Console.WriteLine($"[SMTP] to {recipient}: {message}");
+        return Task.CompletedTask;
+    }
+}
+
+public class SmsSender : INotificationSender
+{
+    public string Channel =&gt; "SMS";
+
+    public Task SendAsync(string recipient, string message)
+    {
+        // Truncation is an SMS concern - callers never see it
+        string trimmed = message.Length &gt; 160 ? message[..157] + "..." : message;
+        Console.WriteLine($"[SMS] to {recipient}: {trimmed}");
+        return Task.CompletedTask;
+    }
+}
+
+public class SlackSender : INotificationSender
+{
+    public string Channel =&gt; "Slack";
+
+    public Task SendAsync(string recipient, string message)
+    {
+        Console.WriteLine($"[Slack] @{recipient}: {message}");
+        return Task.CompletedTask;
+    }
+}</code></pre>
+          <p>Now the code that sends alerts depends only on the contract. It never mentions SMTP, SMS, or Slack:</p>
+          <pre><code class="language-csharp">public class AlertService
+{
+    private readonly IEnumerable&lt;INotificationSender&gt; _senders;
+
+    public AlertService(IEnumerable&lt;INotificationSender&gt; senders) =&gt; _senders = senders;
+
+    public async Task RaiseAsync(string recipient, string message)
+    {
+        foreach (INotificationSender sender in _senders)
+        {
+            Console.WriteLine($"Sending via {sender.Channel}...");
+            await sender.SendAsync(recipient, message);
+        }
+    }
+}
+
+var alerts = new AlertService(new INotificationSender[]
+{
+    new EmailSender(), new SmsSender(), new SlackSender()
+});
+
+await alerts.RaiseAsync("ada", "Disk usage above 90%");</code></pre>
+          <div class="callout callout-tip">
+            <div class="callout-title">The test that proves the abstraction works</div>
+            <p>Adding a fourth channel - Microsoft Teams, say - means writing one new class. <code>AlertService</code> is not touched, not recompiled in your head, not re-tested. Code that is open to extension but closed to modification is the goal.</p>
+          </div>
+
+          <h2 id="testing">Why interfaces make testing easy</h2>
+          <p>Depending on an interface lets a test substitute a fake implementation, so you can test logic without a real database, network, or mail server:</p>
+          <pre><code class="language-csharp">// A fake that records what it was asked to do
+public class FakeSender : INotificationSender
+{
+    public List&lt;string&gt; Sent { get; } = new();
+    public string Channel =&gt; "Fake";
+
+    public Task SendAsync(string recipient, string message)
+    {
+        Sent.Add($"{recipient}|{message}");
+        return Task.CompletedTask;
+    }
+}
+
+// The test - fast, deterministic, no infrastructure
+var fake = new FakeSender();
+var service = new AlertService(new[] { fake });
+await service.RaiseAsync("ada", "Disk full");
+
+Console.WriteLine(fake.Sent.Count);      // 1
+Console.WriteLine(fake.Sent[0]);         // ada|Disk full</code></pre>
+
+          <h2 id="choosing">Abstract class or interface?</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th></th><th>Abstract class</th><th>Interface</th></tr></thead>
+              <tbody>
+                <tr><td>Relationship</td><td>"is a kind of" (Dog is an Animal)</td><td>"is capable of" (Dog can ISwim)</td></tr>
+                <tr><td>How many per class</td><td>One only - C# has no multiple inheritance</td><td>As many as you like</td></tr>
+                <tr><td>Can hold fields / state</td><td>Yes</td><td>No</td></tr>
+                <tr><td>Can have a constructor</td><td>Yes</td><td>No</td></tr>
+                <tr><td>Shared implementation</td><td>Yes - that is the main reason to use one</td><td>Only default interface methods (C# 8+, rarely used)</td></tr>
+                <tr><td>Access modifiers on members</td><td>Full range</td><td>Members are implicitly public</td></tr>
+                <tr><td>Typical use</td><td>A family of related classes sharing real code</td><td>A capability unrelated types can offer</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">Rule of thumb</div>
+            <p>Default to an interface. Reach for an abstract class when several implementations genuinely share code and state. You can use both: an interface for the contract, an abstract base class implementing the common parts of it.</p>
+          </div>
+          <pre><code class="language-csharp">// Both together - a common pattern in real code
+public interface IReportExporter
+{
+    string Extension { get; }
+    byte[] Export(IReadOnlyList&lt;string&gt; rows);
+}
+
+public abstract class ReportExporterBase : IReportExporter
+{
+    public abstract string Extension { get; }
+
+    public byte[] Export(IReadOnlyList&lt;string&gt; rows)
+    {
+        Validate(rows);                         // shared behaviour
+        string content = Render(rows);          // subclass-specific step
+        return System.Text.Encoding.UTF8.GetBytes(content);
+    }
+
+    protected abstract string Render(IReadOnlyList&lt;string&gt; rows);
+
+    private static void Validate(IReadOnlyList&lt;string&gt; rows)
+    {
+        if (rows.Count == 0) throw new ArgumentException("Nothing to export.");
+    }
+}
+
+public class CsvExporter : ReportExporterBase
+{
+    public override string Extension =&gt; ".csv";
+    protected override string Render(IReadOnlyList&lt;string&gt; rows) =&gt; string.Join("\n", rows);
+}</code></pre>
+          <div class="callout callout-info">
+            <div class="callout-title">That last example is the Template Method pattern</div>
+            <p>The base class fixes the <em>order</em> of the steps (validate, then render, then encode) and lets subclasses fill in one step. You will meet it often once you start reading framework source.</p>
+          </div>
+
+          <h2 id="levels">Layers of abstraction in a real app</h2>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Each layer hides the one below it</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-user"><div class="arch-box-title">Controller</div><div class="arch-box-subtitle">Knows about HTTP, not SQL</div></div>
+              <div class="arch-arrow-down">calls IOrderService</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">Service</div><div class="arch-box-subtitle">Knows business rules, not storage</div></div>
+              <div class="arch-arrow-down">calls IOrderRepository</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">Repository</div><div class="arch-box-subtitle">Knows SQL, not business rules</div></div>
+              <div class="arch-arrow-down">ADO.NET / EF Core</div>
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">Database</div><div class="arch-box-subtitle">Knows only tables</div></div>
+            </div>
+          </div>
+          <p>Swapping the database means rewriting one repository class. Nothing above it changes - because nothing above it ever knew what the database was.</p>
+
+          <h2 id="pitfalls">Pitfalls</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Pitfall</th><th>Why it hurts</th><th>Better</th></tr></thead>
+              <tbody>
+                <tr><td>An interface per class, always</td><td>Doubles the file count for no benefit when there is one implementation and no test seam</td><td>Extract an interface when you have a second implementation or need to fake it in tests</td></tr>
+                <tr><td>Leaky abstraction</td><td><code>IRepository</code> that returns <code>SqlDataReader</code> forces every caller to know it is SQL</td><td>Return domain types the caller understands</td></tr>
+                <tr><td>Guessing at future needs</td><td>Abstractions invented for imagined requirements are usually the wrong shape</td><td>Abstract when the second real case arrives</td></tr>
+                <tr><td>Giant interfaces</td><td>A 30-member interface forces implementers to write stubs they do not need</td><td>Split into small, focused contracts</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./encapsulation.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Encapsulation</span></a>
+          <a href="./inheritance.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Inheritance</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Stacks (LIFO) and queues (FIFO) in C# - Stack&lt;T&gt;, Queue&lt;T&gt;, PriorityQueue, and what they are used for.">
+  <title>Stacks &amp; Queues | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html" class="active">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Stacks &amp; Queues</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Stacks &amp; Queues</h1>
+          <p class="text-secondary text-lg">Two structures defined by one rule each: which item are you allowed to take out next?</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Two everyday analogies</div>
+            <p>A <strong>stack</strong> is a pile of plates: you add to the top and take from the top, so the last plate on is the first one off (LIFO). A <strong>queue</strong> is a line at a coffee shop: you join at the back and are served from the front, so the first person in is the first one out (FIFO).</p>
+          </div>
+
+          <h2 id="stack">Stack - last in, first out</h2>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Push 1, 2, 3 then Pop</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">3</div><div class="arch-box-subtitle">top - Pop() returns this</div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">2</div><div class="arch-box-subtitle"></div></div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">1</div><div class="arch-box-subtitle">bottom - pushed first, leaves last</div></div>
+            </div>
+          </div>
+          <pre><code class="language-csharp">var stack = new Stack&lt;string&gt;();
+
+stack.Push("page1");            // O(1)
+stack.Push("page2");
+stack.Push("page3");
+
+Console.WriteLine(stack.Peek());   // page3   - look without removing
+Console.WriteLine(stack.Pop());    // page3   - remove and return  O(1)
+Console.WriteLine(stack.Pop());    // page2
+Console.WriteLine(stack.Count);    // 1
+
+// Always check before popping an empty stack - Pop() throws
+if (stack.TryPop(out string? top))
+    Console.WriteLine(top);        // page1
+
+Console.WriteLine(stack.Count);    // 0
+// stack.Pop();                    // InvalidOperationException</code></pre>
+
+          <h3>Building a stack from scratch</h3>
+          <pre><code class="language-csharp">public class MyStack&lt;T&gt;
+{
+    private T[] _items = new T[4];
+    private int _count;
+
+    public int Count =&gt; _count;
+    public bool IsEmpty =&gt; _count == 0;
+
+    public void Push(T item)
+    {
+        if (_count == _items.Length)
+            Array.Resize(ref _items, _items.Length * 2);
+        _items[_count++] = item;                 // write at the top, move up
+    }
+
+    public T Pop()
+    {
+        if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
+        T item = _items[--_count];               // move down, read the top
+        _items[_count] = default!;               // let the GC reclaim it
+        return item;
+    }
+
+    public T Peek()
+    {
+        if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
+        return _items[_count - 1];
+    }
+}</code></pre>
+          <p>Every operation touches only the end of the array, so nothing ever shifts. That is why all three are O(1).</p>
+
+          <h3>What stacks are used for</h3>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Use</th><th>Why LIFO fits</th></tr></thead>
+              <tbody>
+                <tr><td>The call stack</td><td>The most recently called method must finish and return first</td></tr>
+                <tr><td>Undo / redo</td><td>Undo reverses the most recent action</td></tr>
+                <tr><td>Browser back button</td><td>Back goes to the page you visited most recently</td></tr>
+                <tr><td>Bracket and tag matching</td><td>The most recently opened bracket must close first</td></tr>
+                <tr><td>Depth-first search</td><td>Explore the newest branch fully before backtracking</td></tr>
+                <tr><td>Expression evaluation</td><td>Operators and operands are consumed most-recent-first</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Worked example: balanced brackets</h3>
+          <p>The classic stack problem, and a genuinely useful one - it is how editors highlight mismatched brackets.</p>
+          <pre><code class="language-csharp">bool IsBalanced(string input)
+{
+    var pairs = new Dictionary&lt;char, char&gt;
+    {
+        [')'] = '(',
+        [']'] = '[',
+        ['}'] = '{'
+    };
+
+    var stack = new Stack&lt;char&gt;();
+
+    foreach (char c in input)
+    {
+        if (c is '(' or '[' or '{')
+        {
+            stack.Push(c);                      // remember what was opened
+        }
+        else if (pairs.ContainsKey(c))
+        {
+            // A closer must match the most recently opened bracket
+            if (stack.Count == 0 || stack.Pop() != pairs[c])
+                return false;
+        }
+    }
+
+    return stack.Count == 0;                    // nothing left unclosed
+}
+
+Console.WriteLine(IsBalanced("{[()]}"));        // True
+Console.WriteLine(IsBalanced("{[(])}"));        // False - wrong closing order
+Console.WriteLine(IsBalanced("(()"));           // False - one left open</code></pre>
+
+          <h3>Worked example: undo</h3>
+          <pre><code class="language-csharp">public class TextEditor
+{
+    private string _text = "";
+    private readonly Stack&lt;string&gt; _undo = new();
+    private readonly Stack&lt;string&gt; _redo = new();
+
+    public string Text =&gt; _text;
+
+    public void Type(string addition)
+    {
+        _undo.Push(_text);        // snapshot the state BEFORE the change
+        _redo.Clear();            // a new edit invalidates the redo history
+        _text += addition;
+    }
+
+    public void Undo()
+    {
+        if (_undo.Count == 0) return;
+        _redo.Push(_text);
+        _text = _undo.Pop();
+    }
+
+    public void Redo()
+    {
+        if (_redo.Count == 0) return;
+        _undo.Push(_text);
+        _text = _redo.Pop();
+    }
+}
+
+var editor = new TextEditor();
+editor.Type("Hello");
+editor.Type(", world");
+Console.WriteLine(editor.Text);   // Hello, world
+editor.Undo();
+Console.WriteLine(editor.Text);   // Hello
+editor.Redo();
+Console.WriteLine(editor.Text);   // Hello, world</code></pre>
+
+          <h2 id="queue">Queue - first in, first out</h2>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Enqueue A, B, C then Dequeue</div>
+            <div class="arch-row">
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">A</div><div class="arch-box-subtitle">front - Dequeue() returns this</div></div>
+              <div class="arch-arrow-right">→</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">B</div><div class="arch-box-subtitle"></div></div>
+              <div class="arch-arrow-right">→</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">C</div><div class="arch-box-subtitle">back - joined last</div></div>
+            </div>
+          </div>
+          <pre><code class="language-csharp">var queue = new Queue&lt;string&gt;();
+
+queue.Enqueue("job1");             // join the back    O(1)
+queue.Enqueue("job2");
+queue.Enqueue("job3");
+
+Console.WriteLine(queue.Peek());     // job1  - who is next, without serving them
+Console.WriteLine(queue.Dequeue());  // job1  - serve the front   O(1)
+Console.WriteLine(queue.Dequeue());  // job2
+Console.WriteLine(queue.Count);      // 1
+
+if (queue.TryDequeue(out string? next))
+    Console.WriteLine(next);         // job3
+// queue.Dequeue();                  // InvalidOperationException on empty</code></pre>
+
+          <h3>What queues are used for</h3>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Use</th><th>Why FIFO fits</th></tr></thead>
+              <tbody>
+                <tr><td>Background job processing</td><td>Work is handled in the order it arrived - fairness</td></tr>
+                <tr><td>Print spooling</td><td>First document submitted prints first</td></tr>
+                <tr><td>Request buffering / rate limiting</td><td>Absorb bursts without dropping the earliest requests</td></tr>
+                <tr><td>Breadth-first search</td><td>Explore everything one step away before going two steps</td></tr>
+                <tr><td>Producer/consumer pipelines</td><td>One side adds, the other takes, in order</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Worked example: a simple job queue</h3>
+          <pre><code class="language-csharp">public record PrintJob(string Document, int Pages);
+
+public class PrintSpooler
+{
+    private readonly Queue&lt;PrintJob&gt; _queue = new();
+
+    public void Submit(PrintJob job)
+    {
+        _queue.Enqueue(job);
+        Console.WriteLine($"Queued '{job.Document}' ({_queue.Count} waiting)");
+    }
+
+    public void RunAll()
+    {
+        while (_queue.Count &gt; 0)
+        {
+            PrintJob job = _queue.Dequeue();
+            Console.WriteLine($"Printing '{job.Document}' - {job.Pages} pages");
+        }
+        Console.WriteLine("Spooler idle.");
+    }
+}
+
+var spooler = new PrintSpooler();
+spooler.Submit(new PrintJob("Invoice.pdf", 2));
+spooler.Submit(new PrintJob("Report.docx", 40));
+spooler.Submit(new PrintJob("Memo.txt", 1));
+spooler.RunAll();
+// Printing 'Invoice.pdf' - 2 pages     &lt;- submitted first, printed first
+// Printing 'Report.docx' - 40 pages
+// Printing 'Memo.txt' - 1 pages</code></pre>
+
+          <h2 id="priority">PriorityQueue - the urgent one first</h2>
+          <p>Sometimes order of arrival is not what matters. <code>PriorityQueue</code> (.NET 6+) always hands back the item with the lowest priority value, which makes it the right tool for schedulers, triage, and Dijkstra's shortest-path algorithm. Internally it is a <a href="./trees.html">heap</a>.</p>
+          <pre><code class="language-csharp">// PriorityQueue&lt;TElement, TPriority&gt; - lowest priority number comes out first
+var triage = new PriorityQueue&lt;string, int&gt;();
+
+triage.Enqueue("Sprained ankle", 3);
+triage.Enqueue("Chest pain", 1);          // most urgent
+triage.Enqueue("Broken arm", 2);
+
+while (triage.Count &gt; 0)
+    Console.WriteLine(triage.Dequeue());
+
+// Chest pain
+// Broken arm
+// Sprained ankle</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">A priority queue is not stable</div>
+            <p>Two items with the same priority can come out in any order. If ties must be broken by arrival time, make the priority a tuple: <code>Enqueue(item, (priority, sequenceNumber))</code> with a <code>PriorityQueue&lt;string, (int, long)&gt;</code>.</p>
+          </div>
+
+          <h2 id="both-ends">Deques and thread-safe variants</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Need</th><th>Type</th></tr></thead>
+              <tbody>
+                <tr><td>Add and remove at both ends</td><td><code>LinkedList&lt;T&gt;</code> (.NET has no built-in deque)</td></tr>
+                <tr><td>Queue shared across threads</td><td><code>ConcurrentQueue&lt;T&gt;</code></td></tr>
+                <tr><td>Stack shared across threads</td><td><code>ConcurrentStack&lt;T&gt;</code></td></tr>
+                <tr><td>Producer/consumer with blocking and bounds</td><td><code>BlockingCollection&lt;T&gt;</code> or <code>System.Threading.Channels</code></td></tr>
+                <tr><td>Durable queue across processes or machines</td><td>A message broker - RabbitMQ, Azure Service Bus, Amazon SQS</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="summary">Summary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th></th><th>Stack&lt;T&gt;</th><th>Queue&lt;T&gt;</th><th>PriorityQueue&lt;T,P&gt;</th></tr></thead>
+              <tbody>
+                <tr><td>Rule</td><td>Last in, first out</td><td>First in, first out</td><td>Most urgent first</td></tr>
+                <tr><td>Add</td><td><code>Push</code> - O(1)</td><td><code>Enqueue</code> - O(1)</td><td><code>Enqueue</code> - O(log n)</td></tr>
+                <tr><td>Remove</td><td><code>Pop</code> - O(1)</td><td><code>Dequeue</code> - O(1)</td><td><code>Dequeue</code> - O(log n)</td></tr>
+                <tr><td>Look without removing</td><td><code>Peek</code> - O(1)</td><td><code>Peek</code> - O(1)</td><td><code>Peek</code> - O(1)</td></tr>
+                <tr><td>Search</td><td>O(n)</td><td>O(n)</td><td>O(n)</td></tr>
+                <tr><td>Classic use</td><td>Undo, DFS, brackets</td><td>Job queues, BFS</td><td>Schedulers, Dijkstra</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./linked-lists.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Linked Lists</span></a>
+          <a href="./hash-tables.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Hash Tables &amp; Sets</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

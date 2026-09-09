@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Binary trees, binary search trees, traversals, and heaps in C# - with a from-scratch BST implementation.">
+  <title>Trees &amp; Heaps | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html" class="active">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Trees &amp; Heaps</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Trees &amp; Heaps</h1>
+          <p class="text-secondary text-lg">Data arranged in a hierarchy. Each step down a balanced tree throws away half the remaining work.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Tree in one sentence</div>
+            <p>A tree is data arranged like a family tree or a folder structure: one item at the top, each item pointing down at zero or more children, and no loops. Drawn in computing with the root at the top and the leaves at the bottom.</p>
+          </div>
+
+          <h2 id="terms">Vocabulary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>Node</td><td>One item in the tree - a value plus references to its children</td></tr>
+                <tr><td>Root</td><td>The single node at the top, with no parent</td></tr>
+                <tr><td>Parent / child</td><td>A node directly above / below another</td></tr>
+                <tr><td>Leaf</td><td>A node with no children</td></tr>
+                <tr><td>Subtree</td><td>Any node together with everything beneath it</td></tr>
+                <tr><td>Depth of a node</td><td>How many steps down from the root it sits</td></tr>
+                <tr><td>Height of the tree</td><td>The depth of its deepest node</td></tr>
+                <tr><td>Binary tree</td><td>A tree where every node has at most two children (Left and Right)</td></tr>
+                <tr><td>Balanced</td><td>Every leaf is at roughly the same depth - the property that keeps operations O(log n)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="bst">The binary search tree</h2>
+          <p>A <strong>binary search tree</strong> (BST) adds one rule to a binary tree, and that rule is what makes it useful:</p>
+          <div class="callout callout-info">
+            <div class="callout-title">The BST rule</div>
+            <p>For every node: everything in its <strong>left</strong> subtree is smaller, and everything in its <strong>right</strong> subtree is larger.</p>
+          </div>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Inserting 50, 30, 70, 20, 40, 60, 80</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">50</div><div class="arch-box-subtitle">root</div></div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">30</div><div class="arch-box-subtitle">less than 50</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">70</div><div class="arch-box-subtitle">greater than 50</div></div>
+              </div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">20</div><div class="arch-box-subtitle">leaf</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">40</div><div class="arch-box-subtitle">leaf</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">60</div><div class="arch-box-subtitle">leaf</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">80</div><div class="arch-box-subtitle">leaf</div></div>
+              </div>
+            </div>
+          </div>
+          <p>Searching for 60: it is bigger than 50 so go right; smaller than 70 so go left; found. Three comparisons instead of seven. Every step down discards half the remaining tree - the same halving that makes <a href="./searching.html">binary search</a> O(log n).</p>
+
+          <h2 id="implementation">A binary search tree in C#</h2>
+          <pre><code class="language-csharp">public class TreeNode&lt;T&gt;
+{
+    public T Value { get; set; }
+    public TreeNode&lt;T&gt;? Left { get; set; }
+    public TreeNode&lt;T&gt;? Right { get; set; }
+
+    public TreeNode(T value) =&gt; Value = value;
+}
+
+public class BinarySearchTree&lt;T&gt; where T : IComparable&lt;T&gt;
+{
+    private TreeNode&lt;T&gt;? _root;
+    public int Count { get; private set; }
+
+    // ---- Insert: walk down, then hang the new node off a null branch -------
+    public void Insert(T value)
+    {
+        _root = InsertInto(_root, value);
+        Count++;
+    }
+
+    private TreeNode&lt;T&gt;? InsertInto(TreeNode&lt;T&gt;? node, T value)
+    {
+        if (node is null) return new TreeNode&lt;T&gt;(value);   // found the empty slot
+
+        int comparison = value.CompareTo(node.Value);
+        if (comparison &lt; 0) node.Left = InsertInto(node.Left, value);
+        else                node.Right = InsertInto(node.Right, value);
+        // (equal values go right here; a real implementation might reject them)
+
+        return node;
+    }
+
+    // ---- Search: the whole point of a BST ---------------------------------
+    public bool Contains(T value)
+    {
+        TreeNode&lt;T&gt;? current = _root;
+
+        while (current is not null)
+        {
+            int comparison = value.CompareTo(current.Value);
+            if (comparison == 0) return true;
+            current = comparison &lt; 0 ? current.Left : current.Right;   // half discarded
+        }
+        return false;
+    }
+
+    // ---- Minimum and maximum: as far left / right as you can go -----------
+    public T Min()
+    {
+        if (_root is null) throw new InvalidOperationException("Tree is empty.");
+        TreeNode&lt;T&gt; current = _root;
+        while (current.Left is not null) current = current.Left;
+        return current.Value;
+    }
+
+    public T Max()
+    {
+        if (_root is null) throw new InvalidOperationException("Tree is empty.");
+        TreeNode&lt;T&gt; current = _root;
+        while (current.Right is not null) current = current.Right;
+        return current.Value;
+    }
+
+    public int Height() =&gt; HeightOf(_root);
+
+    private int HeightOf(TreeNode&lt;T&gt;? node) =&gt;
+        node is null ? -1 : 1 + Math.Max(HeightOf(node.Left), HeightOf(node.Right));
+
+    // ---- Traversals -------------------------------------------------------
+    public List&lt;T&gt; InOrder()
+    {
+        var result = new List&lt;T&gt;();
+        InOrderInto(_root, result);
+        return result;
+    }
+
+    private void InOrderInto(TreeNode&lt;T&gt;? node, List&lt;T&gt; into)
+    {
+        if (node is null) return;
+        InOrderInto(node.Left, into);     // everything smaller, first
+        into.Add(node.Value);             // then this node
+        InOrderInto(node.Right, into);    // then everything larger
+    }
+
+    public List&lt;T&gt; PreOrder()
+    {
+        var result = new List&lt;T&gt;();
+        PreOrderInto(_root, result);
+        return result;
+    }
+
+    private void PreOrderInto(TreeNode&lt;T&gt;? node, List&lt;T&gt; into)
+    {
+        if (node is null) return;
+        into.Add(node.Value);             // this node first
+        PreOrderInto(node.Left, into);
+        PreOrderInto(node.Right, into);
+    }
+
+    public List&lt;T&gt; PostOrder()
+    {
+        var result = new List&lt;T&gt;();
+        PostOrderInto(_root, result);
+        return result;
+    }
+
+    private void PostOrderInto(TreeNode&lt;T&gt;? node, List&lt;T&gt; into)
+    {
+        if (node is null) return;
+        PostOrderInto(node.Left, into);
+        PostOrderInto(node.Right, into);
+        into.Add(node.Value);             // this node last
+    }
+
+    // Level order needs a queue, not recursion
+    public List&lt;T&gt; LevelOrder()
+    {
+        var result = new List&lt;T&gt;();
+        if (_root is null) return result;
+
+        var queue = new Queue&lt;TreeNode&lt;T&gt;&gt;();
+        queue.Enqueue(_root);
+
+        while (queue.Count &gt; 0)
+        {
+            TreeNode&lt;T&gt; node = queue.Dequeue();
+            result.Add(node.Value);
+            if (node.Left is not null)  queue.Enqueue(node.Left);
+            if (node.Right is not null) queue.Enqueue(node.Right);
+        }
+        return result;
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var tree = new BinarySearchTree&lt;int&gt;();
+foreach (int n in new[] { 50, 30, 70, 20, 40, 60, 80 })
+    tree.Insert(n);
+
+Console.WriteLine(tree.Contains(60));                     // True
+Console.WriteLine(tree.Contains(65));                     // False
+Console.WriteLine($"{tree.Min()} .. {tree.Max()}");       // 20 .. 80
+Console.WriteLine(tree.Height());                         // 2
+
+Console.WriteLine(string.Join(" ", tree.InOrder()));      // 20 30 40 50 60 70 80
+Console.WriteLine(string.Join(" ", tree.PreOrder()));     // 50 30 20 40 70 60 80
+Console.WriteLine(string.Join(" ", tree.PostOrder()));    // 20 40 30 60 80 70 50
+Console.WriteLine(string.Join(" ", tree.LevelOrder()));   // 50 30 70 20 40 60 80</code></pre>
+          <div class="callout callout-tip">
+            <div class="callout-title">In-order traversal gives you sorted output for free</div>
+            <p>"Left, me, right" on a BST always produces the values in ascending order. That is why <code>SortedDictionary</code> and <code>SortedSet</code> - both trees - can be iterated in sorted order with no sorting step.</p>
+          </div>
+
+          <h3>Which traversal when</h3>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Traversal</th><th>Order</th><th>Use it for</th></tr></thead>
+              <tbody>
+                <tr><td>In-order</td><td>Left, node, right</td><td>Reading a BST in sorted order</td></tr>
+                <tr><td>Pre-order</td><td>Node, left, right</td><td>Copying a tree, serialising its structure</td></tr>
+                <tr><td>Post-order</td><td>Left, right, node</td><td>Deleting a tree, evaluating an expression tree, computing folder sizes</td></tr>
+                <tr><td>Level-order (BFS)</td><td>Row by row, top to bottom</td><td>Printing by depth, finding the shallowest match</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="balance">Balance is everything</h2>
+          <p>A BST is only O(log n) while it stays bushy. Insert values that are already sorted and every node goes to the right - the tree becomes a linked list, and search degrades to O(n).</p>
+          <pre><code class="language-csharp">// Inserting 10, 20, 30, 40, 50 in order produces:
+//   10
+//     \
+//      20
+//        \
+//         30
+//           \
+//            40
+//              \
+//               50
+// Height 4 for 5 items. Contains(50) now costs 5 comparisons, not 3.
+
+var degenerate = new BinarySearchTree&lt;int&gt;();
+foreach (int n in new[] { 10, 20, 30, 40, 50 }) degenerate.Insert(n);
+Console.WriteLine(degenerate.Height());   // 4 - a list wearing a tree costume</code></pre>
+          <p><strong>Self-balancing trees</strong> solve this by rotating nodes after each insert to keep the height near log n:</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Tree</th><th>Idea</th><th>Where you meet it</th></tr></thead>
+              <tbody>
+                <tr><td>AVL tree</td><td>Strictly balanced; the two subtrees of any node differ in height by at most 1</td><td>Read-heavy in-memory indexes</td></tr>
+                <tr><td>Red-black tree</td><td>Looser balance, cheaper inserts</td><td><code>SortedDictionary</code>, <code>SortedSet</code>, java.util.TreeMap</td></tr>
+                <tr><td>B-tree / B+ tree</td><td>Many keys per node, so each disk read fetches a lot</td><td>SQL Server, PostgreSQL, and most database indexes</td></tr>
+                <tr><td>Trie (prefix tree)</td><td>One node per character</td><td>Autocomplete, spell check, IP routing tables</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-csharp">// .NET's balanced trees - no need to write your own
+var sorted = new SortedDictionary&lt;string, int&gt;();      // red-black tree
+sorted["banana"] = 2;
+sorted["apple"] = 5;
+sorted["cherry"] = 1;
+
+foreach (var pair in sorted)
+    Console.WriteLine(pair.Key);        // apple, banana, cherry - always sorted
+
+var set = new SortedSet&lt;int&gt; { 50, 10, 30 };
+Console.WriteLine(string.Join(" ", set));                 // 10 30 50
+Console.WriteLine(string.Join(" ", set.GetViewBetween(20, 60)));   // 30 50</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Dictionary or SortedDictionary?</div>
+            <p><code>Dictionary</code> is O(1) but unordered. <code>SortedDictionary</code> is O(log n) but iterates in key order and supports range queries. If you never need order, the hash table wins.</p>
+          </div>
+
+          <h2 id="heap">Heaps and priority queues</h2>
+          <p>A <strong>heap</strong> is a different kind of binary tree with a weaker rule: every parent is smaller than its children (a min-heap). It does not sort the data - it only guarantees that the smallest item is at the root, which is exactly what a priority queue needs.</p>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Min-heap: the smallest value is always on top</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">1</div><div class="arch-box-subtitle">root - always the minimum</div></div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">3</div><div class="arch-box-subtitle">≥ parent</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">6</div><div class="arch-box-subtitle">≥ parent</div></div>
+              </div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">5</div><div class="arch-box-subtitle"></div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">9</div><div class="arch-box-subtitle"></div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">8</div><div class="arch-box-subtitle"></div></div>
+              </div>
+            </div>
+          </div>
+          <p>A heap is stored in a plain array, not with node objects: for the item at index <code>i</code>, its children live at <code>2i + 1</code> and <code>2i + 2</code>, and its parent at <code>(i - 1) / 2</code>. No references, no allocations, excellent cache behaviour.</p>
+          <pre><code class="language-csharp">// .NET 6+ ships a heap-backed priority queue
+var pq = new PriorityQueue&lt;string, int&gt;();
+pq.Enqueue("low priority task", 5);
+pq.Enqueue("urgent task", 1);
+pq.Enqueue("normal task", 3);
+
+Console.WriteLine(pq.Peek());        // urgent task        O(1)
+Console.WriteLine(pq.Dequeue());     // urgent task        O(log n)
+Console.WriteLine(pq.Dequeue());     // normal task
+
+// Top-k without sorting everything: keep a heap of size k
+IEnumerable&lt;int&gt; TopThree(IEnumerable&lt;int&gt; numbers)
+{
+    var heap = new PriorityQueue&lt;int, int&gt;();
+    foreach (int n in numbers)
+    {
+        heap.Enqueue(n, n);
+        if (heap.Count &gt; 3) heap.Dequeue();   // drop the smallest
+    }
+    return heap.UnorderedItems.Select(x =&gt; x.Element).OrderByDescending(x =&gt; x);
+}
+
+Console.WriteLine(string.Join(" ", TopThree(new[] { 5, 1, 9, 3, 7, 2 })));  // 9 7 5</code></pre>
+
+          <h2 id="general">Trees that are not binary</h2>
+          <p>Plenty of real trees have any number of children - file systems, org charts, category hierarchies, the DOM:</p>
+          <pre><code class="language-csharp">public class Category
+{
+    public string Name { get; }
+    public List&lt;Category&gt; Children { get; } = new();
+
+    public Category(string name) =&gt; Name = name;
+
+    public Category Add(Category child)
+    {
+        Children.Add(child);
+        return this;
+    }
+
+    // Recursive traversal with indentation for depth
+    public void Print(int depth = 0)
+    {
+        Console.WriteLine(new string(' ', depth * 2) + Name);
+        foreach (Category child in Children)
+            child.Print(depth + 1);
+    }
+
+    // Post-order: children counted before the node itself
+    public int CountAll() =&gt; 1 + Children.Sum(c =&gt; c.CountAll());
+}
+
+var root = new Category("Products");
+var electronics = new Category("Electronics");
+electronics.Add(new Category("Laptops")).Add(new Category("Phones"));
+root.Add(electronics).Add(new Category("Books"));
+
+root.Print();
+// Products
+//   Electronics
+//     Laptops
+//     Phones
+//   Books
+
+Console.WriteLine(root.CountAll());   // 5</code></pre>
+
+          <h2 id="costs">Cost summary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Operation</th><th>Balanced BST</th><th>Unbalanced BST</th><th>Heap</th></tr></thead>
+              <tbody>
+                <tr><td>Search</td><td>O(log n)</td><td>O(n)</td><td>O(n)</td></tr>
+                <tr><td>Insert</td><td>O(log n)</td><td>O(n)</td><td>O(log n)</td></tr>
+                <tr><td>Delete</td><td>O(log n)</td><td>O(n)</td><td>O(log n)</td></tr>
+                <tr><td>Find minimum</td><td>O(log n)</td><td>O(n)</td><td>O(1)</td></tr>
+                <tr><td>Iterate in sorted order</td><td>O(n)</td><td>O(n)</td><td>Not supported</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./hash-tables.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Hash Tables &amp; Sets</span></a>
+          <a href="./graphs.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Graphs</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

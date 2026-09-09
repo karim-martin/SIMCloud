@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="CloudDevOps — A comprehensive guide to DevOps practices and Cloud technologies on GCP, AWS, and Azure.">
+  <meta name="description" content="CloudDevOps — A comprehensive guide to DevOps practices, Cloud technologies on GCP, AWS, and Azure, and programming fundamentals with C#.">
   <title>CloudDevOps - DevOps & Cloud Learning</title>
   <link rel="stylesheet" href="./assets/css/base.css">
   <link rel="stylesheet" href="./assets/css/layout.css">
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="./assets/css/utilities.css">
   <link rel="icon" type="image/svg+xml" href="./assets/images/logo.svg">
   <meta property="og:title" content="CloudDevOps - DevOps & Cloud Learning">
-  <meta property="og:description" content="Learn DevOps, GCP, AWS, and Azure with hands-on guides and architecture diagrams.">
+  <meta property="og:description" content="Learn DevOps, GCP, AWS, Azure, and programming fundamentals with hands-on guides, C# examples, and architecture diagrams.">
   <meta property="og:type" content="website">
 </head>
 <body class="layout-landing">
@@ -27,6 +27,7 @@
         <a href="./devops/" class="nav-link">DevOps</a>
         <a href="./cloud/" class="nav-link">Cloud</a>
         <a href="./app-deploy/" class="nav-link">App Deploy</a>
+        <a href="./programming/" class="nav-link">Programming</a>
       </nav>
       <div class="header-actions">
         <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
@@ -46,6 +47,7 @@
             <li><a href="./devops/">DevOps</a></li>
             <li><a href="./cloud/">Cloud</a></li>
             <li><a href="./app-deploy/">App Deploy</a></li>
+            <li><a href="./programming/">Programming</a></li>
           </ul>
         </div>
       </nav>
@@ -62,7 +64,7 @@
         </div>
       </section>
 
-      <div class="card-grid card-grid-large" style="margin-top:2rem;">
+      <div class="card-grid card-grid-large" style="margin-top:2rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
         <a href="./devops/" class="card card-large card-link">
           <div class="card-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
@@ -83,6 +85,13 @@
           </div>
           <h3 class="card-title">App Deploy</h3>
           <p class="card-description">End-to-end guides for deploying a React + .NET 8 app to GKE, EKS, or AKS — with CI/CD, SSL, scaling, and monitoring.</p>
+        </a>
+        <a href="./programming/" class="card card-large card-link">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          </div>
+          <h3 class="card-title">Programming</h3>
+          <p class="card-description">Object-oriented programming with C# - the four pillars explained from scratch - plus the data structures and algorithms behind fast code.</p>
         </a>
       </div>
 
@@ -127,6 +136,8 @@
           <div class="feature-item"><div class="feature-icon">🔄</div><div class="feature-text"><h4>CI/CD & GitOps</h4><p>GitHub Actions, Azure Pipelines, ArgoCD — automated deploy on every commit.</p></div></div>
           <div class="feature-item"><div class="feature-icon">☁️</div><div class="feature-text"><h4>Multi-Cloud</h4><p>GCP, AWS, and Azure — compute, storage, networking, and security for each.</p></div></div>
           <div class="feature-item"><div class="feature-icon">📊</div><div class="feature-text"><h4>Observability</h4><p>Prometheus, Grafana, CloudWatch, Azure Monitor — metrics, logs, and alerting.</p></div></div>
+          <div class="feature-item"><div class="feature-icon">🧩</div><div class="feature-text"><h4>OOP with C#</h4><p>Classes, objects, and the four pillars - encapsulation, abstraction, inheritance, polymorphism.</p></div></div>
+          <div class="feature-item"><div class="feature-icon">⚙️</div><div class="feature-text"><h4>Data Structures &amp; Algorithms</h4><p>Big-O, lists, dictionaries, trees, graphs, sorting, searching, and recursion.</p></div></div>
         </div>
       </section>
     </main>

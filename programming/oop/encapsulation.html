@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Encapsulation in C# - bundling data with the methods that operate on it and restricting direct access to internal state.">
+  <title>Encapsulation | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html" class="active">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">OOP</a></li>
+            <li aria-current="page">Encapsulation</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Pillar 1: Encapsulation</h1>
+          <p class="text-secondary text-lg">Keep the data and the code that changes it together, and let nobody reach in from outside.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Encapsulation in one sentence</div>
+            <p>Put the data and the code that changes it in the same class, then make the data <code>private</code> so the only way to change it is through methods that enforce your rules. Think of a vending machine: you press a button, you do not reach inside.</p>
+          </div>
+
+          <h2 id="why">The problem: unguarded data</h2>
+          <p>Here is a class with public fields. It compiles, it runs, and it is a bug waiting to happen:</p>
+          <pre><code class="language-csharp">// BAD - anyone can put this object into a nonsense state
+public class BankAccount
+{
+    public decimal Balance;
+    public bool IsClosed;
+}
+
+var account = new BankAccount { Balance = 100m };
+account.Balance = -50_000m;     // nothing stops this
+account.IsClosed = true;
+account.Balance += 10m;         // deposit into a closed account - also fine</code></pre>
+          <p>Two things are wrong. First, the rules ("balance never goes negative", "no deposits into a closed account") exist only in your head. Second, when a negative balance turns up in production, the culprit could be any line in the entire codebase.</p>
+
+          <h2 id="fix">The fix: private data, public behaviour</h2>
+          <pre><code class="language-csharp">public class BankAccount
+{
+    // 1. State is private - unreachable from outside the class
+    private decimal _balance;
+    private bool _isClosed;
+    private readonly List&lt;string&gt; _transactions = new();
+
+    public string AccountNumber { get; }
+
+    public BankAccount(string accountNumber, decimal openingBalance)
+    {
+        if (openingBalance &lt; 0)
+            throw new ArgumentOutOfRangeException(nameof(openingBalance));
+
+        AccountNumber = accountNumber;
+        _balance = openingBalance;
+    }
+
+    // 2. Read access is exposed, write access is not
+    public decimal Balance =&gt; _balance;
+
+    // Callers get a read-only view - they cannot add or remove entries
+    public IReadOnlyList&lt;string&gt; Transactions =&gt; _transactions;
+
+    // 3. Every change goes through a method that enforces the rules
+    public void Deposit(decimal amount)
+    {
+        EnsureOpen();
+        if (amount &lt;= 0)
+            throw new ArgumentOutOfRangeException(nameof(amount), "Deposit must be positive.");
+
+        _balance += amount;
+        _transactions.Add($"Deposit {amount:C}");
+    }
+
+    public bool TryWithdraw(decimal amount)
+    {
+        EnsureOpen();
+        if (amount &lt;= 0 || amount &gt; _balance)
+            return false;
+
+        _balance -= amount;
+        _transactions.Add($"Withdraw {amount:C}");
+        return true;
+    }
+
+    public void Close()
+    {
+        if (_balance != 0)
+            throw new InvalidOperationException("Withdraw the remaining balance first.");
+        _isClosed = true;
+    }
+
+    // 4. Private helper - an implementation detail, not part of the public surface
+    private void EnsureOpen()
+    {
+        if (_isClosed)
+            throw new InvalidOperationException("This account is closed.");
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var account = new BankAccount("GB-001", 100m);
+account.Deposit(50m);
+Console.WriteLine(account.Balance);            // 150
+
+Console.WriteLine(account.TryWithdraw(500m));  // False - rule enforced
+Console.WriteLine(account.TryWithdraw(150m));  // True
+account.Close();
+
+// account._balance = 1_000_000m;              // compile error: private
+// account.Transactions.Add("fake");           // compile error: IReadOnlyList
+// account.Deposit(10m);                       // throws: account is closed</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">The payoff: one place to look</div>
+            <p>The balance can now only change inside <code>BankAccount</code>. If a balance is ever wrong, the bug is in this one file - not somewhere in 200,000 lines. That is the whole point of encapsulation.</p>
+          </div>
+
+          <h2 id="modifiers">Access modifiers</h2>
+          <p>Encapsulation is enforced with access modifiers. Default to the most restrictive one that still works.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Modifier</th><th>Who can access it</th><th>Typical use</th></tr></thead>
+              <tbody>
+                <tr><td><code>private</code></td><td>Only the same class</td><td>Default for fields and helper methods</td></tr>
+                <tr><td><code>public</code></td><td>Any code, any assembly</td><td>The intended API of the class</td></tr>
+                <tr><td><code>protected</code></td><td>The same class and any derived class</td><td>Extension points for subclasses</td></tr>
+                <tr><td><code>internal</code></td><td>Any code in the same assembly (project)</td><td>Types shared inside a library but not exported</td></tr>
+                <tr><td><code>protected internal</code></td><td>Same assembly <em>or</em> any derived class</td><td>Rare; framework authoring</td></tr>
+                <tr><td><code>private protected</code></td><td>Derived classes <em>in the same assembly</em></td><td>Rare; tightly controlled inheritance</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-info">
+            <div class="callout-title">Defaults worth remembering</div>
+            <p>A class member with no modifier is <code>private</code>. A top-level class with no modifier is <code>internal</code>. Being explicit is clearer than relying on either.</p>
+          </div>
+
+          <h2 id="levels">Levels of exposure</h2>
+          <p>Properties let you pick exactly how much access to give, rather than choosing between "wide open" and "invisible":</p>
+          <pre><code class="language-csharp">public class Order
+{
+    // Read and write from anywhere
+    public string CustomerNote { get; set; }
+
+    // Read anywhere; written only inside this class
+    public OrderStatus Status { get; private set; }
+
+    // Set once at creation, then permanently read-only
+    public string OrderId { get; init; }
+
+    // Read-only, computed from other state
+    public bool IsEditable =&gt; Status == OrderStatus.Draft;
+
+    // Not exposed at all - pure internal bookkeeping
+    private int _retryCount;
+
+    public void Submit()
+    {
+        if (!IsEditable)
+            throw new InvalidOperationException("Only draft orders can be submitted.");
+        Status = OrderStatus.Submitted;      // allowed: we are inside the class
+    }
+}
+
+public enum OrderStatus { Draft, Submitted, Shipped }</code></pre>
+          <pre><code class="language-csharp">var order = new Order { OrderId = "A-1" };
+order.Submit();
+Console.WriteLine(order.Status);       // Submitted
+// order.Status = OrderStatus.Shipped; // compile error: setter is private</code></pre>
+
+          <h2 id="invariants">Protecting invariants</h2>
+          <p>An <strong>invariant</strong> is a statement about an object that must always be true. Encapsulation is how you keep invariants true.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Class</th><th>Invariant</th><th>Enforced by</th></tr></thead>
+              <tbody>
+                <tr><td><code>BankAccount</code></td><td>Balance is never negative</td><td><code>TryWithdraw</code> checks before subtracting</td></tr>
+                <tr><td><code>Order</code></td><td>Only draft orders can be edited</td><td><code>Submit</code> checks <code>IsEditable</code></td></tr>
+                <tr><td><code>Rectangle</code></td><td>Width and height are positive</td><td>Constructor validates, no public setters</td></tr>
+                <tr><td><code>DateRange</code></td><td>End is never before start</td><td>Constructor validates both together</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-csharp">public class DateRange
+{
+    public DateOnly Start { get; }
+    public DateOnly End { get; }
+
+    public DateRange(DateOnly start, DateOnly end)
+    {
+        // The two values only make sense checked TOGETHER, which is exactly
+        // why they must be set together, in a constructor.
+        if (end &lt; start)
+            throw new ArgumentException("End cannot be before start.", nameof(end));
+
+        Start = start;
+        End = end;
+    }
+
+    public int Days =&gt; End.DayNumber - Start.DayNumber + 1;
+}</code></pre>
+
+          <h2 id="leaks">Common leaks</h2>
+          <p>A class can be full of <code>private</code> keywords and still leak its internals. Watch for these:</p>
+
+          <h3>Leak 1: handing out a mutable collection</h3>
+          <pre><code class="language-csharp">// BAD - the caller receives the real list and can modify it
+public List&lt;string&gt; Items =&gt; _items;
+
+// GOOD - expose a read-only view
+public IReadOnlyList&lt;string&gt; Items =&gt; _items;
+
+// ALSO GOOD - hand out a copy when callers need their own list
+public List&lt;string&gt; GetItemsCopy() =&gt; new List&lt;string&gt;(_items);</code></pre>
+
+          <h3>Leak 2: a setter that skips the rules</h3>
+          <pre><code class="language-csharp">// BAD - Deposit() validates, but this setter lets callers bypass it entirely
+public decimal Balance { get; set; }
+
+// GOOD - read-only property; all writes go through Deposit/TryWithdraw
+public decimal Balance =&gt; _balance;</code></pre>
+
+          <h3>Leak 3: anaemic classes (getters and setters, no behaviour)</h3>
+          <pre><code class="language-csharp">// BAD - a bag of public data; the rules end up scattered across callers
+public class Invoice
+{
+    public decimal Subtotal { get; set; }
+    public decimal Tax { get; set; }
+    public decimal Total { get; set; }
+}
+invoice.Tax = invoice.Subtotal * 0.2m;     // repeated in every caller...
+invoice.Total = invoice.Subtotal + invoice.Tax;
+
+// GOOD - the invoice knows how to total itself
+public class Invoice
+{
+    private const decimal VatRate = 0.20m;
+    public decimal Subtotal { get; }
+
+    public Invoice(decimal subtotal) =&gt; Subtotal = subtotal;
+
+    public decimal Tax =&gt; Math.Round(Subtotal * VatRate, 2);
+    public decimal Total =&gt; Subtotal + Tax;
+}</code></pre>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">A DTO is the deliberate exception</div>
+            <p>Classes used purely to carry data across a boundary - API request bodies, database rows, message payloads - are meant to be plain property bags. They have no rules to protect, so they have no behaviour to hold. Do not confuse a DTO with a domain class that does.</p>
+          </div>
+
+          <h2 id="records">A shortcut: records</h2>
+          <p>For immutable value-like data, a <code>record</code> gives you encapsulation with one line - all properties are init-only, and equality compares values rather than references.</p>
+          <pre><code class="language-csharp">public record Money(decimal Amount, string Currency);
+
+var price = new Money(19.99m, "GBP");
+// price.Amount = 5m;                      // compile error: init-only
+
+var same = new Money(19.99m, "GBP");
+Console.WriteLine(price == same);          // True - value equality
+Console.WriteLine(price);                  // Money { Amount = 19.99, Currency = GBP }
+
+// Create a modified copy instead of mutating
+var discounted = price with { Amount = 14.99m };</code></pre>
+
+          <h2 id="checklist">Checklist</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Do</th><th>Avoid</th></tr></thead>
+              <tbody>
+                <tr><td>Make fields <code>private</code></td><td><code>public</code> fields</td></tr>
+                <tr><td>Expose data through properties</td><td>Public setters on state with rules</td></tr>
+                <tr><td>Validate in constructors and setters</td><td>Trusting callers to validate</td></tr>
+                <tr><td>Return <code>IReadOnlyList</code> / copies</td><td>Returning the internal <code>List</code></td></tr>
+                <tr><td>Put behaviour next to the data it uses</td><td>Classes that are only getters and setters</td></tr>
+                <tr><td>Start <code>private</code>, widen when needed</td><td>Starting <code>public</code> and hoping</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./building-blocks.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Building Blocks</span></a>
+          <a href="./abstraction.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Abstraction</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

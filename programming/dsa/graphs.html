@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Graphs in C# - adjacency lists, breadth-first search, depth-first search, and shortest paths.">
+  <title>Graphs | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html" class="active">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Graphs</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Graphs</h1>
+          <p class="text-secondary text-lg">Things and the connections between them - the structure behind maps, networks, and dependencies.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Graph in one sentence</div>
+            <p>A graph is a set of things (<strong>vertices</strong>, or nodes) and the connections between them (<strong>edges</strong>). A road map, a social network, a set of microservices calling each other, and a build dependency chart are all graphs.</p>
+          </div>
+
+          <h2 id="terms">Vocabulary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Term</th><th>Meaning</th><th>Example</th></tr></thead>
+              <tbody>
+                <tr><td>Vertex (node)</td><td>One thing in the graph</td><td>A city, a person, a service</td></tr>
+                <tr><td>Edge</td><td>A connection between two vertices</td><td>A road, a friendship, an API call</td></tr>
+                <tr><td>Undirected</td><td>Edges work both ways</td><td>Facebook friendship</td></tr>
+                <tr><td>Directed (digraph)</td><td>Edges have a direction</td><td>Twitter follows, task dependencies</td></tr>
+                <tr><td>Weighted</td><td>Each edge carries a cost</td><td>Distance, latency, price</td></tr>
+                <tr><td>Path</td><td>A sequence of edges from one vertex to another</td><td>A -&gt; B -&gt; D</td></tr>
+                <tr><td>Cycle</td><td>A path that returns to where it started</td><td>A circular dependency</td></tr>
+                <tr><td>DAG</td><td>Directed acyclic graph - directed, no cycles</td><td>Build pipelines, git history</td></tr>
+                <tr><td>Connected</td><td>Every vertex is reachable from every other</td><td>A network with no isolated islands</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A tree is just a special graph: connected, directed downwards, and with no cycles. Everything on this page also works on trees.</p>
+
+          <h2 id="representation">Two ways to store a graph</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th></th><th>Adjacency list</th><th>Adjacency matrix</th></tr></thead>
+              <tbody>
+                <tr><td>Shape</td><td>Each vertex holds a list of its neighbours</td><td>A V×V grid of true/false or weights</td></tr>
+                <tr><td>Memory</td><td>O(V + E)</td><td>O(V²)</td></tr>
+                <tr><td>"Is there an edge A-B?"</td><td>O(degree of A)</td><td>O(1)</td></tr>
+                <tr><td>"List A's neighbours"</td><td>O(degree of A)</td><td>O(V)</td></tr>
+                <tr><td>Best for</td><td>Sparse graphs - most real ones</td><td>Dense graphs, or lots of edge lookups</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Adjacency lists are the default in application code. A social network with a million users and fifty friends each needs 50 million list entries - but a matrix would need a trillion cells.</p>
+
+          <h2 id="building">Building a graph in C#</h2>
+          <pre><code class="language-csharp">public class Graph&lt;T&gt; where T : notnull
+{
+    // Vertex -&gt; its neighbours. This IS the adjacency list.
+    private readonly Dictionary&lt;T, List&lt;T&gt;&gt; _adjacency = new();
+    private readonly bool _directed;
+
+    public Graph(bool directed = false) =&gt; _directed = directed;
+
+    public IEnumerable&lt;T&gt; Vertices =&gt; _adjacency.Keys;
+
+    public void AddVertex(T vertex)
+    {
+        if (!_adjacency.ContainsKey(vertex))
+            _adjacency[vertex] = new List&lt;T&gt;();
+    }
+
+    public void AddEdge(T from, T to)
+    {
+        AddVertex(from);
+        AddVertex(to);
+
+        _adjacency[from].Add(to);
+        if (!_directed) _adjacency[to].Add(from);   // undirected: both directions
+    }
+
+    public IReadOnlyList&lt;T&gt; NeighboursOf(T vertex) =&gt;
+        _adjacency.TryGetValue(vertex, out List&lt;T&gt;? list) ? list : Array.Empty&lt;T&gt;();
+
+    public bool HasEdge(T from, T to) =&gt; NeighboursOf(from).Contains(to);
+}</code></pre>
+          <pre><code class="language-csharp">var cities = new Graph&lt;string&gt;(directed: false);
+cities.AddEdge("London", "Oxford");
+cities.AddEdge("London", "Cambridge");
+cities.AddEdge("Oxford", "Bristol");
+cities.AddEdge("Cambridge", "Norwich");
+cities.AddEdge("Bristol", "Cardiff");
+
+Console.WriteLine(string.Join(", ", cities.NeighboursOf("London")));  // Oxford, Cambridge
+Console.WriteLine(cities.HasEdge("Oxford", "London"));                // True - undirected</code></pre>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">The graph above</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">London</div><div class="arch-box-subtitle">start</div></div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Oxford</div><div class="arch-box-subtitle">1 hop</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Cambridge</div><div class="arch-box-subtitle">1 hop</div></div>
+              </div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Bristol</div><div class="arch-box-subtitle">2 hops</div></div>
+                <div class="arch-box arch-box-neutral"><div class="arch-box-title">Norwich</div><div class="arch-box-subtitle">2 hops</div></div>
+              </div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">Cardiff</div><div class="arch-box-subtitle">3 hops</div></div>
+            </div>
+          </div>
+
+          <h2 id="bfs">Breadth-first search (BFS)</h2>
+          <p>Explore everything one step away, then everything two steps away, and so on. Uses a <a href="./stacks-queues.html">queue</a>. Because it expands in rings, the first time BFS reaches a vertex it has found the <strong>fewest-edges path</strong> to it.</p>
+          <pre><code class="language-csharp">public static List&lt;T&gt; BreadthFirst&lt;T&gt;(Graph&lt;T&gt; graph, T start) where T : notnull
+{
+    var visited = new HashSet&lt;T&gt; { start };      // stops us revisiting - and looping forever
+    var queue = new Queue&lt;T&gt;();
+    var order = new List&lt;T&gt;();
+
+    queue.Enqueue(start);
+
+    while (queue.Count &gt; 0)
+    {
+        T current = queue.Dequeue();
+        order.Add(current);
+
+        foreach (T neighbour in graph.NeighboursOf(current))
+        {
+            if (visited.Add(neighbour))          // Add returns false if already seen
+                queue.Enqueue(neighbour);
+        }
+    }
+
+    return order;
+}
+
+Console.WriteLine(string.Join(" -&gt; ", BreadthFirst(cities, "London")));
+// London -&gt; Oxford -&gt; Cambridge -&gt; Bristol -&gt; Norwich -&gt; Cardiff</code></pre>
+
+          <h3>BFS for the shortest path</h3>
+          <p>Record which vertex you came from, then walk the trail backwards at the end:</p>
+          <pre><code class="language-csharp">public static List&lt;T&gt;? ShortestPath&lt;T&gt;(Graph&lt;T&gt; graph, T start, T goal) where T : notnull
+{
+    if (EqualityComparer&lt;T&gt;.Default.Equals(start, goal)) return new List&lt;T&gt; { start };
+
+    var cameFrom = new Dictionary&lt;T, T&gt;();       // child -&gt; parent
+    var visited = new HashSet&lt;T&gt; { start };
+    var queue = new Queue&lt;T&gt;();
+    queue.Enqueue(start);
+
+    while (queue.Count &gt; 0)
+    {
+        T current = queue.Dequeue();
+
+        foreach (T neighbour in graph.NeighboursOf(current))
+        {
+            if (!visited.Add(neighbour)) continue;
+
+            cameFrom[neighbour] = current;
+
+            if (EqualityComparer&lt;T&gt;.Default.Equals(neighbour, goal))
+                return Rebuild(cameFrom, start, goal);
+
+            queue.Enqueue(neighbour);
+        }
+    }
+
+    return null;                                  // no route exists
+}
+
+private static List&lt;T&gt; Rebuild&lt;T&gt;(Dictionary&lt;T, T&gt; cameFrom, T start, T goal) where T : notnull
+{
+    var path = new List&lt;T&gt; { goal };
+    T current = goal;
+
+    while (!EqualityComparer&lt;T&gt;.Default.Equals(current, start))
+    {
+        current = cameFrom[current];
+        path.Add(current);
+    }
+
+    path.Reverse();                               // we built it backwards
+    return path;
+}
+
+List&lt;string&gt;? route = ShortestPath(cities, "London", "Cardiff");
+Console.WriteLine(route is null ? "No route" : string.Join(" -&gt; ", route));
+// London -&gt; Oxford -&gt; Bristol -&gt; Cardiff</code></pre>
+
+          <h2 id="dfs">Depth-first search (DFS)</h2>
+          <p>Follow one path as far as it goes, then back up and try the next. Uses a <a href="./stacks-queues.html">stack</a> - either an explicit one, or the call stack via <a href="./recursion.html">recursion</a>.</p>
+          <pre><code class="language-csharp">// Recursive - the call stack does the remembering
+public static void DepthFirst&lt;T&gt;(Graph&lt;T&gt; graph, T current, HashSet&lt;T&gt; visited, List&lt;T&gt; order)
+    where T : notnull
+{
+    if (!visited.Add(current)) return;            // already been here
+    order.Add(current);
+
+    foreach (T neighbour in graph.NeighboursOf(current))
+        DepthFirst(graph, neighbour, visited, order);
+}
+
+// Iterative - an explicit stack, and no risk of a stack overflow on deep graphs
+public static List&lt;T&gt; DepthFirstIterative&lt;T&gt;(Graph&lt;T&gt; graph, T start) where T : notnull
+{
+    var visited = new HashSet&lt;T&gt;();
+    var stack = new Stack&lt;T&gt;();
+    var order = new List&lt;T&gt;();
+
+    stack.Push(start);
+
+    while (stack.Count &gt; 0)
+    {
+        T current = stack.Pop();
+        if (!visited.Add(current)) continue;
+        order.Add(current);
+
+        foreach (T neighbour in graph.NeighboursOf(current))
+            if (!visited.Contains(neighbour))
+                stack.Push(neighbour);
+    }
+
+    return order;
+}
+
+var order = new List&lt;string&gt;();
+DepthFirst(cities, "London", new HashSet&lt;string&gt;(), order);
+Console.WriteLine(string.Join(" -&gt; ", order));
+// London -&gt; Oxford -&gt; Bristol -&gt; Cardiff -&gt; Cambridge -&gt; Norwich</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">BFS or DFS?</div>
+            <p>Same cost - O(V + E) - and the only structural difference is queue versus stack. Use <strong>BFS</strong> when you want the shortest hop count or the nearest match. Use <strong>DFS</strong> when you need to explore whole branches: cycle detection, topological sorting, connected components, maze solving.</p>
+          </div>
+
+          <h2 id="cycles">Detecting a cycle</h2>
+          <p>A circular dependency is a cycle in a directed graph. Detect it with DFS by tracking the vertices on the <em>current path</em>, not just the ones already visited:</p>
+          <pre><code class="language-csharp">public static bool HasCycle&lt;T&gt;(Graph&lt;T&gt; graph) where T : notnull
+{
+    var visited = new HashSet&lt;T&gt;();
+    var onCurrentPath = new HashSet&lt;T&gt;();
+
+    foreach (T vertex in graph.Vertices)
+        if (Visit(vertex))
+            return true;
+
+    return false;
+
+    bool Visit(T vertex)
+    {
+        if (onCurrentPath.Contains(vertex)) return true;    // looped back: cycle
+        if (!visited.Add(vertex)) return false;             // fully explored already
+
+        onCurrentPath.Add(vertex);
+
+        foreach (T neighbour in graph.NeighboursOf(vertex))
+            if (Visit(neighbour)) return true;
+
+        onCurrentPath.Remove(vertex);                       // done with this branch
+        return false;
+    }
+}
+
+var deps = new Graph&lt;string&gt;(directed: true);
+deps.AddEdge("api", "database");
+deps.AddEdge("web", "api");
+Console.WriteLine(HasCycle(deps));      // False
+
+deps.AddEdge("database", "web");        // now it loops
+Console.WriteLine(HasCycle(deps));      // True</code></pre>
+
+          <h2 id="toposort">Topological sort</h2>
+          <p>Given a DAG of dependencies, produce an order in which every item comes after everything it depends on. This is how build systems, package managers, and task schedulers decide what to run first.</p>
+          <pre><code class="language-csharp">// Kahn's algorithm: repeatedly take a vertex with no remaining dependencies
+public static List&lt;T&gt;? TopologicalSort&lt;T&gt;(Graph&lt;T&gt; graph) where T : notnull
+{
+    var inDegree = graph.Vertices.ToDictionary(v =&gt; v, _ =&gt; 0);
+
+    foreach (T vertex in graph.Vertices)
+        foreach (T neighbour in graph.NeighboursOf(vertex))
+            inDegree[neighbour]++;
+
+    // Start with everything that depends on nothing
+    var ready = new Queue&lt;T&gt;(inDegree.Where(p =&gt; p.Value == 0).Select(p =&gt; p.Key));
+    var result = new List&lt;T&gt;();
+
+    while (ready.Count &gt; 0)
+    {
+        T current = ready.Dequeue();
+        result.Add(current);
+
+        foreach (T neighbour in graph.NeighboursOf(current))
+            if (--inDegree[neighbour] == 0)
+                ready.Enqueue(neighbour);
+    }
+
+    // Anything left has an unsatisfiable dependency - the graph has a cycle
+    return result.Count == inDegree.Count ? result : null;
+}
+
+var build = new Graph&lt;string&gt;(directed: true);
+build.AddEdge("compile", "test");        // compile must happen before test
+build.AddEdge("test", "package");
+build.AddEdge("package", "deploy");
+build.AddEdge("lint", "package");
+
+Console.WriteLine(string.Join(" -&gt; ", TopologicalSort(build)!));
+// compile -&gt; lint -&gt; test -&gt; package -&gt; deploy   (one valid order)</code></pre>
+
+          <h2 id="dijkstra">Weighted graphs and Dijkstra's algorithm</h2>
+          <p>BFS finds the fewest <em>hops</em>. When edges have different costs - distance, latency, price - you need Dijkstra's algorithm, which is BFS with a <a href="./stacks-queues.html">priority queue</a> instead of a plain queue.</p>
+          <pre><code class="language-csharp">public class WeightedGraph
+{
+    private readonly Dictionary&lt;string, List&lt;(string To, int Cost)&gt;&gt; _edges = new();
+
+    public void AddEdge(string from, string to, int cost)
+    {
+        if (!_edges.ContainsKey(from)) _edges[from] = new();
+        if (!_edges.ContainsKey(to))   _edges[to]   = new();
+
+        _edges[from].Add((to, cost));
+        _edges[to].Add((from, cost));          // undirected
+    }
+
+    public (int Cost, List&lt;string&gt; Path)? Shortest(string start, string goal)
+    {
+        var best = new Dictionary&lt;string, int&gt; { [start] = 0 };   // cheapest known cost
+        var cameFrom = new Dictionary&lt;string, string&gt;();
+        var queue = new PriorityQueue&lt;string, int&gt;();
+        var settled = new HashSet&lt;string&gt;();
+
+        queue.Enqueue(start, 0);
+
+        while (queue.TryDequeue(out string? current, out int costSoFar))
+        {
+            if (!settled.Add(current)) continue;          // already finalised
+            if (current == goal) break;
+
+            foreach ((string next, int edgeCost) in _edges[current])
+            {
+                int newCost = costSoFar + edgeCost;
+
+                // Only keep it if it beats the best route found so far
+                if (best.TryGetValue(next, out int known) &amp;&amp; known &lt;= newCost) continue;
+
+                best[next] = newCost;
+                cameFrom[next] = current;
+                queue.Enqueue(next, newCost);
+            }
+        }
+
+        if (!best.ContainsKey(goal)) return null;
+
+        var path = new List&lt;string&gt; { goal };
+        for (string at = goal; at != start; at = cameFrom[at])
+            path.Add(cameFrom[at]);
+        path.Reverse();
+
+        return (best[goal], path);
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var roads = new WeightedGraph();
+roads.AddEdge("London", "Oxford", 60);
+roads.AddEdge("Oxford", "Bristol", 75);
+roads.AddEdge("London", "Bristol", 120);      // direct - cheaper than 60 + 75 via Oxford
+roads.AddEdge("Bristol", "Cardiff", 45);
+
+var result = roads.Shortest("London", "Cardiff");
+Console.WriteLine($"{result!.Value.Cost} miles: {string.Join(" -&gt; ", result.Value.Path)}");
+// 165 miles: London -&gt; Bristol -&gt; Cardiff</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Dijkstra needs non-negative weights</div>
+            <p>The algorithm assumes that extending a path never makes it cheaper. With negative edge costs it can settle on a wrong answer - use Bellman-Ford there instead.</p>
+          </div>
+
+          <h2 id="uses">Where graphs show up in real systems</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Problem</th><th>Vertices</th><th>Edges</th><th>Algorithm</th></tr></thead>
+              <tbody>
+                <tr><td>Route planning</td><td>Junctions</td><td>Roads with distances</td><td>Dijkstra / A*</td></tr>
+                <tr><td>"People you may know"</td><td>Users</td><td>Friendships</td><td>BFS to depth 2</td></tr>
+                <tr><td>Build ordering</td><td>Projects</td><td>Dependencies</td><td>Topological sort</td></tr>
+                <tr><td>Detecting circular imports</td><td>Modules</td><td>Imports</td><td>DFS cycle detection</td></tr>
+                <tr><td>Network reachability</td><td>Hosts</td><td>Links</td><td>BFS / connected components</td></tr>
+                <tr><td>Web crawling</td><td>Pages</td><td>Hyperlinks</td><td>BFS with a visited set</td></tr>
+                <tr><td>Deadlock detection</td><td>Transactions</td><td>Lock waits</td><td>Cycle detection</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="costs">Cost summary</h2>
+          <p><em>V</em> = number of vertices, <em>E</em> = number of edges.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Algorithm</th><th>Time</th><th>Space</th><th>Finds</th></tr></thead>
+              <tbody>
+                <tr><td>BFS</td><td>O(V + E)</td><td>O(V)</td><td>Fewest-hops path, level order</td></tr>
+                <tr><td>DFS</td><td>O(V + E)</td><td>O(V)</td><td>Reachability, cycles, components</td></tr>
+                <tr><td>Topological sort</td><td>O(V + E)</td><td>O(V)</td><td>A valid dependency order</td></tr>
+                <tr><td>Dijkstra (with a heap)</td><td>O((V + E) log V)</td><td>O(V)</td><td>Cheapest weighted path</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-danger">
+            <div class="callout-title">Always keep a visited set</div>
+            <p>Forgetting it is the classic graph bug: the traversal follows an edge back to where it came from and loops forever. Trees are safe without one only because they have no cycles.</p>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./trees.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Trees &amp; Heaps</span></a>
+          <a href="./sorting.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Sorting</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

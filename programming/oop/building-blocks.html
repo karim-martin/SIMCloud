@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Classes, objects, fields, properties, methods, message passing, constructors, and destructors in C#.">
+  <title>OOP Building Blocks | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html" class="active">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">OOP</a></li>
+            <li aria-current="page">Building Blocks</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Building Blocks</h1>
+          <p class="text-secondary text-lg">Six pieces make up every object-oriented program. Learn these and the four pillars become easy.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">The cookie-cutter analogy</div>
+            <p>A <strong>class</strong> is the cookie cutter. An <strong>object</strong> is a cookie. One cutter, many cookies - each with its own icing. The cutter defines the shape; each cookie carries its own state.</p>
+          </div>
+
+          <h2 id="class">1. Class - the blueprint</h2>
+          <p>A class defines what every object of that type will <em>know</em> (data) and what it will be able to <em>do</em> (behaviour). Writing a class creates no data by itself - it is a description, like a house plan.</p>
+          <pre><code class="language-csharp">public class Car
+{
+    // What every Car knows
+    public string Make { get; set; }
+    public string Model { get; set; }
+    public int Year { get; set; }
+
+    // What every Car can do
+    public void Start()
+    {
+        Console.WriteLine($"{Make} {Model} is starting.");
+    }
+}</code></pre>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><code>public</code></td><td>Accessibility - any code can use this class. See <a href="./encapsulation.html">Encapsulation</a> for the full list.</td></tr>
+                <tr><td><code>class</code></td><td>The keyword that declares a reference type.</td></tr>
+                <tr><td><code>Car</code></td><td>The class name. C# convention is PascalCase, and a noun.</td></tr>
+                <tr><td><code>{ ... }</code></td><td>The class body - its members (fields, properties, methods, constructors).</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="object">2. Object - an instance of a class</h2>
+          <p>An object is created with <code>new</code>. Each object gets its own copy of the data, so changing one never affects another.</p>
+          <pre><code class="language-csharp">Car car1 = new Car { Make = "Toyota", Model = "Corolla", Year = 2020 };
+Car car2 = new Car { Make = "Honda",  Model = "Civic",   Year = 2023 };
+
+car1.Start();                    // Toyota Corolla is starting.
+car2.Start();                    // Honda Civic is starting.
+
+car1.Year = 2021;                // only car1 changes
+Console.WriteLine(car2.Year);    // 2023</code></pre>
+
+          <div class="callout callout-info">
+            <div class="callout-title">Reference types: the variable is not the object</div>
+            <p>A class is a <strong>reference type</strong>. The variable holds the address of the object, not the object itself. So two variables can point at the <em>same</em> object:</p>
+          </div>
+          <pre><code class="language-csharp">Car a = new Car { Make = "Ford" };
+Car b = a;                       // b points at the SAME object as a
+b.Make = "Mazda";
+Console.WriteLine(a.Make);       // Mazda  - there is only one object
+
+Car c = new Car { Make = "Ford" };
+Console.WriteLine(ReferenceEquals(a, c));  // False - different objects</code></pre>
+          <p>If you want a value type - copied on assignment - use a <code>struct</code>. For everyday application code, classes are the default choice.</p>
+
+          <h2 id="attributes">3. Attributes - fields and properties</h2>
+          <p>"Attribute" is the general OOP word for the data an object holds. C# gives you two forms of it.</p>
+
+          <h3>Fields</h3>
+          <p>A field is a raw variable inside the class. Convention: keep fields <code>private</code>, name them <code>_camelCase</code>.</p>
+          <pre><code class="language-csharp">public class Thermostat
+{
+    private double _currentTemp;        // private field: internal state
+    private readonly string _serial;    // readonly: set once, in the constructor
+
+    public Thermostat(string serial)
+    {
+        _serial = serial;
+    }
+}</code></pre>
+
+          <h3>Properties</h3>
+          <p>A property looks like a field from the outside but is really a pair of methods (a <code>get</code> and a <code>set</code>). That is what lets you add validation later without breaking any calling code.</p>
+          <pre><code class="language-csharp">public class Product
+{
+    // 1. Auto-property - the compiler creates the hidden backing field
+    public string Name { get; set; }
+
+    // 2. Read-only from outside, settable inside the class
+    public DateTime CreatedUtc { get; private set; } = DateTime.UtcNow;
+
+    // 3. Init-only - can be set when the object is created, never after
+    public string Sku { get; init; }
+
+    // 4. Full property with a backing field and validation
+    private decimal _price;
+    public decimal Price
+    {
+        get =&gt; _price;
+        set
+        {
+            if (value &lt; 0)
+                throw new ArgumentOutOfRangeException(nameof(value), "Price cannot be negative.");
+            _price = value;
+        }
+    }
+
+    // 5. Computed property - no stored data, calculated on each read
+    public decimal PriceWithVat =&gt; _price * 1.20m;
+}</code></pre>
+          <pre><code class="language-csharp">var p = new Product { Name = "Keyboard", Sku = "KB-01", Price = 50m };
+Console.WriteLine(p.PriceWithVat);   // 60.0
+// p.Sku = "KB-02";                  // compile error: init-only
+// p.Price = -5m;                    // throws ArgumentOutOfRangeException</code></pre>
+
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Field</th><th>Property</th></tr></thead>
+              <tbody>
+                <tr><td>A variable that stores data</td><td>A method pair that looks like a variable</td></tr>
+                <tr><td>No place to add validation</td><td>Validation, logging, or lazy loading can be added in the setter</td></tr>
+                <tr><td>Keep them <code>private</code></td><td>This is what you expose publicly</td></tr>
+                <tr><td><code>private int _count;</code></td><td><code>public int Count { get; private set; }</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="methods">4. Methods - the operations</h2>
+          <p>A method is a named block of code that acts on the object's data. Signature: accessibility, return type, name, parameters.</p>
+          <pre><code class="language-csharp">public class ShoppingCart
+{
+    private readonly List&lt;decimal&gt; _lineTotals = new();
+
+    // void: does something, returns nothing
+    public void AddLine(decimal amount)
+    {
+        _lineTotals.Add(amount);
+    }
+
+    // Returns a value
+    public decimal Total()
+    {
+        decimal sum = 0m;
+        foreach (decimal line in _lineTotals)
+            sum += line;
+        return sum;
+    }
+
+    // Expression-bodied: shorthand for a single-expression method
+    public int LineCount() =&gt; _lineTotals.Count;
+
+    // Optional parameter with a default value
+    public decimal TotalWithShipping(decimal shipping = 4.99m) =&gt; Total() + shipping;
+
+    // Static: belongs to the class, not to any object
+    public static ShoppingCart Empty() =&gt; new ShoppingCart();
+}</code></pre>
+          <pre><code class="language-csharp">var cart = ShoppingCart.Empty();   // static: called on the CLASS
+cart.AddLine(19.99m);              // instance: called on an OBJECT
+cart.AddLine(5.00m);
+Console.WriteLine(cart.Total());               // 24.99
+Console.WriteLine(cart.TotalWithShipping());   // 29.98</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Instance vs static</div>
+            <p>An <strong>instance</strong> method needs an object (<code>cart.Total()</code>) because it reads that object's data. A <strong>static</strong> method belongs to the class itself (<code>Math.Max(1, 2)</code>) and cannot see instance data.</p>
+          </div>
+
+          <h3>Method overloading</h3>
+          <p>Several methods can share a name as long as their parameters differ. The compiler picks the right one. This is one half of <a href="./polymorphism.html">polymorphism</a>.</p>
+          <pre><code class="language-csharp">public class Printer
+{
+    public void Print(string text)   =&gt; Console.WriteLine(text);
+    public void Print(int number)    =&gt; Console.WriteLine($"Number: {number}");
+    public void Print(string text, int times)
+    {
+        for (int i = 0; i &lt; times; i++)
+            Console.WriteLine(text);
+    }
+}
+
+var printer = new Printer();
+printer.Print("Hello");        // picks Print(string)
+printer.Print(42);             // picks Print(int)
+printer.Print("Hi", 3);        // picks Print(string, int)</code></pre>
+
+          <h2 id="message-passing">5. Message passing - objects calling each other</h2>
+          <p>Objects rarely work alone. "Message passing" is the OOP term for one object invoking a method on another: <code>receiver.Method(arguments)</code>. The caller says <em>what</em> it wants; the receiver decides <em>how</em>.</p>
+          <pre><code class="language-csharp">public class EmailService
+{
+    public void Send(string to, string subject)
+    {
+        Console.WriteLine($"Email to {to}: {subject}");
+    }
+}
+
+public class InventoryService
+{
+    private int _stock = 10;
+
+    public bool TryReserve(int quantity)
+    {
+        if (quantity &gt; _stock) return false;
+        _stock -= quantity;
+        return true;
+    }
+}
+
+public class OrderProcessor
+{
+    private readonly EmailService _email;
+    private readonly InventoryService _inventory;
+
+    // The collaborators are handed in - this is dependency injection
+    public OrderProcessor(EmailService email, InventoryService inventory)
+    {
+        _email = email;
+        _inventory = inventory;
+    }
+
+    public void Place(string customerEmail, int quantity)
+    {
+        // Message 1: ask inventory to reserve stock
+        if (!_inventory.TryReserve(quantity))
+        {
+            _email.Send(customerEmail, "Sorry, out of stock");   // Message 2
+            return;
+        }
+
+        // Message 3: confirm
+        _email.Send(customerEmail, $"Order confirmed for {quantity} item(s)");
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var processor = new OrderProcessor(new EmailService(), new InventoryService());
+processor.Place("ada@example.com", 3);    // Email to ada@example.com: Order confirmed for 3 item(s)
+processor.Place("ada@example.com", 99);   // Email to ada@example.com: Sorry, out of stock</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Tell, do not ask</div>
+            <p><code>_inventory.TryReserve(3)</code> is good message passing - the caller states its intent and inventory applies its own rules. Reaching in for data and deciding on its behalf (<code>if (inventory.Stock &gt;= 3) inventory.Stock -= 3;</code>) leaks the rules into the caller and defeats the point of objects.</p>
+          </div>
+
+          <h2 id="constructor">6. Constructors - object creation</h2>
+          <p>A constructor runs when an object is created. Its job is to leave the object in a valid state - never half-built. It has the same name as the class and no return type.</p>
+          <pre><code class="language-csharp">public class User
+{
+    public string Email { get; }
+    public string DisplayName { get; }
+    public DateTime RegisteredUtc { get; }
+
+    // Primary constructor: enforces that a User always has a valid email
+    public User(string email, string displayName)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ArgumentException("Email is required.", nameof(email));
+
+        Email = email;
+        DisplayName = displayName;
+        RegisteredUtc = DateTime.UtcNow;
+    }
+
+    // Overloaded constructor that delegates to the one above with ": this(...)"
+    public User(string email) : this(email, displayName: email.Split('@')[0])
+    {
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var u1 = new User("ada@example.com", "Ada L.");
+var u2 = new User("alan@example.com");
+Console.WriteLine(u2.DisplayName);   // alan
+// var bad = new User("");           // throws ArgumentException</code></pre>
+
+          <h3>Kinds of constructor</h3>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Kind</th><th>Example</th><th>When it runs</th></tr></thead>
+              <tbody>
+                <tr><td>Default (implicit)</td><td>Supplied by the compiler if you write none</td><td>On <code>new Car()</code></td></tr>
+                <tr><td>Parameterless (explicit)</td><td><code>public Car() { }</code></td><td>On <code>new Car()</code></td></tr>
+                <tr><td>Parameterised</td><td><code>public Car(string make)</code></td><td>On <code>new Car("Ford")</code></td></tr>
+                <tr><td>Chained</td><td><code>public Car(string m) : this(m, 2024)</code></td><td>Calls the other constructor first</td></tr>
+                <tr><td>Static</td><td><code>static Car() { }</code></td><td>Once, before the type is first used</td></tr>
+                <tr><td>Primary (C# 12)</td><td><code>public class Car(string make)</code></td><td>Parameters usable throughout the class body</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <pre><code class="language-csharp">// C# 12 primary constructor - the shortest form
+public class Point(int x, int y)
+{
+    public int X { get; } = x;
+    public int Y { get; } = y;
+    public double DistanceFromOrigin() =&gt; Math.Sqrt(X * X + Y * Y);
+}
+
+var p = new Point(3, 4);
+Console.WriteLine(p.DistanceFromOrigin());   // 5</code></pre>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">Write a constructor once you have required data</div>
+            <p>Object initialiser syntax (<code>new Car { Make = "Ford" }</code>) is convenient but cannot force a caller to supply anything. If an object is meaningless without a value, take it as a constructor parameter - then it is impossible to create an invalid object.</p>
+          </div>
+
+          <h2 id="destructor">7. Destructors and cleanup</h2>
+          <p>In C++ a destructor runs at a moment you control. In C# the <strong>garbage collector</strong> frees memory automatically, at a time nobody can predict. So C# splits cleanup into two very different tools.</p>
+
+          <h3>Finalizer (the C# "destructor") - rarely what you want</h3>
+          <pre><code class="language-csharp">public class LegacyHandleWrapper
+{
+    ~LegacyHandleWrapper()          // finalizer: same syntax as a C++ destructor
+    {
+        // Runs on the GC's finalizer thread, at an unpredictable time,
+        // and is NOT guaranteed to run at all before the process exits.
+        Console.WriteLine("Finalizer ran.");
+    }
+}</code></pre>
+
+          <h3>IDisposable - the one you will actually use</h3>
+          <p>For anything that holds a file handle, network socket, or database connection, implement <code>IDisposable</code> and let the caller use <code>using</code>. Cleanup then happens at a precise, predictable point.</p>
+          <pre><code class="language-csharp">public class ReportWriter : IDisposable
+{
+    private readonly StreamWriter _writer;
+    private bool _disposed;
+
+    public ReportWriter(string path)
+    {
+        _writer = new StreamWriter(path);      // acquire the resource
+        Console.WriteLine("File opened.");
+    }
+
+    public void WriteLine(string line) =&gt; _writer.WriteLine(line);
+
+    public void Dispose()
+    {
+        if (_disposed) return;                 // safe to call twice
+        _writer.Dispose();                     // release the resource
+        _disposed = true;
+        Console.WriteLine("File closed.");
+    }
+}</code></pre>
+          <pre><code class="language-csharp">// "using" calls Dispose() automatically at the end of the block,
+// even if an exception is thrown inside it.
+using (var report = new ReportWriter("report.txt"))
+{
+    report.WriteLine("Quarterly figures");
+}   // "File closed." prints here
+
+// C# 8 shorthand - disposed at the end of the enclosing scope
+using var report2 = new ReportWriter("report2.txt");
+report2.WriteLine("Another report");</code></pre>
+
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th></th><th>Finalizer <code>~Class()</code></th><th><code>IDisposable.Dispose()</code></th></tr></thead>
+              <tbody>
+                <tr><td>Who calls it</td><td>The garbage collector</td><td>Your code, usually via <code>using</code></td></tr>
+                <tr><td>When</td><td>Unpredictable; may never run</td><td>Exactly at the end of the <code>using</code> block</td></tr>
+                <tr><td>Use for</td><td>Unmanaged handles, as a last-resort safety net</td><td>Files, sockets, DB connections, streams</td></tr>
+                <tr><td>How often you write one</td><td>Almost never</td><td>Whenever your class holds a resource</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="together">Everything together</h2>
+          <p>One short program using all six building blocks:</p>
+          <pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+// CLASS: the blueprint
+public class Library
+{
+    // ATTRIBUTES: private field + public properties
+    private readonly List&lt;string&gt; _books = new();
+    public string Name { get; }
+    public int BookCount =&gt; _books.Count;      // computed property
+
+    // CONSTRUCTOR: a Library always has a name
+    public Library(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name is required.", nameof(name));
+        Name = name;
+    }
+
+    // METHODS
+    public void Add(string title) =&gt; _books.Add(title);
+
+    public bool Has(string title) =&gt; _books.Contains(title);
+}
+
+public class Member
+{
+    public string Name { get; }
+    public Member(string name) =&gt; Name = name;
+
+    // MESSAGE PASSING: this object calls methods on another object
+    public void Borrow(Library library, string title)
+    {
+        if (library.Has(title))
+            Console.WriteLine($"{Name} borrowed '{title}' from {library.Name}.");
+        else
+            Console.WriteLine($"'{title}' is not in {library.Name}.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // OBJECTS: two instances of the same blueprint
+        var cityLibrary = new Library("City Library");
+        cityLibrary.Add("The Pragmatic Programmer");
+
+        var member = new Member("Ada");
+        member.Borrow(cityLibrary, "The Pragmatic Programmer");
+        member.Borrow(cityLibrary, "Moby Dick");
+
+        Console.WriteLine($"{cityLibrary.Name} holds {cityLibrary.BookCount} book(s).");
+    }
+}</code></pre>
+          <pre><code class="language-text">Ada borrowed 'The Pragmatic Programmer' from City Library.
+'Moby Dick' is not in City Library.
+City Library holds 1 book(s).</code></pre>
+
+          <h2 id="cheatsheet">Cheat sheet</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Building block</th><th>C# syntax</th><th>One-line job</th></tr></thead>
+              <tbody>
+                <tr><td>Class</td><td><code>public class Car { }</code></td><td>Blueprint for structure and behaviour</td></tr>
+                <tr><td>Object</td><td><code>var c = new Car();</code></td><td>One instance with its own state</td></tr>
+                <tr><td>Field</td><td><code>private int _speed;</code></td><td>Raw internal data</td></tr>
+                <tr><td>Property</td><td><code>public int Speed { get; set; }</code></td><td>Controlled access to data</td></tr>
+                <tr><td>Method</td><td><code>public void Start() { }</code></td><td>An operation on that data</td></tr>
+                <tr><td>Message passing</td><td><code>engine.Start();</code></td><td>Ask another object to do its job</td></tr>
+                <tr><td>Constructor</td><td><code>public Car(string make) { }</code></td><td>Create a valid object</td></tr>
+                <tr><td>Finalizer</td><td><code>~Car() { }</code></td><td>Last-resort unmanaged cleanup (rare)</td></tr>
+                <tr><td>Dispose</td><td><code>public void Dispose()</code></td><td>Deterministic resource cleanup</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">OOP Overview</span></a>
+          <a href="./encapsulation.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Encapsulation</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

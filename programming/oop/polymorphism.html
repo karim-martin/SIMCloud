@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Polymorphism in C# - one interface, many implementations, through method overriding and method overloading.">
+  <title>Polymorphism | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html" class="active">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">OOP</a></li>
+            <li aria-current="page">Polymorphism</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Pillar 4: Polymorphism</h1>
+          <p class="text-secondary text-lg">One interface, many implementations. Write the calling code once and let each object supply its own behaviour.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Polymorphism in one sentence</div>
+            <p>"Poly" = many, "morph" = form. You write one line - <code>shape.Draw()</code> - and the object decides what actually happens. A circle draws a circle, a square draws a square, and your calling code never asks which is which.</p>
+          </div>
+
+          <h2 id="two-kinds">Two kinds of polymorphism</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th></th><th>Compile-time (static)</th><th>Runtime (dynamic)</th></tr></thead>
+              <tbody>
+                <tr><td>Also called</td><td>Method overloading</td><td>Method overriding</td></tr>
+                <tr><td>Decision made</td><td>By the compiler, from the argument types</td><td>While running, from the object's real type</td></tr>
+                <tr><td>C# keywords</td><td>None - just same name, different parameters</td><td><code>virtual</code>, <code>override</code>, <code>abstract</code>, <code>interface</code></td></tr>
+                <tr><td>Example</td><td><code>Console.WriteLine(1)</code> vs <code>Console.WriteLine("x")</code></td><td><code>animal.Speak()</code> running <code>Dog.Speak()</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="overloading">Compile-time: method overloading</h2>
+          <p>Several methods share a name; the compiler picks one based on the number and types of the arguments. The methods must differ in their parameter list - <strong>the return type alone is not enough</strong>.</p>
+          <pre><code class="language-csharp">public class Calculator
+{
+    public int Add(int a, int b) =&gt; a + b;
+
+    public double Add(double a, double b) =&gt; a + b;
+
+    public int Add(int a, int b, int c) =&gt; a + b + c;
+
+    public string Add(string a, string b) =&gt; a + b;
+
+    // Variable number of arguments
+    public int Add(params int[] numbers)
+    {
+        int total = 0;
+        foreach (int n in numbers) total += n;
+        return total;
+    }
+
+    // NOT allowed - differs only by return type
+    // public double Add(int a, int b) =&gt; a + b;   // compile error
+}</code></pre>
+          <pre><code class="language-csharp">var calc = new Calculator();
+Console.WriteLine(calc.Add(2, 3));            // 5      -&gt; Add(int, int)
+Console.WriteLine(calc.Add(2.5, 3.1));        // 5.6    -&gt; Add(double, double)
+Console.WriteLine(calc.Add(1, 2, 3));         // 6      -&gt; Add(int, int, int)
+Console.WriteLine(calc.Add("Hello, ", "Ada"));// Hello, Ada
+Console.WriteLine(calc.Add(1, 2, 3, 4, 5));   // 15     -&gt; Add(params int[])</code></pre>
+          <p>Constructors overload the same way, which is how a class can offer several ways to be created.</p>
+
+          <h2 id="overriding">Runtime: method overriding</h2>
+          <p>This is the important one. A base class declares a <code>virtual</code> or <code>abstract</code> method; each derived class <code>override</code>s it; and the runtime picks the implementation based on what the object <em>really</em> is - not what the variable is declared as.</p>
+          <pre><code class="language-csharp">public abstract class Shape
+{
+    public string Name { get; }
+    protected Shape(string name) =&gt; Name = name;
+
+    // Every shape has an area, but there is no sensible generic formula
+    public abstract double Area();
+
+    // Shared behaviour that uses the subclass's Area()
+    public void Describe() =&gt;
+        Console.WriteLine($"{Name} has an area of {Area():F2}");
+}
+
+public class Circle : Shape
+{
+    private readonly double _radius;
+    public Circle(double radius) : base("Circle") =&gt; _radius = radius;
+
+    public override double Area() =&gt; Math.PI * _radius * _radius;
+}
+
+public class Rectangle : Shape
+{
+    private readonly double _width, _height;
+    public Rectangle(double width, double height) : base("Rectangle")
+    {
+        _width = width;
+        _height = height;
+    }
+
+    public override double Area() =&gt; _width * _height;
+}
+
+public class Triangle : Shape
+{
+    private readonly double _baseLength, _height;
+    public Triangle(double baseLength, double height) : base("Triangle")
+    {
+        _baseLength = baseLength;
+        _height = height;
+    }
+
+    public override double Area() =&gt; 0.5 * _baseLength * _height;
+}</code></pre>
+          <p>Now the payoff. One loop, one variable type, three different behaviours:</p>
+          <pre><code class="language-csharp">// A list of the BASE type, holding objects of three DIFFERENT types
+List&lt;Shape&gt; shapes = new()
+{
+    new Circle(3),
+    new Rectangle(4, 5),
+    new Triangle(6, 2)
+};
+
+double total = 0;
+foreach (Shape shape in shapes)
+{
+    shape.Describe();      // each object runs its OWN Area()
+    total += shape.Area();
+}
+
+Console.WriteLine($"Total area: {total:F2}");</code></pre>
+          <pre><code class="language-text">Circle has an area of 28.27
+Rectangle has an area of 20.00
+Triangle has an area of 6.00
+Total area: 54.27</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">Why this matters more than it looks</div>
+            <p>Add a <code>Hexagon</code> class tomorrow and that loop still works, unchanged and untested. Without polymorphism you would be maintaining a growing <code>if (shape is Circle) ... else if (shape is Rectangle) ...</code> chain in every place that touches a shape. Polymorphism replaces that chain with one method call.</p>
+          </div>
+
+          <h2 id="dispatch">How the runtime chooses</h2>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Virtual dispatch</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">Shape shape = new Circle(3);</div><div class="arch-box-subtitle">Declared type: Shape &nbsp;|&nbsp; Real type: Circle</div></div>
+              <div class="arch-arrow-down">shape.Area()</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">Compiler</div><div class="arch-box-subtitle">Checks that Shape declares Area() - it does, so this compiles</div></div>
+              <div class="arch-arrow-down">at run time</div>
+              <div class="arch-box arch-box-gcp"><div class="arch-box-title">Runtime</div><div class="arch-box-subtitle">Looks at the real object (Circle) and calls Circle.Area()</div></div>
+            </div>
+          </div>
+
+          <h2 id="interfaces">Polymorphism through interfaces</h2>
+          <p>You do not need a shared base class. Unrelated types that implement the same interface are just as interchangeable - and this is the form you will use most in real .NET code.</p>
+          <pre><code class="language-csharp">public interface IDiscountRule
+{
+    string Description { get; }
+    decimal Apply(decimal price);
+}
+
+public class PercentageDiscount : IDiscountRule
+{
+    private readonly decimal _percent;
+    public PercentageDiscount(decimal percent) =&gt; _percent = percent;
+
+    public string Description =&gt; $"{_percent}% off";
+    public decimal Apply(decimal price) =&gt; price * (1 - _percent / 100m);
+}
+
+public class FixedAmountDiscount : IDiscountRule
+{
+    private readonly decimal _amount;
+    public FixedAmountDiscount(decimal amount) =&gt; _amount = amount;
+
+    public string Description =&gt; $"{_amount:C} off";
+    public decimal Apply(decimal price) =&gt; Math.Max(0m, price - _amount);
+}
+
+public class NoDiscount : IDiscountRule
+{
+    public string Description =&gt; "No discount";
+    public decimal Apply(decimal price) =&gt; price;      // the "null object" pattern
+}</code></pre>
+          <pre><code class="language-csharp">decimal price = 100m;
+
+IDiscountRule[] rules =
+{
+    new PercentageDiscount(10m),
+    new FixedAmountDiscount(15m),
+    new NoDiscount()
+};
+
+foreach (IDiscountRule rule in rules)
+    Console.WriteLine($"{rule.Description,-15} -&gt; {rule.Apply(price):C}");</code></pre>
+          <pre><code class="language-text">10% off         -&gt; £90.00
+£15.00 off      -&gt; £85.00
+No discount     -&gt; £100.00</code></pre>
+
+          <h2 id="patterns">Checking the real type when you must</h2>
+          <p>Good polymorphic design usually removes the need to ask "what type is this?". When you genuinely need to - deserialising, integrating with a library, handling a closed set of cases - C# pattern matching is the modern way.</p>
+          <pre><code class="language-csharp">Shape shape = new Circle(3);
+
+// "is" with a pattern: test and cast in one step
+if (shape is Circle circle)
+    Console.WriteLine($"A circle, area {circle.Area():F2}");
+
+// "as" returns null instead of throwing when the cast fails
+Rectangle? rect = shape as Rectangle;
+Console.WriteLine(rect is null);          // True
+
+// switch expression over types
+string label = shape switch
+{
+    Circle c when c.Area() &gt; 100 =&gt; "Big circle",
+    Circle                       =&gt; "Circle",
+    Rectangle r                  =&gt; $"Rectangle of area {r.Area()}",
+    null                         =&gt; "Nothing",
+    _                            =&gt; "Some other shape"
+};
+Console.WriteLine(label);                 // Circle</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">A type check is often a missed override</div>
+            <p>If you find yourself writing <code>if (x is Circle) ... else if (x is Square) ...</code>, ask whether that behaviour belongs on the shape itself as a virtual method. Every new subclass would otherwise force you to find and update every one of those chains.</p>
+          </div>
+
+          <h2 id="operators">Operator overloading</h2>
+          <p>C# also lets you give operators new meaning for your own types. Use it sparingly, and only where the meaning is obvious.</p>
+          <pre><code class="language-csharp">public readonly struct Money
+{
+    public decimal Amount { get; }
+    public string Currency { get; }
+
+    public Money(decimal amount, string currency)
+    {
+        Amount = amount;
+        Currency = currency;
+    }
+
+    public static Money operator +(Money a, Money b)
+    {
+        if (a.Currency != b.Currency)
+            throw new InvalidOperationException("Cannot add different currencies.");
+        return new Money(a.Amount + b.Amount, a.Currency);
+    }
+
+    public static Money operator *(Money m, int quantity) =&gt;
+        new Money(m.Amount * quantity, m.Currency);
+
+    public override string ToString() =&gt; $"{Amount:0.00} {Currency}";
+}
+
+var subtotal = new Money(19.99m, "GBP") + new Money(5.00m, "GBP");
+Console.WriteLine(subtotal);                        // 24.99 GBP
+Console.WriteLine(new Money(2.50m, "GBP") * 4);     // 10.00 GBP</code></pre>
+
+          <h2 id="worked">A worked example: one report, many formats</h2>
+          <p>Polymorphism at its most useful - the caller does not know or care which format it is producing.</p>
+          <pre><code class="language-csharp">public interface IExporter
+{
+    string Format { get; }
+    string Export(IReadOnlyList&lt;(string Name, decimal Total)&gt; rows);
+}
+
+public class CsvExporter : IExporter
+{
+    public string Format =&gt; "CSV";
+    public string Export(IReadOnlyList&lt;(string Name, decimal Total)&gt; rows) =&gt;
+        "name,total\n" + string.Join("\n", rows.Select(r =&gt; $"{r.Name},{r.Total}"));
+}
+
+public class JsonExporter : IExporter
+{
+    public string Format =&gt; "JSON";
+    public string Export(IReadOnlyList&lt;(string Name, decimal Total)&gt; rows) =&gt;
+        "[" + string.Join(",", rows.Select(r =&gt; $"{{\"name\":\"{r.Name}\",\"total\":{r.Total}}}")) + "]";
+}
+
+public class MarkdownExporter : IExporter
+{
+    public string Format =&gt; "Markdown";
+    public string Export(IReadOnlyList&lt;(string Name, decimal Total)&gt; rows) =&gt;
+        "| Name | Total |\n|---|---|\n" +
+        string.Join("\n", rows.Select(r =&gt; $"| {r.Name} | {r.Total} |"));
+}
+
+// The caller: written once, works with every current and future exporter
+public class ReportService
+{
+    public void Save(IExporter exporter, IReadOnlyList&lt;(string, decimal)&gt; rows)
+    {
+        Console.WriteLine($"--- {exporter.Format} ---");
+        Console.WriteLine(exporter.Export(rows));
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var rows = new List&lt;(string, decimal)&gt; { ("North", 1200m), ("South", 980m) };
+var service = new ReportService();
+
+foreach (IExporter exporter in new IExporter[]
+         { new CsvExporter(), new JsonExporter(), new MarkdownExporter() })
+{
+    service.Save(exporter, rows);
+}</code></pre>
+
+          <h2 id="summary">Summary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Technique</th><th>Syntax</th><th>Chosen</th><th>Use it for</th></tr></thead>
+              <tbody>
+                <tr><td>Overloading</td><td>Same name, different parameters</td><td>Compile time</td><td>Convenient variations of one operation</td></tr>
+                <tr><td>Overriding</td><td><code>virtual</code> / <code>override</code></td><td>Run time</td><td>Subclasses changing inherited behaviour</td></tr>
+                <tr><td>Abstract members</td><td><code>abstract</code> / <code>override</code></td><td>Run time</td><td>Forcing every subclass to supply behaviour</td></tr>
+                <tr><td>Interfaces</td><td><code>interface</code> + implement</td><td>Run time</td><td>Interchangeable, unrelated implementations</td></tr>
+                <tr><td>Generics</td><td><code>List&lt;T&gt;</code>, <code>Repository&lt;T&gt;</code></td><td>Compile time</td><td>One implementation over many types</td></tr>
+                <tr><td>Operators</td><td><code>public static ... operator +</code></td><td>Compile time</td><td>Types with obvious arithmetic meaning</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-title">You have finished the four pillars</div>
+            <p>Encapsulation protects state, abstraction hides complexity, inheritance shares behaviour, and polymorphism lets one call do many things. Next: <a href="../dsa/">data structures and algorithms</a> - how to make the objects you have designed run fast.</p>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./inheritance.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Inheritance</span></a>
+          <a href="../dsa/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Data Structures &amp; Algorithms</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

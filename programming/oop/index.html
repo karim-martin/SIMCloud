@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="What object-oriented programming is, why it exists, and how classes, objects, and the four pillars fit together - with C# examples.">
+  <title>Object-Oriented Programming | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/" class="active">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li aria-current="page">OOP</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Object-Oriented Programming (OOP)</h1>
+          <p class="text-secondary text-lg">OOP organises a program around objects - self-contained bundles of data and the behaviour that acts on that data.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">OOP in one sentence</div>
+            <p>Instead of writing a program as a long list of instructions that push loose variables around, you group related data and the code that works on it into <strong>objects</strong>, and let those objects talk to each other.</p>
+          </div>
+
+          <h2 id="problem">The problem OOP solves</h2>
+          <p>Imagine a program that tracks bank accounts. Without objects, you keep the data in loose variables and write functions that operate on them:</p>
+          <pre><code class="language-csharp">// Procedural style - data and behaviour are separate
+string ownerName = "Ada";
+decimal balance = 500m;
+
+void Deposit(ref decimal bal, decimal amount)
+{
+    bal += amount;
+}
+
+Deposit(ref balance, 100m);
+Console.WriteLine(balance);   // 600</code></pre>
+          <p>This works for one account. Now add a second account, then a third, then interest rates, overdraft limits, and transaction history. You end up with:</p>
+          <ul>
+            <li><strong>Loose variables everywhere.</strong> <code>balance1</code>, <code>balance2</code>, <code>ownerName1</code>... nothing ties them together.</li>
+            <li><strong>No protection.</strong> Any line of code anywhere can write <code>balance = -999999</code>. Nothing stops it.</li>
+            <li><strong>Rules scattered.</strong> The "you cannot withdraw more than you have" check gets copy-pasted into five places, and one of the copies is wrong.</li>
+          </ul>
+
+          <h2 id="oop-way">The same thing with objects</h2>
+          <p>An object keeps the data and the rules together. The balance can only change through methods you wrote, and those methods enforce the rules every time:</p>
+          <pre><code class="language-csharp">public class BankAccount
+{
+    // Data: private, so only this class can touch it directly
+    private decimal _balance;
+
+    public string OwnerName { get; }
+
+    public BankAccount(string ownerName, decimal openingBalance)
+    {
+        OwnerName = ownerName;
+        _balance = openingBalance;
+    }
+
+    // Behaviour: the only way in, and it enforces the rules
+    public void Deposit(decimal amount)
+    {
+        if (amount &lt;= 0)
+            throw new ArgumentException("Deposit must be positive.");
+        _balance += amount;
+    }
+
+    public bool TryWithdraw(decimal amount)
+    {
+        if (amount &lt;= 0 || amount &gt; _balance)
+            return false;                 // rule lives in exactly one place
+        _balance -= amount;
+        return true;
+    }
+
+    public decimal GetBalance() =&gt; _balance;
+}</code></pre>
+          <pre><code class="language-csharp">// Each account is a separate object with its own state
+var ada = new BankAccount("Ada", 500m);
+var alan = new BankAccount("Alan", 20m);
+
+ada.Deposit(100m);
+Console.WriteLine(ada.GetBalance());      // 600
+Console.WriteLine(alan.GetBalance());     // 20   - untouched
+
+bool ok = alan.TryWithdraw(1000m);
+Console.WriteLine(ok);                    // False - rule enforced
+// alan._balance = 1_000_000;             // will not compile: _balance is private</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">The shift in thinking</div>
+            <p>Procedural code asks "what steps do I run?". Object-oriented code asks "what things exist, what does each one know, and what can each one do?". Nouns become classes; verbs become methods.</p>
+          </div>
+
+          <h2 id="terms">The vocabulary</h2>
+          <p>Two groups of ideas. The <strong>building blocks</strong> are the physical parts you type; the <strong>four pillars</strong> are the principles that tell you how to arrange them.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Term</th><th>Group</th><th>Plain English</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Class</strong></td><td>Building block</td><td>A blueprint that defines structure and behaviour.</td></tr>
+                <tr><td><strong>Object</strong></td><td>Building block</td><td>One thing built from that blueprint, holding its own state.</td></tr>
+                <tr><td><strong>Attribute</strong> (field / property)</td><td>Building block</td><td>A piece of data an object holds.</td></tr>
+                <tr><td><strong>Method</strong></td><td>Building block</td><td>An operation that acts on that data.</td></tr>
+                <tr><td><strong>Message passing</strong></td><td>Building block</td><td>One object invoking another object's method.</td></tr>
+                <tr><td><strong>Constructor / destructor</strong></td><td>Building block</td><td>Code that runs when an object is created and when it is cleaned up.</td></tr>
+                <tr><td><strong>Encapsulation</strong></td><td>Pillar</td><td>Bundle data with its methods; block direct access to internals.</td></tr>
+                <tr><td><strong>Abstraction</strong></td><td>Pillar</td><td>Expose essential behaviour; hide implementation detail.</td></tr>
+                <tr><td><strong>Inheritance</strong></td><td>Pillar</td><td>Derive a class from another to reuse and extend behaviour.</td></tr>
+                <tr><td><strong>Polymorphism</strong></td><td>Pillar</td><td>One interface, many implementations.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="map">How the pieces fit together</h2>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">From blueprint to running program</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-neutral">
+                <div class="arch-box-title">Class</div>
+                <div class="arch-box-subtitle">BankAccount - the blueprint</div>
+              </div>
+              <div class="arch-arrow-down">new BankAccount(...)</div>
+              <div class="arch-row">
+                <div class="arch-box arch-box-gcp">
+                  <div class="arch-box-title">Object: ada</div>
+                  <div class="arch-box-subtitle">_balance = 600</div>
+                </div>
+                <div class="arch-box arch-box-gcp">
+                  <div class="arch-box-title">Object: alan</div>
+                  <div class="arch-box-subtitle">_balance = 20</div>
+                </div>
+              </div>
+              <div class="arch-arrow-down">ada.Deposit(100) - message passing</div>
+              <div class="arch-box arch-box-neutral">
+                <div class="arch-box-title">Method runs on that object's own state</div>
+                <div class="arch-box-subtitle">Only ada's balance changes</div>
+              </div>
+            </div>
+          </div>
+
+          <h2 id="benefits">What you get out of it</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Benefit</th><th>What it means day to day</th></tr></thead>
+              <tbody>
+                <tr><td>Fewer bugs</td><td>Rules are enforced in one place, so they cannot drift out of sync.</td></tr>
+                <tr><td>Easier change</td><td>Rewrite how a class stores its data without touching any calling code.</td></tr>
+                <tr><td>Reuse</td><td>A well-written class is used across features, projects, and NuGet packages.</td></tr>
+                <tr><td>Testability</td><td>Depend on interfaces, swap in a fake implementation, and unit test without a database.</td></tr>
+                <tr><td>Shared language</td><td>"Order", "Invoice", "Customer" mean the same thing in the code and in the business.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">OOP is a tool, not a religion</div>
+            <p>Not everything needs to be a class. A pure calculation is fine as a static method, and modern C# leans on records, LINQ, and functional style for data transformation. Use objects where state and rules live together; use plain functions where they do not.</p>
+          </div>
+
+          <h2 id="next">Where to go next</h2>
+          <div class="card-grid">
+            <a href="./building-blocks.html" class="card card-link">
+              <h3 class="card-title">Building Blocks →</h3>
+              <p class="card-description">Classes, objects, fields, properties, methods, message passing, constructors, and destructors - with runnable C#.</p>
+            </a>
+            <a href="./encapsulation.html" class="card card-link">
+              <h3 class="card-title">The Four Pillars →</h3>
+              <p class="card-description">Start with encapsulation, then abstraction, inheritance, and polymorphism.</p>
+            </a>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="../" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Programming</span></a>
+          <a href="./building-blocks.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Building Blocks</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Inheritance in C# - deriving a class from another to reuse and extend behaviour, with base, virtual, override, and sealed.">
+  <title>Inheritance | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html" class="active">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">OOP</a></li>
+            <li aria-current="page">Inheritance</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Pillar 3: Inheritance</h1>
+          <p class="text-secondary text-lg">Build a new class on top of an existing one, keeping what fits and changing what does not.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Inheritance in one sentence</div>
+            <p>A new class starts as a copy of an existing one - it gets all that class's members for free - and then adds to or changes whatever it needs. The original is the <strong>base</strong> class; the new one is the <strong>derived</strong> class.</p>
+          </div>
+
+          <h2 id="basics">The syntax</h2>
+          <p>A colon means "derives from". The derived class automatically has everything the base class has.</p>
+          <pre><code class="language-csharp">public class Animal
+{
+    public string Name { get; set; }
+
+    public void Eat()
+    {
+        Console.WriteLine($"{Name} is eating.");
+    }
+}
+
+// Dog IS AN Animal - it inherits Name and Eat()
+public class Dog : Animal
+{
+    public void Bark()
+    {
+        Console.WriteLine($"{Name} says woof!");   // Name came from Animal
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var dog = new Dog { Name = "Rex" };
+dog.Eat();    // Rex is eating.   - inherited, not written in Dog
+dog.Bark();   // Rex says woof!   - added by Dog
+
+Animal asAnimal = dog;             // a Dog can be used anywhere an Animal is expected
+asAnimal.Eat();                    // Rex is eating.
+// asAnimal.Bark();                // compile error: Animal has no Bark()</code></pre>
+
+          <h2 id="inherited">What is and is not inherited</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Member</th><th>Inherited?</th><th>Note</th></tr></thead>
+              <tbody>
+                <tr><td><code>public</code> members</td><td>Yes</td><td>Fully usable by the derived class and its callers</td></tr>
+                <tr><td><code>protected</code> members</td><td>Yes</td><td>Usable inside the derived class, not by outside callers</td></tr>
+                <tr><td><code>internal</code> members</td><td>Yes, within the same assembly</td><td>Invisible to derived classes in other projects</td></tr>
+                <tr><td><code>private</code> members</td><td>Present but not accessible</td><td>The field still exists in memory; the derived class cannot name it</td></tr>
+                <tr><td>Constructors</td><td>No</td><td>But a derived constructor must call one, via <code>base(...)</code></td></tr>
+                <tr><td>Finalizers</td><td>No</td><td>Each class declares its own, and the chain is run automatically</td></tr>
+                <tr><td>Static members</td><td>Accessible through the derived name</td><td>There is still only one copy, on the base class</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="base">Constructors and the <code>base</code> keyword</h2>
+          <p>Constructing a derived object always constructs the base part first. If the base class has no parameterless constructor, the derived constructor must say which base constructor to call.</p>
+          <pre><code class="language-csharp">public class Employee
+{
+    public string Name { get; }
+    public decimal BaseSalary { get; }
+
+    public Employee(string name, decimal baseSalary)
+    {
+        Name = name;
+        BaseSalary = baseSalary;
+        Console.WriteLine("Employee constructor ran.");
+    }
+
+    public virtual decimal MonthlyPay() =&gt; BaseSalary / 12;
+}
+
+public class Manager : Employee
+{
+    public decimal Bonus { get; }
+
+    // ": base(...)" passes arguments up to the Employee constructor
+    public Manager(string name, decimal baseSalary, decimal bonus)
+        : base(name, baseSalary)
+    {
+        Bonus = bonus;
+        Console.WriteLine("Manager constructor ran.");
+    }
+
+    // "override" replaces the base behaviour...
+    public override decimal MonthlyPay()
+    {
+        // ...and "base." calls the version we replaced, so we can build on it
+        return base.MonthlyPay() + (Bonus / 12);
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var manager = new Manager("Ada", 120_000m, 24_000m);
+// Employee constructor ran.      &lt;- base runs FIRST
+// Manager constructor ran.
+
+Console.WriteLine(manager.MonthlyPay());   // 12000  = 10000 base + 2000 bonus</code></pre>
+
+          <h2 id="virtual">virtual, override, sealed, and new</h2>
+          <p>A base method is only replaceable if it says so. Four keywords control this:</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Keyword</th><th>Where</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><code>virtual</code></td><td>Base method</td><td>"Subclasses may replace me."</td></tr>
+                <tr><td><code>override</code></td><td>Derived method</td><td>"I am the replacement." Called even through a base-typed variable.</td></tr>
+                <tr><td><code>abstract</code></td><td>Base method (in an abstract class)</td><td>"I have no body; subclasses <em>must</em> supply one."</td></tr>
+                <tr><td><code>sealed override</code></td><td>Derived method</td><td>"No further subclass may override this."</td></tr>
+                <tr><td><code>new</code></td><td>Derived method</td><td>Hides rather than overrides - usually a mistake. See below.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title"><code>new</code> hides, <code>override</code> replaces</div>
+            <p>This distinction bites every beginner. With <code>override</code>, the object's real type decides which method runs. With <code>new</code>, the <em>variable's</em> declared type decides - so the same object behaves differently depending on how you are holding it.</p>
+          </div>
+          <pre><code class="language-csharp">public class Base
+{
+    public virtual string Virtual() =&gt; "Base.Virtual";
+    public string NonVirtual()      =&gt; "Base.NonVirtual";
+}
+
+public class Derived : Base
+{
+    public override string Virtual() =&gt; "Derived.Virtual";
+    public new string NonVirtual()   =&gt; "Derived.NonVirtual";   // hides, not overrides
+}
+
+Derived d = new Derived();
+Base    b = d;                       // SAME object, different variable type
+
+Console.WriteLine(d.Virtual());      // Derived.Virtual
+Console.WriteLine(b.Virtual());      // Derived.Virtual     &lt;- override: real type wins
+Console.WriteLine(d.NonVirtual());   // Derived.NonVirtual
+Console.WriteLine(b.NonVirtual());   // Base.NonVirtual     &lt;- new: variable type wins</code></pre>
+          <p>Almost always you want <code>virtual</code> + <code>override</code>. If the compiler warns that a member hides an inherited one, do not silence it with <code>new</code> - rename your method or make the base member <code>virtual</code>.</p>
+
+          <h3><code>sealed</code></h3>
+          <pre><code class="language-csharp">// A sealed class cannot be inherited from at all
+public sealed class TaxCalculator { }
+// public class UkTaxCalculator : TaxCalculator { }   // compile error
+
+public class Middle : Base
+{
+    // Overrides Base.Virtual, and stops anyone below from overriding it again
+    public sealed override string Virtual() =&gt; "Middle.Virtual";
+}</code></pre>
+
+          <h2 id="object">Everything inherits from <code>object</code></h2>
+          <p>Every C# type, even one with no <code>:</code> in its declaration, ultimately derives from <code>System.Object</code>. That is where <code>ToString()</code>, <code>Equals()</code>, and <code>GetHashCode()</code> come from - and overriding them is often the first useful override you write.</p>
+          <pre><code class="language-csharp">public class Point
+{
+    public int X { get; }
+    public int Y { get; }
+    public Point(int x, int y) { X = x; Y = y; }
+
+    // Without this, Console.WriteLine(point) prints the type name
+    public override string ToString() =&gt; $"({X}, {Y})";
+
+    // Value equality instead of reference equality
+    public override bool Equals(object? obj) =&gt;
+        obj is Point other &amp;&amp; other.X == X &amp;&amp; other.Y == Y;
+
+    // Equals and GetHashCode must always be overridden together
+    public override int GetHashCode() =&gt; HashCode.Combine(X, Y);
+}
+
+var p1 = new Point(1, 2);
+var p2 = new Point(1, 2);
+Console.WriteLine(p1);                 // (1, 2)
+Console.WriteLine(p1.Equals(p2));      // True</code></pre>
+
+          <h2 id="chains">Multi-level inheritance</h2>
+          <pre><code class="language-csharp">public class Vehicle
+{
+    public int Wheels { get; protected set; } = 4;
+    public virtual string Describe() =&gt; $"A vehicle with {Wheels} wheels";
+}
+
+public class MotorVehicle : Vehicle
+{
+    public int EngineCc { get; protected set; }
+    public override string Describe() =&gt; base.Describe() + $", engine {EngineCc}cc";
+}
+
+public class Motorcycle : MotorVehicle
+{
+    public Motorcycle()
+    {
+        Wheels = 2;          // allowed: the setter is protected
+        EngineCc = 650;
+    }
+
+    public override string Describe() =&gt; base.Describe() + ", and it leans in corners";
+}
+
+Console.WriteLine(new Motorcycle().Describe());
+// A vehicle with 2 wheels, engine 650cc, and it leans in corners</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">Keep hierarchies shallow</div>
+            <p>Two or three levels is usually plenty. Once a chain is five deep, understanding what any given method does means opening five files, and a change to the top ripples through all of them. This is called the fragile base class problem.</p>
+          </div>
+
+          <h2 id="multiple">C# has no multiple inheritance</h2>
+          <p>A class may have only one base class, but may implement any number of interfaces. This avoids the "diamond problem" (two base classes offering the same method, and no rule for which one wins).</p>
+          <pre><code class="language-csharp">public interface ISwimmer { void Swim(); }
+public interface IFlyer   { void Fly(); }
+
+// One base class, as many interfaces as you like
+public class Duck : Animal, ISwimmer, IFlyer
+{
+    public void Swim() =&gt; Console.WriteLine($"{Name} paddles.");
+    public void Fly()  =&gt; Console.WriteLine($"{Name} flies away.");
+}
+
+// public class Impossible : Animal, Vehicle { }   // compile error: two base classes</code></pre>
+
+          <h2 id="composition">Inheritance vs composition</h2>
+          <p>The most common design mistake with inheritance is using it for code reuse when there is no real "is a" relationship. The alternative is <strong>composition</strong>: hold an instance of the other class instead of inheriting from it.</p>
+          <pre><code class="language-csharp">// WRONG - a Car is not a kind of Engine, so this makes no sense
+public class Car : Engine { }
+
+// RIGHT - a Car HAS AN Engine
+public class Engine
+{
+    public void Start() =&gt; Console.WriteLine("Vroom.");
+}
+
+public class Car
+{
+    private readonly Engine _engine = new();
+
+    public void Start() =&gt; _engine.Start();     // delegate to the part it owns
+}</code></pre>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Question</th><th>If yes</th></tr></thead>
+              <tbody>
+                <tr><td>Is a Dog genuinely a kind of Animal?</td><td>Inheritance</td></tr>
+                <tr><td>Does a Car merely contain an Engine?</td><td>Composition</td></tr>
+                <tr><td>Do you want the base class's public API to become yours?</td><td>Inheritance</td></tr>
+                <tr><td>Do you only want to reuse a couple of its methods?</td><td>Composition</td></tr>
+                <tr><td>Must the relationship be swappable at runtime?</td><td>Composition (against an interface)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">"Favour composition over inheritance"</div>
+            <p>The classic advice, and it holds up. Inheritance is a permanent, compile-time bond that exposes the whole base API to your callers. Composition is a private, swappable relationship you control. Reach for inheritance when the "is a" is real and you want polymorphism; otherwise compose.</p>
+          </div>
+
+          <h2 id="liskov">The substitution test</h2>
+          <p>Before you inherit, check the Liskov Substitution Principle: <em>anywhere the base type is used, a derived object must work without surprising the caller.</em> The classic failure:</p>
+          <pre><code class="language-csharp">public class Rectangle
+{
+    public virtual int Width { get; set; }
+    public virtual int Height { get; set; }
+    public int Area =&gt; Width * Height;
+}
+
+// A square IS a rectangle in mathematics, but not as a mutable class
+public class Square : Rectangle
+{
+    public override int Width
+    {
+        get =&gt; base.Width;
+        set { base.Width = value; base.Height = value; }
+    }
+
+    public override int Height
+    {
+        get =&gt; base.Height;
+        set { base.Width = value; base.Height = value; }
+    }
+}
+
+void Resize(Rectangle r)
+{
+    r.Width = 5;
+    r.Height = 4;
+    Console.WriteLine(r.Area);      // caller expects 20
+}
+
+Resize(new Rectangle());            // 20  - as expected
+Resize(new Square());               // 16  - the contract is broken</code></pre>
+          <p>The fix is not clever code - it is to stop inheriting. Make <code>Square</code> and <code>Rectangle</code> separate immutable types, or give them a common <code>IShape</code> interface exposing only <code>Area</code>.</p>
+
+          <h2 id="checklist">Checklist</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Do</th><th>Avoid</th></tr></thead>
+              <tbody>
+                <tr><td>Inherit only for a genuine "is a"</td><td>Inheriting just to reuse two methods</td></tr>
+                <tr><td>Mark extension points <code>virtual</code> or <code>abstract</code> deliberately</td><td>Making everything virtual by reflex</td></tr>
+                <tr><td>Call <code>base.Method()</code> when extending behaviour</td><td>Silently dropping the base behaviour</td></tr>
+                <tr><td>Use <code>protected</code> for members subclasses need</td><td>Making fields <code>public</code> so subclasses can reach them</td></tr>
+                <tr><td>Keep hierarchies two or three levels deep</td><td>Deep chains nobody can follow</td></tr>
+                <tr><td><code>sealed</code> classes not designed for inheritance</td><td>Leaving every class open by accident</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./abstraction.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Abstraction</span></a>
+          <a href="./polymorphism.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Polymorphism</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

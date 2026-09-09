@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linked lists in C# - nodes and references, building a singly linked list from scratch, and LinkedList&lt;T&gt;.">
+  <title>Linked Lists | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html" class="active">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Linked Lists</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Linked Lists</h1>
+          <p class="text-secondary text-lg">A chain of nodes, where each node knows only the next one. Cheap to insert, expensive to search.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Linked list in one sentence</div>
+            <p>Instead of one block of memory with numbered slots, a linked list is a chain: each item is a small object (a <strong>node</strong>) holding a value and a reference to the next node. Like a treasure hunt where each clue points to the next one.</p>
+          </div>
+
+          <h2 id="shape">The shape</h2>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Singly linked list: head -&gt; 10 -&gt; 20 -&gt; 30 -&gt; null</div>
+            <div class="arch-row">
+              <div class="arch-box arch-box-user"><div class="arch-box-title">head</div><div class="arch-box-subtitle">reference</div></div>
+              <div class="arch-arrow-right">→</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">10</div><div class="arch-box-subtitle">Next →</div></div>
+              <div class="arch-arrow-right">→</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">20</div><div class="arch-box-subtitle">Next →</div></div>
+              <div class="arch-arrow-right">→</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">30</div><div class="arch-box-subtitle">Next = null</div></div>
+            </div>
+          </div>
+          <p>The nodes can sit anywhere in memory. Nothing is contiguous, so there is no index arithmetic: to reach the fifth item you must start at the head and follow four references.</p>
+
+          <h2 id="node">The node</h2>
+          <p>The whole idea is one class that points at another instance of itself:</p>
+          <pre><code class="language-csharp">public class Node&lt;T&gt;
+{
+    public T Value { get; set; }
+    public Node&lt;T&gt;? Next { get; set; }      // null marks the end of the chain
+
+    public Node(T value) =&gt; Value = value;
+}</code></pre>
+          <pre><code class="language-csharp">// Build a chain by hand to see the mechanics
+var first  = new Node&lt;int&gt;(10);
+var second = new Node&lt;int&gt;(20);
+var third  = new Node&lt;int&gt;(30);
+
+first.Next = second;
+second.Next = third;                        // third.Next stays null
+
+// Walk it
+Node&lt;int&gt;? current = first;
+while (current is not null)
+{
+    Console.Write(current.Value + " -&gt; ");
+    current = current.Next;
+}
+Console.WriteLine("null");                  // 10 -&gt; 20 -&gt; 30 -&gt; null</code></pre>
+
+          <h2 id="implementation">A singly linked list, from scratch</h2>
+          <pre><code class="language-csharp">public class MyLinkedList&lt;T&gt;
+{
+    private Node&lt;T&gt;? _head;
+    private Node&lt;T&gt;? _tail;      // keeping a tail reference makes AddLast O(1)
+
+    public int Count { get; private set; }
+
+    // O(1) - the new node becomes the head
+    public void AddFirst(T value)
+    {
+        var node = new Node&lt;T&gt;(value) { Next = _head };
+        _head = node;
+        _tail ??= node;          // first item is also the tail
+        Count++;
+    }
+
+    // O(1) thanks to the tail reference; O(n) without one
+    public void AddLast(T value)
+    {
+        var node = new Node&lt;T&gt;(value);
+        if (_tail is null)
+        {
+            _head = _tail = node;
+        }
+        else
+        {
+            _tail.Next = node;
+            _tail = node;
+        }
+        Count++;
+    }
+
+    // O(n) - no shortcut, we must walk the chain
+    public bool Contains(T value)
+    {
+        for (Node&lt;T&gt;? current = _head; current is not null; current = current.Next)
+            if (EqualityComparer&lt;T&gt;.Default.Equals(current.Value, value))
+                return true;
+        return false;
+    }
+
+    // O(n) to find it, but the removal itself is just one reference change
+    public bool Remove(T value)
+    {
+        Node&lt;T&gt;? previous = null;
+        Node&lt;T&gt;? current = _head;
+
+        while (current is not null)
+        {
+            if (EqualityComparer&lt;T&gt;.Default.Equals(current.Value, value))
+            {
+                if (previous is null) _head = current.Next;   // removing the head
+                else previous.Next = current.Next;            // skip over current
+
+                if (ReferenceEquals(current, _tail)) _tail = previous;
+                Count--;
+                return true;
+            }
+
+            previous = current;
+            current = current.Next;
+        }
+        return false;
+    }
+
+    // O(n) - reverse the direction of every link
+    public void Reverse()
+    {
+        Node&lt;T&gt;? previous = null;
+        Node&lt;T&gt;? current = _head;
+        _tail = _head;
+
+        while (current is not null)
+        {
+            Node&lt;T&gt;? next = current.Next;   // remember where we were going
+            current.Next = previous;        // flip the link backwards
+            previous = current;             // step forward
+            current = next;
+        }
+        _head = previous;
+    }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        for (Node&lt;T&gt;? c = _head; c is not null; c = c.Next)
+            sb.Append(c.Value).Append(" -&gt; ");
+        return sb.Append("null").ToString();
+    }
+}</code></pre>
+          <pre><code class="language-csharp">var list = new MyLinkedList&lt;int&gt;();
+list.AddLast(10);
+list.AddLast(20);
+list.AddLast(30);
+list.AddFirst(5);
+
+Console.WriteLine(list);              // 5 -&gt; 10 -&gt; 20 -&gt; 30 -&gt; null
+Console.WriteLine(list.Contains(20)); // True
+
+list.Remove(20);
+Console.WriteLine(list);              // 5 -&gt; 10 -&gt; 30 -&gt; null
+
+list.Reverse();
+Console.WriteLine(list);              // 30 -&gt; 10 -&gt; 5 -&gt; null
+Console.WriteLine(list.Count);        // 3</code></pre>
+
+          <div class="callout callout-tip">
+            <div class="callout-title">The insight worth keeping</div>
+            <p>Inserting or removing in the middle of an array means shifting every element after it. In a linked list it is two assignments - no matter how long the list is. The catch is that <em>getting</em> to the middle takes O(n) steps in the first place.</p>
+          </div>
+
+          <h2 id="doubly">Doubly linked lists</h2>
+          <p>Add a <code>Previous</code> reference and the chain can be walked in both directions, and any node can be removed in O(1) without knowing what came before it.</p>
+          <pre><code class="language-csharp">public class DoublyNode&lt;T&gt;
+{
+    public T Value { get; set; }
+    public DoublyNode&lt;T&gt;? Next { get; set; }
+    public DoublyNode&lt;T&gt;? Previous { get; set; }
+
+    public DoublyNode(T value) =&gt; Value = value;
+}
+
+// Removing a node you already hold - O(1), no traversal at all
+void RemoveNode&lt;T&gt;(DoublyNode&lt;T&gt; node)
+{
+    if (node.Previous is not null) node.Previous.Next = node.Next;
+    if (node.Next is not null)     node.Next.Previous = node.Previous;
+    node.Next = node.Previous = null;
+}</code></pre>
+
+          <h3>.NET already has one: <code>LinkedList&lt;T&gt;</code></h3>
+          <pre><code class="language-csharp">var list = new LinkedList&lt;string&gt;();
+
+LinkedListNode&lt;string&gt; b = list.AddLast("B");
+list.AddFirst("A");
+list.AddLast("D");
+list.AddAfter(b, "C");                        // O(1) - we hold the node
+
+Console.WriteLine(string.Join(" ", list));    // A B C D
+Console.WriteLine(list.First!.Value);         // A
+Console.WriteLine(list.Last!.Value);          // D
+
+list.Remove(b);                               // O(1) - node known
+Console.WriteLine(string.Join(" ", list));    // A C D
+
+LinkedListNode&lt;string&gt;? found = list.Find("C");  // O(n) - has to search
+if (found is not null) list.AddBefore(found, "B2");
+
+// Walk backwards - only possible because it is doubly linked
+for (var node = list.Last; node is not null; node = node.Previous)
+    Console.Write(node.Value + " ");          // D C B2 A</code></pre>
+
+          <h2 id="comparison">Array vs linked list</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Operation</th><th>Array / List&lt;T&gt;</th><th>LinkedList&lt;T&gt;</th><th>Winner</th></tr></thead>
+              <tbody>
+                <tr><td>Access by index</td><td>O(1)</td><td>O(n)</td><td>Array</td></tr>
+                <tr><td>Add at end</td><td>O(1) amortised</td><td>O(1)</td><td>Tie</td></tr>
+                <tr><td>Add at start</td><td>O(n)</td><td>O(1)</td><td>Linked list</td></tr>
+                <tr><td>Insert/remove given the position</td><td>O(n) - shifting</td><td>O(1) - given the node</td><td>Linked list</td></tr>
+                <tr><td>Search by value</td><td>O(n)</td><td>O(n)</td><td>Tie on paper, array in practice</td></tr>
+                <tr><td>Memory per item</td><td>Just the value</td><td>Value + 1-2 references + object header</td><td>Array</td></tr>
+                <tr><td>Cache friendliness</td><td>Excellent - contiguous</td><td>Poor - nodes scattered</td><td>Array</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">In practice, reach for List&lt;T&gt; first</div>
+            <p>Textbooks make linked lists sound like the fast choice for insertion. On real hardware, contiguous memory is so much friendlier to the CPU cache that <code>List&lt;T&gt;</code> usually wins even where the Big-O says otherwise. Use <code>LinkedList&lt;T&gt;</code> when you are constantly adding and removing at both ends, and you already hold references to the nodes involved.</p>
+          </div>
+
+          <h2 id="uses">Where linked lists actually turn up</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Use</th><th>Why a linked list fits</th></tr></thead>
+              <tbody>
+                <tr><td>LRU cache</td><td>Move a node to the front on every hit - O(1) with a doubly linked list plus a dictionary</td></tr>
+                <tr><td>Undo/redo history</td><td>Walk backwards and forwards from the current position</td></tr>
+                <tr><td>Hash table buckets</td><td>Chaining collisions - see <a href="./hash-tables.html">Hash Tables</a></td></tr>
+                <tr><td>Music playlists</td><td>Next/previous track, insert anywhere while playing</td></tr>
+                <tr><td>Round-robin schedulers</td><td>A circular list where the last node points back to the first</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="interview">Two classic exercises</h2>
+          <p>Both come up constantly in interviews, and both are worth understanding because they show the technique of using two references moving at different speeds.</p>
+          <pre><code class="language-csharp">// Find the middle node in ONE pass:
+// slow moves 1 step, fast moves 2 - when fast hits the end, slow is halfway.
+Node&lt;T&gt;? FindMiddle&lt;T&gt;(Node&lt;T&gt;? head)
+{
+    Node&lt;T&gt;? slow = head, fast = head;
+    while (fast?.Next is not null)
+    {
+        slow = slow!.Next;
+        fast = fast.Next.Next;
+    }
+    return slow;
+}
+
+// Detect a cycle (a node whose Next eventually points backwards).
+// If there is a loop, the fast pointer laps the slow one and they meet.
+bool HasCycle&lt;T&gt;(Node&lt;T&gt;? head)
+{
+    Node&lt;T&gt;? slow = head, fast = head;
+    while (fast?.Next is not null)
+    {
+        slow = slow!.Next;
+        fast = fast.Next.Next;
+        if (ReferenceEquals(slow, fast)) return true;
+    }
+    return false;                       // reached null: no cycle
+}</code></pre>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./arrays-lists.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Arrays &amp; Lists</span></a>
+          <a href="./stacks-queues.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Stacks &amp; Queues</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

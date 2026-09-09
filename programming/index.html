@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Object-oriented programming with C#, plus the data structures and algorithms every developer should know.">
+  <title>Programming Fundamentals | CloudDevOps</title>
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../" class="logo">
+        <img src="../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../devops/" class="nav-link">DevOps</a>
+        <a href="../cloud/" class="nav-link">Cloud</a>
+        <a href="../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="./" class="active">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="oop/">OOP Overview</a></li>
+            <li><a href="oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="oop/abstraction.html">Abstraction</a></li>
+            <li><a href="oop/inheritance.html">Inheritance</a></li>
+            <li><a href="oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="dsa/">DS &amp; A Overview</a></li>
+            <li><a href="dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="dsa/sorting.html">Sorting</a></li>
+            <li><a href="dsa/searching.html">Searching</a></li>
+            <li><a href="dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../">Home</a></li>
+            <li aria-current="page">Programming</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Programming Fundamentals</h1>
+          <p class="text-secondary text-lg">Object-oriented programming with C#, and the data structures and algorithms behind every application you will ever build - explained from scratch.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Start here if you are new</div>
+            <p>You do not need any prior theory to read this section. Every idea is introduced in plain English first, then shown as a small, complete C# example you can paste into a console app and run. Work top to bottom: <strong>OOP</strong> teaches you how to organise code, and <strong>Data Structures &amp; Algorithms</strong> teaches you how to make it fast.</p>
+          </div>
+
+          <h2 id="why">Why these two topics?</h2>
+          <p>Almost every problem in application development is one of two kinds:</p>
+          <ul>
+            <li><strong>"How do I keep this code from turning into a mess?"</strong> - the answer is design, and object-oriented programming is the dominant design style in C#, Java, Python, and TypeScript.</li>
+            <li><strong>"Why is this slow?"</strong> - the answer is almost always the wrong data structure or the wrong algorithm. Choosing a <code>Dictionary</code> over a <code>List</code> can turn a 10-second report into a 10-millisecond one.</li>
+          </ul>
+          <p>The examples here use <strong>C#</strong>, but the ideas transfer directly. Rename a few keywords and the same code is Java; the same concepts appear in Python, TypeScript, Go, and Rust.</p>
+
+          <h2 id="oop">Object-Oriented Programming</h2>
+          <p>OOP models a program as a set of <em>objects</em> - small bundles of data and the behaviour that acts on that data - which cooperate by calling each other's methods.</p>
+          <div class="card-grid">
+            <a href="./oop/" class="card card-link">
+              <h3 class="card-title">OOP Overview</h3>
+              <p class="card-description">What OOP is, the problem it solves, and how procedural code turns into object-oriented code.</p>
+            </a>
+            <a href="./oop/building-blocks.html" class="card card-link">
+              <h3 class="card-title">Building Blocks</h3>
+              <p class="card-description">Class, object, fields and properties, methods, message passing, constructors and destructors.</p>
+            </a>
+            <a href="./oop/encapsulation.html" class="card card-link">
+              <h3 class="card-title">Encapsulation</h3>
+              <p class="card-description">Bundle data with the methods that change it, and lock the door on everything else.</p>
+            </a>
+            <a href="./oop/abstraction.html" class="card card-link">
+              <h3 class="card-title">Abstraction</h3>
+              <p class="card-description">Expose only essential behaviour with abstract classes and interfaces; hide the implementation.</p>
+            </a>
+            <a href="./oop/inheritance.html" class="card card-link">
+              <h3 class="card-title">Inheritance</h3>
+              <p class="card-description">Derive a class from another to reuse and extend behaviour - and know when not to.</p>
+            </a>
+            <a href="./oop/polymorphism.html" class="card card-link">
+              <h3 class="card-title">Polymorphism</h3>
+              <p class="card-description">One interface, many implementations, through method overriding and overloading.</p>
+            </a>
+          </div>
+
+          <h2 id="dsa">Data Structures &amp; Algorithms</h2>
+          <p>A data structure decides how data is arranged in memory. An algorithm is the recipe you run over it. Together they decide whether your code finishes instantly or times out.</p>
+          <div class="card-grid">
+            <a href="./dsa/" class="card card-link">
+              <h3 class="card-title">DS &amp; A Overview</h3>
+              <p class="card-description">What they are, how to choose one, and a cheat sheet of every .NET collection with its costs.</p>
+            </a>
+            <a href="./dsa/big-o.html" class="card card-link">
+              <h3 class="card-title">Big-O Notation</h3>
+              <p class="card-description">The vocabulary for "how does this get slower as the data grows?"</p>
+            </a>
+            <a href="./dsa/arrays-lists.html" class="card card-link">
+              <h3 class="card-title">Arrays &amp; Lists</h3>
+              <p class="card-description">Numbered slots side by side in memory - the structure you will use most.</p>
+            </a>
+            <a href="./dsa/linked-lists.html" class="card card-link">
+              <h3 class="card-title">Linked Lists</h3>
+              <p class="card-description">Nodes chained by references. Cheap inserts, expensive lookups.</p>
+            </a>
+            <a href="./dsa/stacks-queues.html" class="card card-link">
+              <h3 class="card-title">Stacks &amp; Queues</h3>
+              <p class="card-description">Last-in-first-out and first-in-first-out, and the problems each one solves.</p>
+            </a>
+            <a href="./dsa/hash-tables.html" class="card card-link">
+              <h3 class="card-title">Hash Tables &amp; Sets</h3>
+              <p class="card-description">Instant lookup by key - how <code>Dictionary</code> and <code>HashSet</code> actually work.</p>
+            </a>
+            <a href="./dsa/trees.html" class="card card-link">
+              <h3 class="card-title">Trees &amp; Heaps</h3>
+              <p class="card-description">Hierarchies, binary search trees, traversals, and priority queues.</p>
+            </a>
+            <a href="./dsa/graphs.html" class="card card-link">
+              <h3 class="card-title">Graphs</h3>
+              <p class="card-description">Things and connections - plus breadth-first and depth-first search.</p>
+            </a>
+            <a href="./dsa/sorting.html" class="card card-link">
+              <h3 class="card-title">Sorting</h3>
+              <p class="card-description">Bubble, selection, insertion, merge, and quick sort - written out in full.</p>
+            </a>
+            <a href="./dsa/searching.html" class="card card-link">
+              <h3 class="card-title">Searching</h3>
+              <p class="card-description">Linear scan, binary search, and hash lookup compared.</p>
+            </a>
+            <a href="./dsa/recursion.html" class="card card-link">
+              <h3 class="card-title">Recursion</h3>
+              <p class="card-description">Methods that call themselves, the call stack, and memoisation.</p>
+            </a>
+          </div>
+
+          <h2 id="setup">Running the examples</h2>
+          <p>Every example is plain C# that runs on the .NET SDK. Create a scratch project once and paste examples into <code>Program.cs</code>:</p>
+          <pre><code class="language-bash"># Install the .NET SDK, then:
+dotnet new console -o PlaygroundApp
+cd PlaygroundApp
+
+# Paste an example into Program.cs, then run it:
+dotnet run</code></pre>
+          <p>The examples target .NET 8 and use <a href="https://learn.microsoft.com/dotnet/csharp/fundamentals/program-structure/top-level-statements">top-level statements</a> where it keeps things short - that is why some snippets have no <code>Main</code> method.</p>
+
+          <h2 id="path">Suggested learning path</h2>
+          <div class="steps-timeline">
+            <div class="step-item"><div class="step-number">1</div><div class="step-content"><h4><a href="./oop/">What OOP is</a></h4><p>Understand the problem objects solve before you write one.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-content"><h4><a href="./oop/building-blocks.html">Classes and objects</a></h4><p>Write your first class, create objects from it, and give them behaviour.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-content"><h4><a href="./oop/encapsulation.html">The four pillars</a></h4><p>Encapsulation, abstraction, inheritance, and polymorphism, one page each.</p></div></div>
+            <div class="step-item"><div class="step-number">4</div><div class="step-content"><h4><a href="./dsa/big-o.html">Big-O</a></h4><p>Learn to say "this is O(n²)" and mean something precise by it.</p></div></div>
+            <div class="step-item"><div class="step-number">5</div><div class="step-content"><h4><a href="./dsa/arrays-lists.html">Core data structures</a></h4><p>Arrays, lists, stacks, queues, dictionaries - the ones you use daily.</p></div></div>
+            <div class="step-item"><div class="step-number">6</div><div class="step-content"><h4><a href="./dsa/trees.html">Trees and graphs</a></h4><p>Hierarchies and networks, plus the searches that walk them.</p></div></div>
+            <div class="step-item"><div class="step-number">7</div><div class="step-content"><h4><a href="./dsa/sorting.html">Classic algorithms</a></h4><p>Sorting, searching, and recursion - the interview staples, explained properly.</p></div></div>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./oop/" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">OOP Overview</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/navigation.js" defer></script>
+  <script src="../assets/js/main.js" defer></script>
+</body>
+</html>

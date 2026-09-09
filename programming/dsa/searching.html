@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linear search, binary search, and hash lookup in C# - how each works and when to use it.">
+  <title>Searching Algorithms | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html" class="active">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Searching</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Searching Algorithms</h1>
+          <p class="text-secondary text-lg">Finding one item among many. The method you choose decides whether that takes a million steps or twenty.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">The whole page in one idea</div>
+            <p>Looking for a name in an unsorted pile means checking every sheet. Looking for it in a phone book means opening the middle, deciding "earlier" or "later", and throwing away half the book each time. Same task, wildly different amounts of work - the difference is whether the data is organised.</p>
+          </div>
+
+          <h2 id="linear">Linear search - O(n)</h2>
+          <p>Start at the beginning, check each item, stop when you find it. It works on anything - sorted or not, array or linked list - and it is the only option when the data has no order.</p>
+          <pre><code class="language-csharp">public static int LinearSearch&lt;T&gt;(IList&lt;T&gt; items, T target)
+{
+    for (int i = 0; i &lt; items.Count; i++)
+        if (EqualityComparer&lt;T&gt;.Default.Equals(items[i], target))
+            return i;                          // found: return the position
+
+    return -1;                                 // conventional "not found"
+}
+
+int[] data = { 5, 2, 9, 1, 7 };
+Console.WriteLine(LinearSearch(data, 9));      // 2
+Console.WriteLine(LinearSearch(data, 4));      // -1</code></pre>
+          <p>Best case 1 comparison (the first item); worst case n (the last item, or absent). On average, half the collection - which is still O(n).</p>
+          <pre><code class="language-csharp">// The .NET equivalents, all O(n) on a List or array
+int index   = Array.IndexOf(data, 9);                    // 2
+bool exists = data.Contains(9);                          // True
+int? first  = data.FirstOrDefault(x =&gt; x &gt; 6);           // 9
+int found   = Array.Find(data, x =&gt; x % 2 == 0);         // 2
+int[] all   = Array.FindAll(data, x =&gt; x &gt; 4);           // 5, 9, 7</code></pre>
+
+          <h2 id="binary">Binary search - O(log n)</h2>
+          <p>Requires the data to be <strong>sorted</strong>. Look at the middle item; if it is too small, the answer must be in the right half, so discard the left half entirely. Repeat.</p>
+          <div class="arch-diagram">
+            <div class="arch-diagram-title">Finding 23 in [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]</div>
+            <div class="arch-flow">
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">low=0, high=9, mid=4 → 16</div><div class="arch-box-subtitle">23 &gt; 16, so search the right half</div></div>
+              <div class="arch-arrow-down">discard indexes 0-4</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">low=5, high=9, mid=7 → 56</div><div class="arch-box-subtitle">23 &lt; 56, so search the left half</div></div>
+              <div class="arch-arrow-down">discard indexes 7-9</div>
+              <div class="arch-box arch-box-neutral"><div class="arch-box-title">low=5, high=6, mid=5 → 23</div><div class="arch-box-subtitle">found, in 3 comparisons instead of 6</div></div>
+            </div>
+          </div>
+          <pre><code class="language-csharp">public static int BinarySearch(int[] sorted, int target)
+{
+    int low = 0;
+    int high = sorted.Length - 1;
+
+    while (low &lt;= high)                       // "&lt;=" - a single-item range is still valid
+    {
+        // NOT (low + high) / 2 - that can overflow int on huge arrays
+        int mid = low + (high - low) / 2;
+
+        if (sorted[mid] == target) return mid;
+
+        if (sorted[mid] &lt; target) low = mid + 1;    // answer is in the right half
+        else                      high = mid - 1;   // answer is in the left half
+    }
+
+    return -1;
+}
+
+int[] sorted = { 2, 5, 8, 12, 16, 23, 38, 56, 72, 91 };
+Console.WriteLine(BinarySearch(sorted, 23));   // 5
+Console.WriteLine(BinarySearch(sorted, 91));   // 9
+Console.WriteLine(BinarySearch(sorted, 40));   // -1</code></pre>
+
+          <h3>The recursive version</h3>
+          <pre><code class="language-csharp">public static int BinarySearchRecursive(int[] sorted, int target, int low, int high)
+{
+    if (low &gt; high) return -1;                 // base case: the range is empty
+
+    int mid = low + (high - low) / 2;
+
+    if (sorted[mid] == target) return mid;     // base case: found it
+
+    return sorted[mid] &lt; target
+        ? BinarySearchRecursive(sorted, target, mid + 1, high)
+        : BinarySearchRecursive(sorted, target, low, mid - 1);
+}
+
+Console.WriteLine(BinarySearchRecursive(sorted, 23, 0, sorted.Length - 1));   // 5</code></pre>
+          <p>Both versions do the same work; the iterative one uses O(1) space rather than O(log n) stack frames. Prefer it.</p>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">Three classic bugs</div>
+            <p><strong>1.</strong> <code>while (low &lt; high)</code> instead of <code>&lt;=</code> - misses the target when the range narrows to one item.<br>
+            <strong>2.</strong> <code>low = mid</code> instead of <code>mid + 1</code> - the range stops shrinking and the loop never ends.<br>
+            <strong>3.</strong> <code>(low + high) / 2</code> - overflows to a negative number once the indexes exceed about 1.07 billion. This bug sat in the JDK for nine years.</p>
+          </div>
+
+          <h3>The built-in</h3>
+          <pre><code class="language-csharp">int[] sorted = { 2, 5, 8, 12, 16, 23, 38 };
+
+int i = Array.BinarySearch(sorted, 16);        // 4
+Console.WriteLine(i);
+
+// Not found: returns the bitwise complement of where it WOULD go.
+int missing = Array.BinarySearch(sorted, 20);  // -6
+int insertAt = ~missing;                       // 5 - handy for ordered inserts
+Console.WriteLine($"Insert 20 at index {insertAt}");
+
+var list = new List&lt;int&gt;(sorted);
+int j = list.BinarySearch(38);                 // 6</code></pre>
+          <div class="callout callout-warning">
+            <div class="callout-title">The data really must be sorted</div>
+            <p><code>Array.BinarySearch</code> on unsorted data does not throw - it quietly returns a wrong answer. If you sort in order to search once, you have spent O(n log n) to save O(n): just scan it.</p>
+          </div>
+
+          <h2 id="hash">Hash lookup - O(1)</h2>
+          <p>The fastest option of all, if you can build the index up front. See <a href="./hash-tables.html">Hash Tables</a> for how it works.</p>
+          <pre><code class="language-csharp">var customers = new List&lt;Customer&gt;(/* 100,000 items */);
+
+// Build the index ONCE - O(n)
+Dictionary&lt;int, Customer&gt; byId = customers.ToDictionary(c =&gt; c.Id);
+
+// Then every lookup is O(1), however many you do
+if (byId.TryGetValue(98_765, out Customer? customer))
+    Console.WriteLine(customer.Name);
+
+// Membership only? A set is smaller and clearer
+var activeIds = new HashSet&lt;int&gt;(customers.Where(c =&gt; c.IsActive).Select(c =&gt; c.Id));
+Console.WriteLine(activeIds.Contains(98_765));</code></pre>
+
+          <h2 id="comparison">Which to use</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Method</th><th>Time</th><th>Needs</th><th>Setup cost</th><th>Use when</th></tr></thead>
+              <tbody>
+                <tr><td>Linear search</td><td>O(n)</td><td>Nothing</td><td>None</td><td>Small data, or a one-off lookup</td></tr>
+                <tr><td>Binary search</td><td>O(log n)</td><td>Sorted data</td><td>O(n log n) to sort</td><td>Sorted data you search repeatedly, or need a range from</td></tr>
+                <tr><td>Hash lookup</td><td>O(1)</td><td>A dictionary or set, and hashable keys</td><td>O(n) to build, O(n) memory</td><td>Many lookups by exact key</td></tr>
+                <tr><td>Tree lookup</td><td>O(log n)</td><td><code>SortedDictionary</code> / <code>SortedSet</code></td><td>O(n log n) to build</td><td>Lookups plus ordered iteration and range queries</td></tr>
+                <tr><td>Database index</td><td>O(log n)</td><td>An index on the column</td><td>Created once by the DBA</td><td>The data lives in a database - do not pull it into memory to scan it</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <div class="callout-title">The decision that matters most</div>
+            <p>Count how many times you will search. <strong>Once</strong> - just scan; building an index costs more than the scan saves. <strong>Many times</strong> - build a <code>Dictionary</code> or <code>HashSet</code> first. This one judgement fixes more slow code than any other single change.</p>
+          </div>
+
+          <h2 id="variants">Useful binary-search variants</h2>
+          <p>Binary search does more than find one exact match. The same halving works on any question with a yes/no answer that flips exactly once across the range.</p>
+          <pre><code class="language-csharp">// Find the FIRST index whose value is &gt;= target (a "lower bound").
+// Useful for range queries: everything from here on is &gt;= target.
+public static int LowerBound(int[] sorted, int target)
+{
+    int low = 0, high = sorted.Length;         // note: high is one PAST the end
+
+    while (low &lt; high)
+    {
+        int mid = low + (high - low) / 2;
+        if (sorted[mid] &lt; target) low = mid + 1;
+        else                      high = mid;  // mid might be the answer - keep it
+    }
+
+    return low;                                // == Length if every value is smaller
+}
+
+int[] data = { 1, 3, 3, 3, 5, 8 };
+Console.WriteLine(LowerBound(data, 3));        // 1 - the first 3
+Console.WriteLine(LowerBound(data, 4));        // 4 - where 4 would be inserted
+Console.WriteLine(LowerBound(data, 9));        // 6 - past the end</code></pre>
+          <pre><code class="language-csharp">// Binary search over an ANSWER, not an array.
+// "What is the smallest number of machines that can process the load in time?"
+// CanFinish(jobs, machines, hours) is your own feasibility check - it only has
+// to answer yes/no, and the answer must flip once as "machines" increases.
+int MinimumMachines(int[] jobs, int hoursAvailable)
+{
+    int low = 1, high = jobs.Length;           // 1 machine per job is always enough
+
+    while (low &lt; high)
+    {
+        int mid = low + (high - low) / 2;
+        if (CanFinish(jobs, mid, hoursAvailable)) high = mid;   // try fewer
+        else                                     low = mid + 1; // need more
+    }
+
+    return low;
+}</code></pre>
+
+          <h2 id="strings">Searching text</h2>
+          <pre><code class="language-csharp">string text = "the quick brown fox";
+
+Console.WriteLine(text.Contains("brown"));                     // True
+Console.WriteLine(text.IndexOf("brown"));                      // 10
+Console.WriteLine(text.IndexOf("BROWN", StringComparison.OrdinalIgnoreCase));  // 10
+Console.WriteLine(text.StartsWith("the"));                     // True
+Console.WriteLine(text.LastIndexOf('o'));                      // 17
+
+// Pattern matching with a regular expression
+var match = System.Text.RegularExpressions.Regex.Match(text, @"\b\w{5}\b");
+Console.WriteLine(match.Value);                                // quick</code></pre>
+          <div class="callout callout-info">
+            <div class="callout-title">Always specify a StringComparison</div>
+            <p>Culture-sensitive comparison is the default for some string methods and is both slower and locale-dependent. For identifiers, keys, and file paths use <code>StringComparison.Ordinal</code> or <code>OrdinalIgnoreCase</code>; reserve culture-aware comparison for text shown to users.</p>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./sorting.html" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">Sorting</span></a>
+          <a href="./recursion.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Recursion</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

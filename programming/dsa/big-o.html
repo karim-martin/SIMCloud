@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Big-O notation explained simply - how to measure how an algorithm's cost grows as the data grows, with C# examples.">
+  <title>Big-O Notation | CloudDevOps</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logo.svg">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../../" class="logo">
+        <img src="../../assets/images/logo.svg" alt="CloudDevOps Logo">
+        <span>CloudDevOps</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="../../devops/" class="nav-link">DevOps</a>
+        <a href="../../cloud/" class="nav-link">Cloud</a>
+        <a href="../../app-deploy/" class="nav-link">App Deploy</a>
+        <a href="../../programming/" class="nav-link active">Programming</a>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="page-wrapper">
+    <aside class="sidebar" aria-label="Programming navigation">
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Programming</h3>
+          <ul class="sidebar-links">
+            <li><a href="../">Overview</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">OOP with C#</h3>
+          <ul class="sidebar-links">
+            <li><a href="../oop/">OOP Overview</a></li>
+            <li><a href="../oop/building-blocks.html">Building Blocks</a></li>
+            <li><a href="../oop/encapsulation.html">Encapsulation</a></li>
+            <li><a href="../oop/abstraction.html">Abstraction</a></li>
+            <li><a href="../oop/inheritance.html">Inheritance</a></li>
+            <li><a href="../oop/polymorphism.html">Polymorphism</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Data Structures</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/">DS &amp; A Overview</a></li>
+            <li><a href="../dsa/big-o.html" class="active">Big-O Notation</a></li>
+            <li><a href="../dsa/arrays-lists.html">Arrays &amp; Lists</a></li>
+            <li><a href="../dsa/linked-lists.html">Linked Lists</a></li>
+            <li><a href="../dsa/stacks-queues.html">Stacks &amp; Queues</a></li>
+            <li><a href="../dsa/hash-tables.html">Hash Tables &amp; Sets</a></li>
+            <li><a href="../dsa/trees.html">Trees &amp; Heaps</a></li>
+            <li><a href="../dsa/graphs.html">Graphs</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">Algorithms</h3>
+          <ul class="sidebar-links">
+            <li><a href="../dsa/sorting.html">Sorting</a></li>
+            <li><a href="../dsa/searching.html">Searching</a></li>
+            <li><a href="../dsa/recursion.html">Recursion</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+    <main id="main-content" class="main-content">
+      <article class="content-article">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="../../">Home</a></li>
+            <li><a href="../">Programming</a></li>
+            <li><a href="./">DS &amp; A</a></li>
+            <li aria-current="page">Big-O Notation</li>
+          </ol>
+        </nav>
+
+        <header class="article-header">
+          <h1>Big-O Notation</h1>
+          <p class="text-secondary text-lg">Big-O describes how the work an algorithm does grows as the input grows. It is the vocabulary for comparing two solutions.</p>
+        </header>
+
+        <div class="article-body">
+          <div class="callout-beginner">
+            <div class="callout-beginner-title">Big-O in one sentence</div>
+            <p>Big-O answers "if my data gets ten times bigger, how much slower does this get?" It ignores hardware, language, and constant factors, and describes only the <em>shape</em> of the growth.</p>
+          </div>
+
+          <h2 id="why">Why not just time it?</h2>
+          <p>Because a stopwatch measures your laptop on your data today. Big-O predicts what happens on 10 million rows in production next year. Compare two ways of finding a name:</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Items (n)</th><th>Linear search - steps</th><th>Binary search - steps</th></tr></thead>
+              <tbody>
+                <tr><td>10</td><td>10</td><td>4</td></tr>
+                <tr><td>1,000</td><td>1,000</td><td>10</td></tr>
+                <tr><td>1,000,000</td><td>1,000,000</td><td>20</td></tr>
+                <tr><td>1,000,000,000</td><td>1,000,000,000</td><td>30</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Binary search is not "a bit faster". It is a different shape of curve, and the gap widens forever.</p>
+
+          <h2 id="rules">Reading Big-O</h2>
+          <p><code>n</code> means "the size of the input". Two rules make Big-O easy to work out by eye:</p>
+          <ul>
+            <li><strong>Drop the constants.</strong> A loop that does 3 things per item is O(3n), which is written <code>O(n)</code>. Big-O compares shapes, not stopwatch readings.</li>
+            <li><strong>Keep only the biggest term.</strong> <code>O(n² + n + 100)</code> becomes <code>O(n²)</code>, because for large <em>n</em> the square dominates everything else.</li>
+          </ul>
+
+          <h2 id="classes">The complexity classes you will meet</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Notation</th><th>Name</th><th>Steps when n = 1,000</th><th>Typical example</th></tr></thead>
+              <tbody>
+                <tr><td><code>O(1)</code></td><td>Constant</td><td>1</td><td>Array index, dictionary lookup</td></tr>
+                <tr><td><code>O(log n)</code></td><td>Logarithmic</td><td>~10</td><td>Binary search, balanced tree lookup</td></tr>
+                <tr><td><code>O(n)</code></td><td>Linear</td><td>1,000</td><td>Scanning a list once</td></tr>
+                <tr><td><code>O(n log n)</code></td><td>Linearithmic</td><td>~10,000</td><td>Merge sort, quick sort, <code>Array.Sort</code></td></tr>
+                <tr><td><code>O(n²)</code></td><td>Quadratic</td><td>1,000,000</td><td>Nested loop over the same data</td></tr>
+                <tr><td><code>O(2ⁿ)</code></td><td>Exponential</td><td>Astronomically large</td><td>Naive recursive Fibonacci, brute-force subsets</td></tr>
+                <tr><td><code>O(n!)</code></td><td>Factorial</td><td>Beyond astronomical</td><td>Trying every permutation (travelling salesman)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-info">
+            <div class="callout-title">Rule of thumb for interview-sized problems</div>
+            <p>Up to about 10 million simple operations runs in roughly a second. So O(n log n) is comfortable at n = 1,000,000; O(n²) is fine at n = 1,000 and hopeless at n = 1,000,000.</p>
+          </div>
+
+          <h2 id="examples">Each one in C#</h2>
+
+          <h3>O(1) - constant</h3>
+          <p>The work does not depend on the size of the input at all.</p>
+          <pre><code class="language-csharp">int First(int[] numbers) =&gt; numbers[0];                 // one index operation
+
+bool HasKey(Dictionary&lt;string, int&gt; map, string key)
+    =&gt; map.ContainsKey(key);                            // one hash + one probe
+
+// Still O(1): 100 operations is a constant, not a function of n
+int Sum3(int[] n) =&gt; n[0] + n[1] + n[2];</code></pre>
+
+          <h3>O(log n) - logarithmic</h3>
+          <p>Each step throws away half the remaining work. Doubling the data adds just one step.</p>
+          <pre><code class="language-csharp">int BinarySearch(int[] sorted, int target)
+{
+    int low = 0, high = sorted.Length - 1;
+
+    while (low &lt;= high)
+    {
+        int mid = low + (high - low) / 2;               // half the range each pass
+        if (sorted[mid] == target) return mid;
+        if (sorted[mid] &lt; target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1;
+}</code></pre>
+
+          <h3>O(n) - linear</h3>
+          <p>One pass over the data. Double the data, double the time.</p>
+          <pre><code class="language-csharp">int Max(int[] numbers)
+{
+    int max = int.MinValue;
+    foreach (int n in numbers)                          // touches each item once
+        if (n &gt; max) max = n;
+    return max;
+}
+
+// Two separate loops is O(2n) = still O(n)
+int SumThenCount(int[] numbers)
+{
+    int sum = 0;
+    foreach (int n in numbers) sum += n;
+    int count = 0;
+    foreach (int n in numbers) count++;
+    return sum + count;
+}</code></pre>
+
+          <h3>O(n log n) - linearithmic</h3>
+          <p>The realistic best case for a general-purpose sort: n items, each moving through log n levels of splitting.</p>
+          <pre><code class="language-csharp">int[] numbers = { 5, 2, 9, 1, 7 };
+Array.Sort(numbers);                          // introsort: O(n log n)
+
+var sorted = numbers.OrderBy(x =&gt; x).ToList();// LINQ: also O(n log n)</code></pre>
+
+          <h3>O(n²) - quadratic</h3>
+          <p>A loop inside a loop over the same data. Fine for hundreds of items; a disaster for millions.</p>
+          <pre><code class="language-csharp">// Every pair compared: n * n = n² steps
+bool HasDuplicates(int[] numbers)
+{
+    for (int i = 0; i &lt; numbers.Length; i++)
+        for (int j = i + 1; j &lt; numbers.Length; j++)
+            if (numbers[i] == numbers[j]) return true;
+    return false;
+}
+
+// The SAME job in O(n) using a hash set
+bool HasDuplicatesFast(int[] numbers)
+{
+    var seen = new HashSet&lt;int&gt;();
+    foreach (int n in numbers)
+        if (!seen.Add(n)) return true;        // Add returns false if already present
+    return false;
+}</code></pre>
+          <div class="callout callout-tip">
+            <div class="callout-title">The most valuable trick in this section</div>
+            <p>Trading memory for speed - keeping a <code>HashSet</code> or <code>Dictionary</code> of what you have already seen - turns an enormous number of O(n²) problems into O(n). It is the first thing to try when a nested loop is too slow.</p>
+          </div>
+
+          <h3>O(2ⁿ) - exponential</h3>
+          <pre><code class="language-csharp">// Each call spawns two more calls: the work doubles with every +1 to n
+long Fib(int n) =&gt; n &lt;= 1 ? n : Fib(n - 1) + Fib(n - 2);
+
+// Fib(30)  -&gt;  about 1.3 million calls
+// Fib(50)  -&gt;  about 2.5 * 10^10 calls: hours of CPU time</code></pre>
+          <p><a href="./recursion.html">Memoisation</a> collapses this back to O(n) by remembering answers already computed.</p>
+
+          <h2 id="cases">Best, average, and worst case</h2>
+          <p>An algorithm's cost can depend on the data, not just its size. Big-O usually quotes the worst case, because that is what wakes you at 3am.</p>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Operation</th><th>Best</th><th>Average</th><th>Worst</th><th>Worst case happens when</th></tr></thead>
+              <tbody>
+                <tr><td>Linear search</td><td>O(1)</td><td>O(n)</td><td>O(n)</td><td>The item is last, or missing</td></tr>
+                <tr><td>Quick sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>Every pivot is the smallest or largest value</td></tr>
+                <tr><td>Dictionary lookup</td><td>O(1)</td><td>O(1)</td><td>O(n)</td><td>Every key hashes into the same bucket</td></tr>
+                <tr><td>Binary search tree find</td><td>O(log n)</td><td>O(log n)</td><td>O(n)</td><td>Sorted input turned the tree into a list</td></tr>
+                <tr><td><code>List.Add</code></td><td>O(1)</td><td>O(1) amortised</td><td>O(n)</td><td>The internal array is full and must be copied</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-info">
+            <div class="callout-title">"Amortised" O(1)</div>
+            <p><code>List.Add</code> is usually one instruction, but occasionally the backing array is full and every element is copied to a new, larger one. Because the array doubles, that copy happens rarely enough that the <em>average</em> cost per Add stays constant. That average-over-time guarantee is what "amortised" means.</p>
+          </div>
+
+          <h2 id="space">Space complexity</h2>
+          <p>The same notation applies to memory. Extra memory allocated, not counting the input itself:</p>
+          <pre><code class="language-csharp">// O(1) space - one accumulator regardless of input size
+int Sum(int[] numbers)
+{
+    int total = 0;
+    foreach (int n in numbers) total += n;
+    return total;
+}
+
+// O(n) space - a new collection as large as the input
+int[] Doubled(int[] numbers)
+{
+    var result = new int[numbers.Length];
+    for (int i = 0; i &lt; numbers.Length; i++) result[i] = numbers[i] * 2;
+    return result;
+}
+
+// O(n) space - recursion uses one stack frame per level
+int SumTo(int n) =&gt; n == 0 ? 0 : n + SumTo(n - 1);</code></pre>
+
+          <h2 id="spotting">Spotting complexity in real code</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>You see</th><th>Usually</th></tr></thead>
+              <tbody>
+                <tr><td>No loop</td><td>O(1)</td></tr>
+                <tr><td>One loop over the input</td><td>O(n)</td></tr>
+                <tr><td>Two nested loops over the input</td><td>O(n²)</td></tr>
+                <tr><td>Three nested loops</td><td>O(n³)</td></tr>
+                <tr><td>Halving each pass (<code>n = n / 2</code>)</td><td>O(log n)</td></tr>
+                <tr><td>A loop that calls a sort or a binary search</td><td>O(n log n)</td></tr>
+                <tr><td>Two loops one after the other</td><td>O(n) - added, not multiplied</td></tr>
+                <tr><td>A loop over n calling a method that loops over m</td><td>O(n * m)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="traps">Hidden costs that catch people out</h2>
+          <p>The nested loop is not always visible - sometimes it hides inside an innocent-looking method call.</p>
+          <pre><code class="language-csharp">// TRAP 1: Contains on a List is O(n), inside a loop -&gt; O(n * m)
+var blocked = new List&lt;string&gt;(/* 10,000 entries */);
+foreach (string user in users)
+    if (blocked.Contains(user))       // scans all 10,000 EVERY time
+        Console.WriteLine(user);
+
+// FIX: a HashSet makes Contains O(1) -&gt; the whole loop is O(n)
+var blockedSet = new HashSet&lt;string&gt;(blocked);
+foreach (string user in users)
+    if (blockedSet.Contains(user))
+        Console.WriteLine(user);</code></pre>
+          <pre><code class="language-csharp">// TRAP 2: string concatenation in a loop is O(n²)
+// Strings are immutable, so each += copies the whole string so far.
+string report = "";
+foreach (string line in lines)
+    report += line + "\n";            // copies everything, every iteration
+
+// FIX: StringBuilder appends into a buffer -&gt; O(n)
+var sb = new StringBuilder();
+foreach (string line in lines)
+    sb.AppendLine(line);
+string report2 = sb.ToString();</code></pre>
+          <pre><code class="language-csharp">// TRAP 3: a LINQ query re-executed on every access
+IEnumerable&lt;Order&gt; query = orders.Where(o =&gt; o.Total &gt; 100);   // nothing ran yet
+Console.WriteLine(query.Count());     // walks the whole sequence
+Console.WriteLine(query.First());     // walks it AGAIN
+
+// FIX: materialise once
+List&lt;Order&gt; big = orders.Where(o =&gt; o.Total &gt; 100).ToList();</code></pre>
+          <pre><code class="language-csharp">// TRAP 4: a database query inside a loop (the "N+1" problem)
+foreach (Customer c in customers)                       // 1 query...
+    c.Orders = db.Orders.Where(o =&gt; o.CustomerId == c.Id).ToList();  // ...+ N queries
+
+// FIX: fetch once, then group in memory
+var ordersByCustomer = db.Orders
+    .Where(o =&gt; customerIds.Contains(o.CustomerId))
+    .ToLookup(o =&gt; o.CustomerId);</code></pre>
+
+          <h2 id="summary">Summary</h2>
+          <div class="table-wrapper">
+            <table class="cheatsheet-table">
+              <thead><tr><th>Remember</th><th>Because</th></tr></thead>
+              <tbody>
+                <tr><td>Constants and lower terms are dropped</td><td>Big-O describes growth, not absolute speed</td></tr>
+                <tr><td>Nested loops multiply</td><td>Two loops over n is n², the most common performance bug</td></tr>
+                <tr><td>Sequential loops add</td><td>O(n) + O(n) = O(n)</td></tr>
+                <tr><td>Hashing buys speed with memory</td><td>Turns many O(n²) problems into O(n)</td></tr>
+                <tr><td>Worst case is what fails in production</td><td>Average case hides the incident</td></tr>
+                <tr><td>Small n makes all of this moot</td><td>For 20 items, use whatever is clearest to read</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="page-navigation" aria-label="Page navigation">
+          <a href="./" class="nav-prev"><span class="nav-label">Previous</span><span class="nav-title">DS &amp; A Overview</span></a>
+          <a href="./arrays-lists.html" class="nav-next"><span class="nav-label">Next</span><span class="nav-title">Arrays &amp; Lists</span></a>
+        </nav>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="copyright">CloudDevOps - Learning Journey</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/navigation.js" defer></script>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
